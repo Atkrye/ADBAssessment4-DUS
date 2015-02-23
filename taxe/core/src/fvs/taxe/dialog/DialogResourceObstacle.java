@@ -3,8 +3,11 @@ package fvs.taxe.dialog;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import fvs.taxe.Button;
 import fvs.taxe.clickListener.ResourceDialogClickListener;
+import fvs.taxe.controller.Context;
+import gameLogic.GameState;
 import gameLogic.resource.Obstacle;
 
 import java.util.ArrayList;
@@ -12,10 +15,11 @@ import java.util.List;
 
 public class DialogResourceObstacle extends Dialog {
     private List<ResourceDialogClickListener> clickListeners = new ArrayList<ResourceDialogClickListener>();
+	private Context context;
 
-    public DialogResourceObstacle(Obstacle obstacle, Skin skin) {
+    public DialogResourceObstacle(Context context, Obstacle obstacle, Skin skin) {
         super(obstacle.toString(), skin);
-
+        this.context = context;
         //Generates all the buttons that allow the user to interact with the dialog
         text("What do you want to do with this obstacle?");
         button("Place on a connection", "PLACE");
@@ -27,6 +31,7 @@ public class DialogResourceObstacle extends Dialog {
     public Dialog show(Stage stage) {
         //Shows the dialog
         show(stage, null);
+        context.getGameLogic().setState(GameState.WAITING);
         setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
         return this;
     }
@@ -34,6 +39,7 @@ public class DialogResourceObstacle extends Dialog {
     @Override
     public void hide() {
         //Hides the dialog
+    	context.getGameLogic().setState(GameState.NORMAL);
         hide(null);
     }
 

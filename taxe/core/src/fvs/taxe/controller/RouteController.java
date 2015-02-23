@@ -17,6 +17,7 @@ import fvs.taxe.clickListener.StationClickListener;
 import fvs.taxe.TaxeGame;
 import gameLogic.GameState;
 import gameLogic.map.CollisionStation;
+import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Position;
 import gameLogic.map.Station;
@@ -31,9 +32,13 @@ public class RouteController {
     private boolean canEndRouting = true;
     private boolean editingRoute = false;
     private double distance = 0;
+	private ArrayList<Connection> connections;
 
     public RouteController(Context context) {
         this.context = context;
+        
+        connections = new ArrayList<Connection>();
+        
         StationController.subscribeStationClick(new StationClickListener() {
             @Override
             public void clicked(Station station) {
@@ -126,6 +131,9 @@ public class RouteController {
                 context.getTopBarController().displayMessage("Total Distance: " + integer.format(distance) + ". Will take " + integer.format(Math.ceil(distance / train.getSpeed() / 2)) + " turns.", Color.BLACK);
                 //If the connection exists then the station passed to the method is added to the route
                 positions.add(station.getLocation());
+                
+                connections.add(context.getGameLogic().getMap().getConnection(station, lastStation));
+                
                 //Sets the relevant boolean checking if the last node on the route is a junction or not
                 canEndRouting = !(station instanceof CollisionStation);
             }
@@ -194,6 +202,9 @@ public class RouteController {
         TrainController trainController = new TrainController(context);
         trainController.setTrainsVisible(train, true);
 
+        drawRoute(Color.GRAY);
+        connections.clear();
+        
         //Again using the principle that (-1,-1) is a moving train, this sets the train being routed to invisible if not already on a route, but makes it visible if it already had a route previously
         //This was necessary to add as without it, when editing a route and then cancelling, the train would become invisible for the duration of its original journey
         if (train.getPosition().getX() != -1) {
@@ -201,6 +212,12 @@ public class RouteController {
         }
     }
 
+    public void drawRoute(Color color) {
+        for (Connection connection : connections) {
+        	connection.getActor().setConnectionColor(color);
+        }
+    }
+    /*
 	public void drawRoute(Color color) {
 		TaxeGame game = context.getTaxeGame();
 
@@ -243,7 +260,7 @@ public class RouteController {
 		}
 
 		game.shapeRenderer.end();
-	}
+	}*/
 
     public void viewRoute(Train train) {
         //This method is used to draw the trains current route so that the user can see where their trains are going

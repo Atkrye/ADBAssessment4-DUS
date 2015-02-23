@@ -32,7 +32,7 @@ public class EngineerClicked extends ClickListener {
 
             //Creates a dialog and a listener for the result of it
             DialogButtonClicked listener = new DialogButtonClicked(context, currentPlayer, engineer);
-            DialogResourceEngineer dia = new DialogResourceEngineer(engineer, context.getSkin());
+            DialogResourceEngineer dia = new DialogResourceEngineer(context, engineer, context.getSkin());
             dia.show(context.getStage());
             dia.subscribeClick(listener);
         }

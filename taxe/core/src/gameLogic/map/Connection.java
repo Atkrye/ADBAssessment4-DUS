@@ -1,11 +1,14 @@
 package gameLogic.map;
 
+import fvs.taxe.actor.ConnectionActor;
+
 public class Connection {
     private Station station1;
     private Station station2;
     //Added this variable to the Connection class which indicates how long the connection shall be blocked for
     //We could have used a boolean to indicate whether it was blocked but this implementation makes it very easy to set the connections to be blocked for a certain number of turns
     private int blocked;
+	private ConnectionActor actor;
 
     public Connection(Station station1, Station station2) {
         this.station1 = station1;
@@ -41,6 +44,14 @@ public class Connection {
         this.blocked = turns;
     }
 
+    public void setActor(ConnectionActor actor){
+		this.actor = actor;
+	}
+	
+	public ConnectionActor getActor(){
+		return this.actor;
+	}
+	
     public IPositionable getMidpoint() {
         //This returns the midPoint of the connection, which is useful for drawing the obstacle indicators on to the connection
         return new IPositionable() {

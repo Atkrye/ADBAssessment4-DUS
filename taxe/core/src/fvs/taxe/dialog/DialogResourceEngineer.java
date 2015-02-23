@@ -3,8 +3,11 @@ package fvs.taxe.dialog;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import fvs.taxe.Button;
 import fvs.taxe.clickListener.ResourceDialogClickListener;
+import fvs.taxe.controller.Context;
+import gameLogic.GameState;
 import gameLogic.resource.Engineer;
 
 import java.util.ArrayList;
@@ -12,10 +15,12 @@ import java.util.List;
 
 public class DialogResourceEngineer extends Dialog {
     private List<ResourceDialogClickListener> clickListeners = new ArrayList<ResourceDialogClickListener>();
+	private Context context;
 
-    public DialogResourceEngineer(Engineer engineer, Skin skin) {
+    public DialogResourceEngineer(Context context, Engineer engineer, Skin skin) {
         super(engineer.toString(), skin);
         //Generates all the buttons that allow the user to interact with the dialog
+        this.context = context;
         text("What do you want to do with this engineer?");
         button("Repair a blocked connection", "PLACE");
         button("Drop", "DROP");
@@ -26,6 +31,7 @@ public class DialogResourceEngineer extends Dialog {
     public Dialog show(Stage stage) {
         //Displays the dialog on screen
         show(stage, null);
+        context.getGameLogic().setState(GameState.WAITING);
         setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
         return this;
     }
@@ -33,6 +39,7 @@ public class DialogResourceEngineer extends Dialog {
     @Override
     public void hide() {
         //Hides the dialog
+    	context.getGameLogic().setState(GameState.NORMAL);
         hide(null);
     }
 

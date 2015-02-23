@@ -4,17 +4,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import fvs.taxe.TaxeGame;
+import fvs.taxe.controller.Context;
+import gameLogic.GameState;
 import gameLogic.player.Player;
 import gameLogic.player.PlayerManager;
 
 public class DialogEndGame extends Dialog {
-    private TaxeGame game;
+    //private TaxeGame game;
 
-    public DialogEndGame(TaxeGame game, PlayerManager pm, Skin skin) {
+    private Context context;
+
+	public DialogEndGame(Context context, TaxeGame game, PlayerManager pm, Skin skin) {
         super("GAME OVER", skin);
-        this.game = game;
-
+       // this.game = game;
+        this.context = context;
         double highScore = 0;
         int playerNum = 0;
         for (Player player : pm.getAllPlayers()) {
@@ -43,6 +48,7 @@ public class DialogEndGame extends Dialog {
     @Override
     public Dialog show(Stage stage) {
         show(stage, null);
+        context.getGameLogic().setState(GameState.WAITING);
         setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
         return this;
     }
@@ -50,6 +56,7 @@ public class DialogEndGame extends Dialog {
     @Override
     public void hide() {
         hide(null);
+        context.getGameLogic().setState(GameState.NORMAL);
     }
 
     @Override

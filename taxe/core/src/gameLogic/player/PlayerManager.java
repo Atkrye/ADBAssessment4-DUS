@@ -43,7 +43,7 @@ public class PlayerManager {
 
         //Checks whether or not the turn is being skipped, if it is then it informs the player
         if (this.getCurrentPlayer().getSkip()) {
-            DialogTurnSkipped dia = new DialogTurnSkipped(context.getSkin());
+            DialogTurnSkipped dia = new DialogTurnSkipped(context, context.getSkin());
             dia.show(context.getStage());
             this.getCurrentPlayer().setSkip(false);
         }
@@ -56,10 +56,10 @@ public class PlayerManager {
 
     private void turnChanged() {
         turnNumber++;
-        //Iterates through list of turnListeners and tells them that the turn has changed
-        for (TurnListener listener : turnListeners) {
-            listener.changed();
-        }
+		// reverse iterate to give priority to calls from Game() (obstacles)
+		for(int i = 0; i< turnListeners.size(); i++) {
+			turnListeners.get(turnListeners.size()-1-i).changed();
+		}
     }
 
     public void subscribePlayerChanged(PlayerChangedListener listener) {

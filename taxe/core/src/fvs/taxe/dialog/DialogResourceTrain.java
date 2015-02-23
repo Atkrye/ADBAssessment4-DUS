@@ -3,8 +3,11 @@ package fvs.taxe.dialog;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import fvs.taxe.Button;
 import fvs.taxe.clickListener.ResourceDialogClickListener;
+import fvs.taxe.controller.Context;
+import gameLogic.GameState;
 import gameLogic.resource.Train;
 
 import java.util.ArrayList;
@@ -12,9 +15,11 @@ import java.util.List;
 
 public class DialogResourceTrain extends Dialog {
     private List<ResourceDialogClickListener> clickListeners = new ArrayList<ResourceDialogClickListener>();
+	private Context context;
 
-    public DialogResourceTrain(Train train, Skin skin, boolean trainPlaced) {
+    public DialogResourceTrain(Context context, Train train, Skin skin, boolean trainPlaced) {
         super(train.toString(), skin);
+        this.context = context;
         text("What do you want to do with this train?");
 
         //Generates the buttons required to allow the user to interact with the dialog
@@ -42,6 +47,7 @@ public class DialogResourceTrain extends Dialog {
     @Override
     public Dialog show(Stage stage) {
         show(stage, null);
+        context.getGameLogic().setState(GameState.WAITING);
         setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
         return this;
     }
@@ -49,6 +55,7 @@ public class DialogResourceTrain extends Dialog {
     @Override
     public void hide() {
         hide(null);
+        context.getGameLogic().setState(GameState.NORMAL);
     }
 
     private void clicked(Button button) {

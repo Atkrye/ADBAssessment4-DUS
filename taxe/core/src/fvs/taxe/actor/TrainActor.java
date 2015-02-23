@@ -60,7 +60,7 @@ public class TrainActor extends Image {
             Train collision = collided();
             if (collision != null) {
                 //If there is a collision then the user is informed, the two trains destroyed and the connection that they collided on is blocked for 5 turns.
-                context.getTopBarController().displayFlashMessage("Two trains collided.  They were both destroyed.", Color.RED, 2);
+                context.getTopBarController().displayFlashMessage("Two trains collided.  They were both destroyed.", Color.RED, Color.BLACK, 2);
                 Game.getInstance().getMap().blockConnection(train.getLastStation(), train.getNextStation(), 5);
                 collision.getActor().remove();
                 collision.getPlayer().removeResource(collision);

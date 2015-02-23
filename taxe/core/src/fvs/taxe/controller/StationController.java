@@ -21,6 +21,7 @@ import fvs.taxe.clickListener.StationClickListener;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.Tooltip;
 import fvs.taxe.actor.CollisionStationActor;
+import fvs.taxe.actor.ConnectionActor;
 import fvs.taxe.actor.StationActor;
 import fvs.taxe.dialog.DialogStationMultitrain;
 import fvs.taxe.clickListener.TrainClicked;
@@ -44,7 +45,7 @@ public class StationController {
 	have to use CopyOnWriteArrayList because when we iterate through our listeners and execute
 	their handler's method, one case unsubscribes from the event removing itself from this list
 	and this list implementation supports removing elements whilst iterating through it
-	*/
+	 */
 	private static List<StationClickListener> stationClickListeners = new CopyOnWriteArrayList<StationClickListener>();
 	private Color translucentBlack = new Color(0, 0, 0, 0.8f);
 	private static final Texture[] blockageTextures = new Texture[5];
@@ -84,7 +85,7 @@ public class StationController {
 				if (Game.getInstance().getState() == GameState.NORMAL) {
 					ArrayList<Train> trains = new ArrayList<Train>();
 					for (Player player : context.getGameLogic().getPlayerManager()
-												.getAllPlayers()) {
+							.getAllPlayers()) {
 						for (Resource resource : player.getResources()) {
 							if (resource instanceof Train) {
 								if (((Train) resource).getPosition() == station.getLocation()) {
@@ -143,7 +144,7 @@ public class StationController {
 				//Shows tooltip indicating the station's name
 				tooltip.setPosition(collisionStationActor.getX() + 10,
 						collisionStationActor.getY() + 10);
-				tooltip.show("Junction");
+				tooltip.show("Junction: " + collisionStation.getName());
 			}
 
 			@Override
@@ -169,7 +170,7 @@ public class StationController {
 				//Creates a new hashmap which stores the maximum radius of each station
 				HashMap<String, Integer> map = new HashMap<String, Integer>();
 				for (Goal goal : Game.getInstance().getPlayerManager().getCurrentPlayer()
-									 .getGoals()) {
+						.getGoals()) {
 					if (!goal.getComplete()) {
 						if (goal.getOrigin().equals(station) ||
 								goal.getDestination().equals(station) ||
@@ -252,7 +253,60 @@ public class StationController {
 		renderStationGoalHighlights();
 	}
 
-	public void renderConnections(List<Connection> connections, Color color) {
+	public void drawConnections(List<Connection> connections, final Color color) {
+		for (Connection connection : connections) {
+			final IPositionable start = connection.getStation1().getLocation();
+			final IPositionable end = connection.getStation2().getLocation();
+			ConnectionActor connectionActor = new ConnectionActor(Color.GRAY, start, end, CONNECTION_LINE_WIDTH);
+			connection.setActor(connectionActor);
+			context.getStage().addActor(connectionActor);
+		}
+		
+		
+		TaxeGame game = context.getTaxeGame();
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+		game.shapeRenderer.setColor(translucentBlack);
+
+		// draw an icon on connections that are blocked, showing how many turns remain until they
+		// become unblocked
+		// if the game is in routing mode, then all connections that aren't blocked have a
+		// translucent black circle drawn on their midpoint, to increase visibility of the white
+		// text that will be drawn on top showing the length of the connection
+		for (Connection connection : connections) {
+			IPositionable midpoint = connection.getMidpoint();
+			if (connection.isBlocked()) {
+				game.batch.begin();
+				game.shapeRenderer.circle(midpoint.getX(), midpoint.getY(), 10);
+				game.batch.draw(blockageTextures[connection.getTurnsBlocked() - 1],
+						midpoint.getX() - 10, midpoint.getY() - 10, 20, 20);
+				game.batch.end();
+			}
+		}
+		game.shapeRenderer.end();
+		Gdx.gl.glDisable(GL20.GL_BLEND);
+
+
+		// if the game is in routing mode, then the length of the connection is displayed
+		for (Connection connection : connections) {
+			if (connection.isBlocked()) {
+
+			} else if (Game.getInstance().getState() == GameState.ROUTING) {
+				IPositionable midpoint = connection.getMidpoint();
+				game.batch.begin();
+				game.fontTiny.setColor(Color.BLACK);
+				String text = String.valueOf(Math.round(
+						context.getGameLogic().getMap().getDistance(connection.getStation1(),connection.getStation2())
+				));
+				game.fontTiny.draw(game.batch, text,
+						midpoint.getX() - game.fontTiny.getBounds(text).width / 2f,
+						midpoint.getY() + game.fontTiny.getBounds(text).height / 2f);
+				game.batch.end();
+			}
+		}
+	}
+	/*public void drawConnections(List<Connection> connections, Color color) {
 		//Renders all of the connections between each station
 		TaxeGame game = context.getTaxeGame();
 
@@ -309,7 +363,7 @@ public class StationController {
 				game.batch.end();
 			}
 		}
-	}
+	}*/
 
 	public void displayNumberOfTrainsAtStations() {
 		//This renders the number next to each station of how many trains are located there
@@ -331,7 +385,7 @@ public class StationController {
 
 	private int trainsAtStation(Station station) {
 		int count = 0;
-//This method iterates through every train and checks whether or not the location of the train matches the location of the station. Returns the number of trains at that station
+		//This method iterates through every train and checks whether or not the location of the train matches the location of the station. Returns the number of trains at that station
 		for (Player player : context.getGameLogic().getPlayerManager().getAllPlayers()) {
 			for (Resource resource : player.getResources()) {
 				if (resource instanceof Train) {

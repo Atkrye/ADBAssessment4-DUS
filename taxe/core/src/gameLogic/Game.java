@@ -4,12 +4,19 @@ import gameLogic.listeners.GameStateListener;
 import gameLogic.listeners.TurnListener;
 import gameLogic.goal.GoalManager;
 import gameLogic.map.Map;
+import gameLogic.obstacle.Obstacle;
+import gameLogic.obstacle.ObstacleListener;
+import gameLogic.obstacle.ObstacleManager;
 import gameLogic.player.Player;
 import gameLogic.player.PlayerManager;
 import gameLogic.resource.ResourceManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.badlogic.gdx.math.MathUtils;
+
+import Util.Tuple;
 
 public class Game {
     //This is sort of a super-class that can be accessed throughout the system as many of its methods are static
@@ -18,14 +25,14 @@ public class Game {
     private PlayerManager playerManager;
     private GoalManager goalManager;
     private ResourceManager resourceManager;
+    private ObstacleManager obstacleManager;
     private Map map;
     private GameState state;
     private List<GameStateListener> gameStateListeners = new ArrayList<GameStateListener>();
+    private List<ObstacleListener> obstacleListeners = new ArrayList<ObstacleListener>();
 
     //Number of players, not sure how much impact this has on the game at the moment but if you wanted to add more players you would use this attributes
     private final int CONFIG_PLAYERS = 2;
-
-    //This
     public final int TOTAL_TURNS = 30;
     public final int MAX_POINTS = 10000;
 
@@ -39,7 +46,8 @@ public class Game {
         goalManager = new GoalManager(resourceManager);
 
         map = new Map();
-
+        obstacleManager = new ObstacleManager(map);
+        
         state = GameState.NORMAL;
 
         //Adds all the subscriptions to the game which gives players resources and goals at the start of each turn.
@@ -54,6 +62,8 @@ public class Game {
                 resourceManager.addRandomResourceToPlayer(currentPlayer);
                 map.decrementBlockedConnections();
                 map.blockRandomConnection();
+                calculateObstacles();
+				decreaseObstacleTime();
             }
         });
     }
@@ -85,6 +95,10 @@ public class Game {
     public GoalManager getGoalManager() {
         return goalManager;
     }
+    
+    public ObstacleManager getObstacleManager(){
+		return obstacleManager;
+	}
 
     public Map getMap() {
         return map;
@@ -109,4 +123,54 @@ public class Game {
             listener.changed(state);
         }
     }
+    
+    private void obstacleStarted(Obstacle obstacle) {
+		// called whenever an obstacle starts, notifying all listeners that an obstacle has occured (handled by ... 
+		for (ObstacleListener listener : obstacleListeners) {
+			listener.started(obstacle);
+		}
+	}
+	
+	private void obstacleEnded(Obstacle obstacle) {
+		// called whenever an obstacle ends, notifying all listeners that an obstacle has occured (handled by ... 
+		for (ObstacleListener listener : obstacleListeners) {
+			listener.ended(obstacle);
+		}
+	}
+
+	public void subscribeObstacleChanged(ObstacleListener obstacleListener) {
+		obstacleListeners.add(obstacleListener);
+	}
+	
+	private void calculateObstacles() {
+		// randomly choose one obstacle, then make the obstacle happen with its associated probability
+		ArrayList<Tuple<Obstacle, Float>> obstacles = obstacleManager.getObstacles();
+		int index = MathUtils.random(obstacles.size()-1);
+		
+		
+		Tuple<Obstacle, Float> obstacleProbPair = obstacles.get(index);
+		boolean obstacleOccured = MathUtils.randomBoolean(obstacleProbPair.getSecond());
+		Obstacle obstacle = obstacleProbPair.getFirst();
+		
+		// if it has occurred and isnt already active, start the obstacle
+		if(obstacleOccured && !obstacle.isActive()){
+			obstacleStarted(obstacle);
+		}
+	}
+	
+	private void decreaseObstacleTime() {
+		// decreases any active obstacles time left active by 1
+		ArrayList<Tuple<Obstacle, Float>> obstacles = obstacleManager.getObstacles();
+		for (int i = 0; i< obstacles.size(); i++) {
+			Obstacle obstacle = obstacles.get(i).getFirst();
+			if (obstacle.isActive()) {
+				boolean isTimeLeft = obstacle.decreaseTimeLeft();
+				if (!isTimeLeft) {
+					// if the time left = 0, then deactivate the obstacle
+					obstacleEnded(obstacle);
+				}
+			}
+		}
+		
+	}
 }
