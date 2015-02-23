@@ -55,7 +55,7 @@ public class DialogResourceTrain extends Dialog {
     @Override
     public void hide() {
         hide(null);
-        context.getGameLogic().setState(GameState.NORMAL);
+        
     }
 
     private void clicked(Button button) {
@@ -70,6 +70,7 @@ public class DialogResourceTrain extends Dialog {
 
     @Override
     protected void result(Object obj) {
+    	context.getGameLogic().setState(GameState.NORMAL);
         if (obj == "CLOSE") {
             this.remove();
         } else if (obj == "DROP") {

@@ -23,7 +23,6 @@ public class TopBarController {
     private Context context;
     private TextButton endTurnButton;
     private Label flashMessage;
-
 	private Label obstacleLabel;
 
 	private TopBarActor topBarBackground;

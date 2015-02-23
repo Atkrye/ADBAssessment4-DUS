@@ -135,7 +135,6 @@ public class GameScreen extends ScreenAdapter {
 			//This colours the start and end nodes of each goal to allow the player to easily see where they need to route
 		}
 
-
 		if (gameLogic.getState() == GameState.ANIMATING) {
 			timeAnimated += delta;
 			if (timeAnimated >= ANIMATION_TIME) {
@@ -147,7 +146,8 @@ public class GameScreen extends ScreenAdapter {
 		//Causes all the actors to perform their actions (i.e trains to move)
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-
+		
+		stationController.drawBlockedInfo(map.getConnections());
 		//Draw the number of trains at each station
 		if (gameLogic.getState() == GameState.NORMAL || gameLogic.getState() == GameState.PLACING_TRAIN) {
 			stationController.displayNumberOfTrainsAtStations();

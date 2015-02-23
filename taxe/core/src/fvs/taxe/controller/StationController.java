@@ -157,7 +157,7 @@ public class StationController {
 		context.getStage().addActor(collisionStationActor);
 	}
 
-	public static Color[] colours = {Color.ORANGE, Color.GREEN, Color.PURPLE};
+	public static Color[] colours = {Color.ORANGE, Color.PINK, Color.PURPLE};
 
 	public void renderStationGoalHighlights() {
 		//This method is responsible for rendering the colours around the goal nodes
@@ -261,8 +261,9 @@ public class StationController {
 			connection.setActor(connectionActor);
 			context.getStage().addActor(connectionActor);
 		}
-		
-		
+	}
+	
+	public void drawBlockedInfo(List<Connection> connections){
 		TaxeGame game = context.getTaxeGame();
 		Gdx.gl.glEnable(GL20.GL_BLEND);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
