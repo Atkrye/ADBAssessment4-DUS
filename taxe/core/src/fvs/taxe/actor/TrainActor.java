@@ -167,7 +167,7 @@ public class TrainActor extends Image {
         if (train.getPosition().getX() == -1 && !paused) {
             //if this train is moving;
             for (Player player : Game.getInstance().getPlayerManager().getAllPlayers()) {
-            	if(player != this.train.getPlayer())
+            	if(!player.equals(this.train.getPlayer()))
             	{
                 for (Train otherTrain : player.getTrains()) {
                     //This checks every train that is currently present within the game
