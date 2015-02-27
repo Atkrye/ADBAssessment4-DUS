@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 
 public class TaxeGame extends Game {
+	
+
 
 
     // Using native res of the map image we are using at the moment

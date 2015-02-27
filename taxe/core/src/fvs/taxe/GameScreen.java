@@ -1,5 +1,7 @@
 package fvs.taxe;
 
+import Util.Tuple;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -7,6 +9,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import fvs.taxe.controller.*;
 import fvs.taxe.dialog.DialogEndGame;
 import gameLogic.Game;
@@ -14,10 +17,13 @@ import gameLogic.GameState;
 import gameLogic.listeners.GameStateListener;
 import gameLogic.listeners.TurnListener;
 import gameLogic.map.Map;
+import gameLogic.resource.Train;
+import gameLogic.trong.TrongScreen;
 
 
 public class GameScreen extends ScreenAdapter {
-    final private TaxeGame game;
+	public static GameScreen instance;
+    private static TaxeGame game;
     private Stage stage;
     private Texture mapTexture;
     private Game gameLogic;
@@ -33,9 +39,11 @@ public class GameScreen extends ScreenAdapter {
     private ResourceController resourceController;
     private GoalController goalController;
     private RouteController routeController;
+    public TrongScreen trongScreen = null;
 
     public GameScreen(TaxeGame game) {
-        this.game = game;
+        GameScreen.game = game;
+        instance = this;
         stage = new Stage();
 
         //Sets the skin
@@ -80,7 +88,7 @@ public class GameScreen extends ScreenAdapter {
             public void changed(GameState state) {
                 if ((gameLogic.getPlayerManager().getTurnNumber() == gameLogic.TOTAL_TURNS || gameLogic.getPlayerManager().getCurrentPlayer().getScore() >= gameLogic.MAX_POINTS) && state == GameState.NORMAL) {
                     //If the game should end due to the turn number or points total then the appropriate dialog is displayed
-                    DialogEndGame dia = new DialogEndGame(GameScreen.this.game, gameLogic.getPlayerManager(), skin);
+                    DialogEndGame dia = new DialogEndGame(GameScreen.game, gameLogic.getPlayerManager(), skin);
                     dia.show(stage);
                 } else if (gameLogic.getState() == GameState.ROUTING || gameLogic.getState() == GameState.PLACING_TRAIN) {
                     //If the player is routing or place a train then the goals and nodes are colour coded
@@ -104,6 +112,7 @@ public class GameScreen extends ScreenAdapter {
 
         //Draws the map background
         game.batch.draw(mapTexture, 0, 0);
+        
         game.batch.end();
 
         topBarController.drawBackground();
@@ -166,5 +175,26 @@ public class GameScreen extends ScreenAdapter {
         mapTexture.dispose();
         stage.dispose();
     }
+    
+    public void setScreen(ScreenAdapter screen)
+    {
+    	game.setScreen(screen);
+    }
+    
+    public static Tuple<TaxeGame, GameScreen> getInstance()
+    {
+    	return new Tuple<TaxeGame, GameScreen>(game, instance);
+    }
+    
+    @Override
+    public void resume()
+    {
+    	trongScreen = null;
+    	super.resume();
+    }
+	
+	public static TrongScreen makeTrongGame(Train t1, Train t2){
+		return new TrongScreen(game, t1, t2);
+	}
 
 }

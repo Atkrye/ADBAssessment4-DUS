@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+
+import fvs.taxe.GameScreen;
 import fvs.taxe.controller.Context;
 import gameLogic.Game;
 import gameLogic.GameState;
@@ -13,6 +15,7 @@ import gameLogic.player.Player;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Station;
 import gameLogic.resource.Train;
+import gameLogic.trong.TrongScreen;
 
 public class TrainActor extends Image {
     public static int width = 36;
@@ -57,15 +60,40 @@ public class TrainActor extends Image {
             updateBounds();
             updateFacingDirection();
 
-            Train collision = collided();
+            final Train collision = collided();
             if (collision != null) {
-                //If there is a collision then the user is informed, the two trains destroyed and the connection that they collided on is blocked for 5 turns.
-                context.getTopBarController().displayFlashMessage("Two trains collided.  They were both destroyed.", Color.RED, 2);
-                Game.getInstance().getMap().blockConnection(train.getLastStation(), train.getNextStation(), 5);
-                collision.getActor().remove();
-                collision.getPlayer().removeResource(collision);
-                train.getPlayer().removeResource(train);
-                this.remove();
+            	if(Game.trongEnabled)
+            	{
+            		//Make a new trong game and add it to the stack. Determine which player is player 1 and ensure that that train is passed as the first train
+            		TrongScreen trongGame;
+            		if(this.train.getPlayer().getPlayerNumber() < collision.getPlayer().getPlayerNumber())
+            		{
+            			trongGame = GameScreen.makeTrongGame(this.train, collision);
+            		}
+            		else
+            		{
+            			trongGame = GameScreen.makeTrongGame(this.train, collision);
+            		}
+            		if(GameScreen.instance.trongScreen != null)
+            		{
+            			GameScreen.instance.trongScreen.setNextScreen(trongGame);
+            		}
+            		else
+            		{
+            			GameScreen.instance.setScreen(trongGame);
+            		}
+            		trongGame.setNextScreen(GameScreen.instance);
+            	}
+            	else
+            	{
+            		//If there is a collision then the user is informed, the two trains destroyed and the connection that they collided on is blocked for 5 turns.
+            		context.getTopBarController().displayFlashMessage("Two trains collided.  They were both destroyed.", Color.RED, 2);
+            		Game.getInstance().getMap().blockConnection(train.getLastStation(), train.getNextStation(), 5);
+            		collision.getActor().remove();
+            		collision.getPlayer().removeResource(collision);
+            		train.getPlayer().removeResource(train);
+            		this.remove();
+            	}
             }
 
         } else if (this.paused) {
@@ -139,6 +167,8 @@ public class TrainActor extends Image {
         if (train.getPosition().getX() == -1 && !paused) {
             //if this train is moving;
             for (Player player : Game.getInstance().getPlayerManager().getAllPlayers()) {
+            	if(player != this.train.getPlayer())
+            	{
                 for (Train otherTrain : player.getTrains()) {
                     //This checks every train that is currently present within the game
                     if (!otherTrain.equals(train)) {
@@ -168,6 +198,7 @@ public class TrainActor extends Image {
                         }
                     }
                 }
+            	}
             }
         }
         return null;
