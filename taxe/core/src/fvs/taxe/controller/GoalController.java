@@ -4,8 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+
 import fvs.taxe.TaxeGame;
 import fvs.taxe.clickListener.GoalClickListener;
+import gameLogic.Game;
 import gameLogic.player.Player;
 import gameLogic.listeners.PlayerChangedListener;
 import gameLogic.player.PlayerManager;
@@ -14,6 +16,7 @@ import gameLogic.goal.Goal;
 import java.text.DecimalFormat;
 
 public class GoalController {
+	
     //This class is in control of drawing all the goals
     private Context context;
     private Group goalButtons = new Group();
@@ -35,15 +38,24 @@ public class GoalController {
         //This method draws the header for the goals, this is called at the beginning of every turn
         TaxeGame game = context.getTaxeGame();
         float top = (float) TaxeGame.HEIGHT;
-        float x = 10.0f;
-        float y = top - 10.0f - TopBarController.CONTROLS_HEIGHT;
+        float x = 28.0f;
+        float y = top - 530.0f - TopBarController.CONTROLS_HEIGHT;
+        
+        // Draw score labels
         game.batch.begin();
-        game.fontSmall.setColor(Color.BLACK);
-        //Draws the player's name and their score
-        game.fontSmall.draw(game.batch, playerHeader(), x, y);
-        y -= 30;
-        //Draws "Goals:"
-        game.fontSmall.draw(game.batch, "Goals:", x, y);
+        
+        game.fontTinyBold.setColor(Color.WHITE);
+        game.fontTinyBold.draw(game.batch, playerName(), x, y);
+        
+        game.fontLight.setColor(Color.WHITE);
+        game.fontLight.draw(game.batch, playerScore(), x, y+50);
+        
+        game.fontTinyBold.setColor(Color.WHITE);
+        game.fontTinyBold.draw(game.batch, playerName(), x+170, y);
+        
+        game.fontLight.setColor(Color.WHITE);
+        game.fontLight.draw(game.batch, playerScore(), x+170, y+50);
+        
         game.batch.end();
     }
 
@@ -66,7 +78,7 @@ public class GoalController {
         float top = (float) TaxeGame.HEIGHT;
         float x = 10.0f;
         //This value is set by subtracting the total height of the player header and the goal header, change this if you want to adjust the position of the goals or other elements in the GUI
-        float y = top - 60.0f - TopBarController.CONTROLS_HEIGHT;
+        float y = top - 25.0f - TopBarController.CONTROLS_HEIGHT;
 
         int index = 0;
 
@@ -74,7 +86,7 @@ public class GoalController {
             //Necessary to check whether the goals are complete as completed goals are not removed from the player's list of goals, without this check complete goals would also be displayed.
             if (!goal.getComplete()) {
 
-                y -= 40;
+                y -= 50;
                 TextButton button = new TextButton(
                         goal.baseGoalString() + "\n" + goal.bonusString(), context.getSkin());
                 button.getLabel().setAlignment(Align.left);
@@ -99,13 +111,17 @@ public class GoalController {
         context.getStage().addActor(goalButtons);
     }
 
-    private String playerHeader() {
+    private String playerName() {
+        //This method is used to draw the current player's name
+        return "PLAYER " +
+                context.getGameLogic().getPlayerManager().getCurrentPlayer().getPlayerNumber();
+    }
+    
+    private String playerScore() {
         //This method is used to draw the current player's name and their score
         //It was necessary to apply a decimal format to the score as it is stored a double which by default is "0.0", however that is not intuitive for scoring as it should only be integer values.
         DecimalFormat integer = new DecimalFormat("0");
-        return "Player " +
-                context.getGameLogic().getPlayerManager().getCurrentPlayer().getPlayerNumber() +
-                ": " + integer.format(
+        return integer.format(
                 context.getGameLogic().getPlayerManager().getCurrentPlayer().getScore());
     }
 }

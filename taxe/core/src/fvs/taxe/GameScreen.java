@@ -26,6 +26,7 @@ public class GameScreen extends ScreenAdapter {
     private static TaxeGame game;
     private Stage stage;
     private Texture mapTexture;
+    private Texture sidebarTexture;
     private Game gameLogic;
     private Skin skin;
     private Map map;
@@ -57,6 +58,9 @@ public class GameScreen extends ScreenAdapter {
         //Draw background
         mapTexture = new Texture(Gdx.files.internal("gamemap.png"));
         map = gameLogic.getMap();
+        
+        // Draw sidebar
+        sidebarTexture = new Texture(Gdx.files.internal("Sidebar.png"));
 
         tooltip = new Tooltip(skin);
         stage.addActor(tooltip);
@@ -111,7 +115,10 @@ public class GameScreen extends ScreenAdapter {
         game.batch.begin();
 
         //Draws the map background
-        game.batch.draw(mapTexture, 0, 0);
+        game.batch.draw(mapTexture, 290, 0);
+        
+        //Draws sidebar
+        game.batch.draw(sidebarTexture, 0, 0);
         
         game.batch.end();
 
@@ -147,12 +154,12 @@ public class GameScreen extends ScreenAdapter {
         stage.act(Gdx.graphics.getDeltaTime());
 
         stage.draw();
-
+        
         game.batch.begin();
-        //If statement checks whether the turn is above 30, if it is then display 30 anyway
-        game.fontSmall.draw(game.batch, "Turn " + ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + "/" + gameLogic.TOTAL_TURNS, (float) TaxeGame.WIDTH - 90.0f, 20.0f);
+        game.fontTinyLight.draw(game.batch, "Turn", 123, 132);
+        game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 120.0f, 105.0f);
         game.batch.end();
-
+        
         resourceController.drawHeaderText();
         goalController.drawHeaderText();
     }
