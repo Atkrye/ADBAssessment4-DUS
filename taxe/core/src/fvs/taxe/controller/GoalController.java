@@ -1,13 +1,13 @@
 package fvs.taxe.controller;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
 import fvs.taxe.TaxeGame;
 import fvs.taxe.clickListener.GoalClickListener;
-import gameLogic.Game;
 import gameLogic.player.Player;
 import gameLogic.listeners.PlayerChangedListener;
 import gameLogic.player.PlayerManager;
@@ -38,23 +38,40 @@ public class GoalController {
         //This method draws the header for the goals, this is called at the beginning of every turn
         TaxeGame game = context.getTaxeGame();
         float top = (float) TaxeGame.HEIGHT;
-        float x = 28.0f;
         float y = top - 530.0f - TopBarController.CONTROLS_HEIGHT;
         
         // Draw score labels
         game.batch.begin();
         
-        game.fontTinyBold.setColor(Color.WHITE);
-        game.fontTinyBold.draw(game.batch, playerName(), x, y);
-        
-        game.fontLight.setColor(Color.WHITE);
-        game.fontLight.draw(game.batch, playerScore(), x, y+50);
+        // Draw left player score labels
+        TextBounds playerNameBounds = game.fontTinyBold.getBounds(playerName());
+        TextBounds playerScoreBounds = game.fontLight.getBounds(playerScore());
         
         game.fontTinyBold.setColor(Color.WHITE);
-        game.fontTinyBold.draw(game.batch, playerName(), x+170, y);
+        game.fontTinyBold.draw(game.batch, playerName(), 60 - playerNameBounds.width/2, y);
         
         game.fontLight.setColor(Color.WHITE);
-        game.fontLight.draw(game.batch, playerScore(), x+170, y+50);
+        game.fontLight.draw(game.batch, playerScore(), 60 - playerScoreBounds.width/2, y+50);
+        //----------------
+        
+        // Draw right player score labels
+        game.fontTinyBold.setColor(Color.WHITE);
+        game.fontTinyBold.draw(game.batch, playerName(), 228 - playerNameBounds.width/2, y);
+        
+        game.fontLight.setColor(Color.WHITE);
+        game.fontLight.draw(game.batch, playerScore(), 228 - playerScoreBounds.width/2, y+50);
+        //----------------
+        
+        // Draw player turn label at top
+        TextBounds lightBounds = game.fontSmallLight.getBounds("Your Turn, ");
+        TextBounds boldBounds = game.fontSmallBold.getBounds(playerName());
+        
+        game.fontSmallLight.setColor(Color.WHITE);
+        game.fontSmallLight.draw(game.batch, "Your Turn, ", (290/2) - (lightBounds.width + boldBounds.width)/2, (top - (75/2) + (lightBounds.height/2)));
+        
+        game.fontSmallBold.setColor(Color.WHITE);
+        game.fontSmallBold.draw(game.batch, playerName(), (290/2) - (lightBounds.width + boldBounds.width)/2 + lightBounds.width, (top - (75/2) + (lightBounds.height/2)));
+        //---------------
         
         game.batch.end();
     }
@@ -93,8 +110,8 @@ public class GoalController {
                 //The goal buttons are scaled so that they do not overlap nodes on the map, this was found to be necessary after changing the way goals were displayed
                 float scaleFactor = 0.8f;
                 button.getLabel().setFontScale(scaleFactor, scaleFactor);
-                button.setWidth(scaleFactor * button.getWidth());
                 button.setHeight(scaleFactor * button.getHeight());
+                button.setWidth(scaleFactor * button.getWidth());
 
                 //Adds the listener to the button so that it will inform the correct parts of the system
                 GoalClickListener listener = new GoalClickListener(context, goal);

@@ -7,6 +7,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -155,9 +156,18 @@ public class GameScreen extends ScreenAdapter {
 
         stage.draw();
         
+        // Bounds for turn text 'Turn'
+        TextBounds lightBounds = game.fontTinyLight.getBounds("Turn");
+        // Bounds for turn text '1/30'
+        TextBounds boldBounds = game.fontTinyBold.getBounds(((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS);
+        
         game.batch.begin();
-        game.fontTinyLight.draw(game.batch, "Turn", 123, 132);
-        game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 120.0f, 105.0f);
+        
+        // Draw 'Turn'
+        game.fontTinyLight.draw(game.batch, "Turn", 290/2 - (lightBounds.width/2), 132);
+        
+        // Draw turn number i.e '1/30'
+        game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 290/2 - (boldBounds.width/2), 105.0f);
         game.batch.end();
         
         resourceController.drawHeaderText();

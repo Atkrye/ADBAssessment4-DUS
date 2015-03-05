@@ -68,8 +68,8 @@ public class TaxeGame extends Game {
         parameterLight.size = 50;
         fontLight = generatorLight.generateFont(parameterLight);
 
-        //font size 30pt
-        parameterLight.size = 30;
+        //font size 20pt
+        parameterLight.size = 20;
         fontSmallLight = generatorLight.generateFont(parameterLight);
 
 		//font size 15pt
@@ -89,8 +89,8 @@ public class TaxeGame extends Game {
         parameterBold.size = 50;
         fontBold = generatorBold.generateFont(parameterBold);
 
-        //font size 30pt
-        parameterBold.size = 30;
+        //font size 20pt
+        parameterBold.size = 20;
         fontSmallBold = generatorBold.generateFont(parameterBold);
 
 		//font size 15pt
