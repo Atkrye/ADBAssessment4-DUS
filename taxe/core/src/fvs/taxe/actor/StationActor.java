@@ -8,8 +8,8 @@ import gameLogic.map.IPositionable;
 import gameLogic.map.Station;
 
 public class StationActor extends Image {
-    private static int width = 20;
-    private static int height = 20;
+    public static int width = 20;
+    public static int height = 20;
     private Rectangle bounds;
     private static Station station;
 

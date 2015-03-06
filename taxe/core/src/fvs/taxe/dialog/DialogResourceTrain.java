@@ -40,7 +40,7 @@ public class DialogResourceTrain extends Dialog {
 			button("Change route", "CHANGE_ROUTE");
 
 			//Generate button to view the route
-			button("View Route", "VIEWROUTE");
+			button("View Route", "VIEW_ROUTE");
 		}
 
 		button("Drop", "DROP");
@@ -83,7 +83,7 @@ public class DialogResourceTrain extends Dialog {
 			clicked(Button.TRAIN_PLACE);
 		} else if (obj == "ROUTE") {
 			clicked(Button.TRAIN_ROUTE);
-		} else if (obj == "VIEWROUTE") {
+		} else if (obj == "VIEW_ROUTE") {
 			clicked(Button.VIEW_ROUTE);
 		} else if (obj == "CHANGE_ROUTE") {
 			clicked(Button.TRAIN_CHANGE_ROUTE);

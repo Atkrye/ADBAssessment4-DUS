@@ -178,8 +178,8 @@ public class TopBarController {
 			@Override
             public void clicked(InputEvent event, float x, float y) {
                 //This sets the turn to be over in the backend
-				if (context.getGameLogic().getState() != GameState.CREATING_CONNECTIION){
-					context.getGameLogic().setState(GameState.CREATING_CONNECTIION);
+				if (context.getGameLogic().getState() != GameState.CREATING_CONNECTION){
+					context.getGameLogic().setState(GameState.CREATING_CONNECTION);
 					createRouteButton.setText("Cancel");
 				} else {
 					context.getGameLogic().setState(GameState.NORMAL);

@@ -1,6 +1,8 @@
 package fvs.taxe.controller;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
+import fvs.taxe.TaxeGame;
+import fvs.taxe.actor.StationActor;
 import fvs.taxe.actor.TrainActor;
 import fvs.taxe.clickListener.StationClickListener;
 import gameLogic.GameState;
@@ -17,22 +19,21 @@ import java.util.ArrayList;
 import Util.Tuple;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Action;
 
 public class ConnectionController {
 	private static ArrayList<ConnectionChangedListener> listeners = new ArrayList<ConnectionChangedListener>();
 	private Context context;
 	private ArrayList<Tuple<Train,Connection>> connections;	// pairs of station that have not yet been created 
-	
+
 	// when currently selecting a connection
 	private Train train;
 	private Station firstStation;
 	private Station secondStation;
 	// class used for creating connections when in creating_connection mode mode
 	private double angle;
-	
 
 	public ConnectionController(final Context context) {
 		this.context = context;
@@ -40,21 +41,15 @@ public class ConnectionController {
 		StationController.subscribeStationClick(new StationClickListener() {
 			@Override
 			public void clicked(Station station) {
-				if (context.getGameLogic().getState() == GameState.CREATING_CONNECTIION) {
+				if (context.getGameLogic().getState() == GameState.CREATING_CONNECTION) {
 					System.out.println("station 2 clicked");
 					if (station != firstStation){
-						secondStation = station;
-						Connection connection = createConnection();
-						/*connectionAdded();
-						
-						
-						trains.getActor().remove();
-						trains.getPlayer().removeResource(trains);
-						*/
-						
-						setCreatingRoute(train, connection);
-
-						context.getGameLogic().setState(GameState.NORMAL);
+						if (!context.getGameLogic().getMap().doesConnectionExist(firstStation.getName(), station.getName())) {
+							secondStation = station;
+							Connection connection = createConnection();
+							setCreatingRoute(train, connection);
+							context.getGameLogic().setState(GameState.NORMAL);
+						} 
 					}
 				}
 			}
@@ -63,7 +58,7 @@ public class ConnectionController {
 		context.getGameLogic().subscribeStateChanged(new GameStateListener() {
 			@Override
 			public void changed(GameState state) {
-				if (state != GameState.CREATING_CONNECTIION){
+				if (state != GameState.CREATING_CONNECTION){
 					firstStation = null;
 					secondStation = null;
 					train = null;
@@ -73,57 +68,80 @@ public class ConnectionController {
 	}
 
 	protected void setCreatingRoute(Train train, Connection connection) {
-		
 		train.setPosition(new Position(-1, -1));
 		this.angle = getAngle(connection);
-		System.out.println(angle);
-		/*IPositionable current = trains.getPosition();
-		if (trains.getPosition().getX() == -1) {
-			current = new Position((int) trains.getActor().getBounds().getX(), (int) trains.getActor().getBounds().getY());
-		}
-		trains.getActor().clearActions();
-		
-		IPositionable next = secondStation.getLocation();
-		//This calculates how long it will take for the trains to travel to the next station on the route
-		float duration = getDistance(current, next) / trains.getSpeed();
+	}
 
-		//This adds the action to the actor which makes it move from point A to point B in a certain amount of time, calculated using duration and the two station positions.
-		trains.getActor().addAction(moveTo(next.getX() - TrainActor.width / 2, next.getY() - TrainActor.height / 2, duration));
-		//trains.getActor().addAction(action);
-*/	}
-	
 	private double getAngle(Connection connection) {
 		Position p1 = (Position) connection.getStation1().getLocation();
 		Position p2 = (Position) connection.getStation2().getLocation();
 		return Position.getAngle(p1,p2);
 	}
 
-	public void drawCreatingConnection() {
+	public void drawMouse() {
+		ShapeRenderer shapeRenderer = context.getTaxeGame().shapeRenderer;
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(Color.BLACK);
+		context.getTaxeGame();
+		shapeRenderer.rectLine(firstStation.getLocation().getX(), firstStation.getLocation().getY(), 
+				Gdx.input.getX(), TaxeGame.HEIGHT- Gdx.input.getY(), 5);
+		shapeRenderer.end();
+	}
+	
+	public void drawCreatingConnection(float delta) {
+		ArrayList<Tuple<Train, Connection>> removed = new ArrayList<Tuple<Train, Connection>>();
 		for (Tuple<Train,Connection> pair: connections){
-			Train train1 = pair.getFirst();
-			TrainActor train = train1.getActor();
-			IPositionable next = pair.getSecond().getStation2().getLocation();
-			/*if (train.getX() == next.getX() && train.getY() == next.getY()){
-				trainComplete(pair);
-				*/
-			if (train.getBounds().overlaps(pair.getSecond().getStation2().getActor().getBounds())){
-				trainComplete(pair);
-			} else {
-				
-				train.addAction(moveBy((float) (train1.getSpeed()*Math.cos(angle)), (float) (train1.getSpeed()*Math.sin(angle)), 2f));
-				
+			Train train = pair.getFirst();
+			StationActor next = pair.getSecond().getStation2().getActor();
+			if (context.getGameLogic().getState() == GameState.ANIMATING) {
+				if (reachedLocation(train.getActor(), next)){
+					trainComplete(pair);
+					removed.add(pair);
+				} else {
+					float t = delta;
+					train.getActor().addAction(moveBy((float) (train.getSpeed()*Math.cos(angle))*t, (float) (train.getSpeed()*Math.sin(angle))*t, t));
+				}
 			}
-			
+			ShapeRenderer shapeRenderer = context.getTaxeGame().shapeRenderer;
+			StationActor first = pair.getSecond().getStation1().getActor();
+			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+			shapeRenderer.setColor(Color.BLACK);
+			shapeRenderer.rectLine(train.getActor().getX()+TrainActor.width/2, train.getActor().getY()+ TrainActor.height/2, 
+					first.getX() + StationActor.width/2, first.getY() + StationActor.height/2, 5);
+			shapeRenderer.end();
+		}
+		
+		for (Tuple<Train, Connection> pair : removed){
+			connections.remove(pair);
 		}
 	}
 
-	private void trainComplete(Tuple<Train, Connection> pair) {
+	private boolean reachedLocation(TrainActor train, StationActor next) {
+		float trainx =train.getX()+ TrainActor.width/2;
+		float nextx = next.getX() + StationActor.width/2;
+		float trainy = train.getY() + TrainActor.height/2;
+		float nexty = next.getY() + StationActor.height/2;
+
+		if (Math.abs(trainx-nextx)<1 && Math.abs(trainy- nexty)<1){
+			return true;
+		}
+		return false;
+	}
+
+	private void trainComplete(final Tuple<Train, Connection> pair) {
 		connectionAdded(pair.getSecond());
-		
-		
+
+		/*pair.getFirst().getActor().addAction(sequence(fadeOut(1f), Actions.hide() , run(new Runnable() {
+			public void run() {
+				System.out.println("remove");
+				pair.getFirst().getActor().remove();
+				pair.getFirst().getPlayer().removeResource(pair.getFirst());
+				connections.remove(pair);
+			}
+		})));*/
+
 		pair.getFirst().getActor().remove();
 		pair.getFirst().getPlayer().removeResource(pair.getFirst());
-		
 		//connections.remove(pair);
 	}
 
@@ -131,13 +149,12 @@ public class ConnectionController {
 		//This method returns the absolute distance from point A to point B in pixels
 		return Vector2.dst(a.getX(), a.getY(), b.getX(), b.getY());
 	}
-	
+
 	public void begin(Train train) {
-		System.out.println("begin called");
-		context.getGameLogic().setState(GameState.CREATING_CONNECTIION);
+		context.getGameLogic().setState(GameState.CREATING_CONNECTION);
 		firstStation = train.getLastStation();
 		this.train = train;
-		
+
 		//This makes all trains except the currently routed trains to be invisible.
 		//This makes the screen less cluttered while routing and prevents overlapping trainActors from stopping the user being able to click stations.
 		TrainController trainController = new TrainController(context);

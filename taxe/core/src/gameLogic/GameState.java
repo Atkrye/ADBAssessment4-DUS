@@ -8,5 +8,5 @@ public enum GameState {
     ROUTING,
     ANIMATING,
     WAITING, 
-    CREATING_CONNECTIION
+    CREATING_CONNECTION
 }
