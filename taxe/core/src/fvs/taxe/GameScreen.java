@@ -93,6 +93,7 @@ public class GameScreen extends ScreenAdapter {
 				if (context.getGameLogic().getPlayerManager().getTurnNumber()!=1) {
 					gameLogic.setState(GameState.ANIMATING);
 					topBarController.displayFlashMessage("Time is passing...", Color.GREEN, Color.BLACK, 2f);
+					connectionController.drawCreatingConnection();
 				}
 			}
 		});
@@ -155,6 +156,7 @@ public class GameScreen extends ScreenAdapter {
 				timeAnimated = 0;
 			}
 		}
+		
 
 		//Causes all the actors to perform their actions (i.e trains to move)
 		stage.act(Gdx.graphics.getDeltaTime());
