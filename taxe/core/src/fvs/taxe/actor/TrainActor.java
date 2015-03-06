@@ -60,19 +60,19 @@ public class TrainActor extends Image {
             updateBounds();
             updateFacingDirection();
 
-            final Train collision = collided();
-            if (collision != null) {
+            final Train collidedTrain = collided();
+            if (collidedTrain != null) {
             	if(Game.trongEnabled)
             	{
             		//Make a new trong game and add it to the stack. Determine which player is player 1 and ensure that that train is passed as the first train
             		TrongScreen trongGame;
-            		if(this.train.getPlayer().getPlayerNumber() < collision.getPlayer().getPlayerNumber())
+            		if(this.train.getPlayer().getPlayerNumber() < collidedTrain.getPlayer().getPlayerNumber())
             		{
-            			trongGame = GameScreen.makeTrongGame(this.train, collision);
+            			trongGame = GameScreen.makeTrongGame(this.train, collidedTrain);
             		}
             		else
             		{
-            			trongGame = GameScreen.makeTrongGame(this.train, collision);
+            			trongGame = GameScreen.makeTrongGame(this.train, collidedTrain);
             		}
             		if(GameScreen.instance.trongScreen != null)
             		{
@@ -89,8 +89,8 @@ public class TrainActor extends Image {
             		//If there is a collision then the user is informed, the two trains destroyed and the connection that they collided on is blocked for 5 turns.
             		context.getTopBarController().displayFlashMessage("Two trains collided.  They were both destroyed.", Color.RED, 2);
             		//Game.getInstance().getMap().blockConnection(train.getLastStation(), train.getNextStation(), 5);
-            		collision.getActor().remove();
-            		collision.getPlayer().removeResource(collision);
+            		collidedTrain.getActor().remove();
+            		collidedTrain.getPlayer().removeResource(collidedTrain);
             		train.getPlayer().removeResource(train);
             		this.remove();
             	}

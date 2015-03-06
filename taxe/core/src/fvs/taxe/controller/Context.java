@@ -14,6 +14,7 @@ public class Context {
     private Game gameLogic;
     private RouteController routeController;
     private TopBarController topBarController;
+	private ConnectionController connectionController;
 
     public Context(Stage stage, Skin skin, TaxeGame taxeGame, Game gameLogic) {
         this.stage = stage;
@@ -55,4 +56,11 @@ public class Context {
         this.topBarController = topBarController;
     }
 
+	public ConnectionController getConnectionController() {
+		return connectionController;
+	}
+	
+	public void setConnectionController(ConnectionController connectionController) {
+		this.connectionController = connectionController;
+	}
 }

@@ -81,6 +81,7 @@ public class GameScreen extends ScreenAdapter {
 		connectionController = new ConnectionController(context);
 		context.setRouteController(routeController);
 		context.setTopBarController(topBarController);
+		context.setConnectionController(connectionController);
 
 		rumble = obstacleController.getRumble();
 

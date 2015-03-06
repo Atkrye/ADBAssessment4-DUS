@@ -1,5 +1,6 @@
 package gameLogic;
 
+import fvs.taxe.controller.ConnectionController;
 import gameLogic.listeners.GameStateListener;
 import gameLogic.listeners.TurnListener;
 import gameLogic.goal.GoalManager;
@@ -170,6 +171,5 @@ public class Game {
 				}
 			}
 		}
-		
 	}
 }

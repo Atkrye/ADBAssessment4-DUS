@@ -8,7 +8,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 import fvs.taxe.Button;
+import fvs.taxe.GameScreen;
 import fvs.taxe.actor.TrainActor;
+import fvs.taxe.controller.ConnectionController;
 import fvs.taxe.controller.Context;
 import fvs.taxe.controller.StationController;
 import fvs.taxe.controller.TrainController;
@@ -168,6 +170,11 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 		case TRAIN_CHANGE_ROUTE:
 			//Begins the change route feature when TRAIN_CHANGE_ROUTE is pressed by the player
 			context.getRouteController().begin(train);
+			break;
+			
+		case TRAIN_CREATE_CONNECTION:
+			// Begin creating the route
+			context.getConnectionController().begin(train);
 			break;
 		}
 	}

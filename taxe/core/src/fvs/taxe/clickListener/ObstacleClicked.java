@@ -1,16 +1,14 @@
 package fvs.taxe.clickListener;
 
+import fvs.taxe.controller.Context;
+import gameLogic.Game;
+import gameLogic.GameState;
+import gameLogic.obstacle.Obstacle;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
-import fvs.taxe.controller.Context;
-import fvs.taxe.dialog.DialogResourceObstacle;
-import gameLogic.Game;
-import gameLogic.GameState;
-import gameLogic.obstacle.Obstacle;
-import gameLogic.player.Player;
 
 //Responsible for checking whether the Obstacle is clicked 
 // DOESNT WORK YET, MAY BE HELPFUL
@@ -48,8 +46,6 @@ public class ObstacleClicked extends ClickListener {
             displayingMessage = true;
             if (Game.getInstance().getState() == GameState.NORMAL) {
                 context.getTopBarController().displayMessage("Place an obstacle on a connection on the map", Color.BLACK);
-
-
             }
         }
     }

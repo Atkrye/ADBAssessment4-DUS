@@ -1,16 +1,17 @@
 package fvs.taxe.controller;
 
+import fvs.taxe.TaxeGame;
+import fvs.taxe.clickListener.SkipClicked;
+import fvs.taxe.clickListener.TrainClicked;
+import gameLogic.listeners.PlayerChangedListener;
+import gameLogic.player.Player;
+import gameLogic.resource.Resource;
+import gameLogic.resource.Skip;
+import gameLogic.resource.Train;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import fvs.taxe.TaxeGame;
-import fvs.taxe.clickListener.EngineerClicked;
-import fvs.taxe.clickListener.ObstacleClicked;
-import fvs.taxe.clickListener.SkipClicked;
-import fvs.taxe.clickListener.TrainClicked;
-import gameLogic.player.Player;
-import gameLogic.listeners.PlayerChangedListener;
-import gameLogic.resource.*;
 
 public class ResourceController {
     private Context context;
