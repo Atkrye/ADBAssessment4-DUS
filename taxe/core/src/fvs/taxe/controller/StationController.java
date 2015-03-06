@@ -1,40 +1,35 @@
 package fvs.taxe.controller;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import fvs.taxe.clickListener.StationClickListener;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import fvs.taxe.TaxeGame;
 import fvs.taxe.Tooltip;
 import fvs.taxe.actor.CollisionStationActor;
 import fvs.taxe.actor.ConnectionActor;
 import fvs.taxe.actor.StationActor;
-import fvs.taxe.dialog.DialogStationMultitrain;
+import fvs.taxe.clickListener.StationClickListener;
 import fvs.taxe.clickListener.TrainClicked;
+import fvs.taxe.dialog.DialogStationMultitrain;
 import gameLogic.Game;
 import gameLogic.GameState;
-import gameLogic.player.Player;
 import gameLogic.goal.Goal;
 import gameLogic.listeners.ConnectionChangedListener;
 import gameLogic.map.CollisionStation;
 import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Station;
+import gameLogic.player.Player;
 import gameLogic.resource.Resource;
 import gameLogic.resource.Train;
 
@@ -49,22 +44,15 @@ public class StationController {
 	and this list implementation supports removing elements whilst iterating through it
 	 */
 	private static List<StationClickListener> stationClickListeners = new CopyOnWriteArrayList<StationClickListener>();
-	private Color translucentBlack = new Color(0, 0, 0, 0.8f);
 
 	private Group stationActors;
 	private Group connectionActors;
-	private static final Texture[] blockageTextures = new Texture[5];
 
 	public StationController(final Context context, Tooltip tooltip) {
 		StationController.context = context;
 		this.tooltip = tooltip;
-		for (int i = 0; i < 5; i++) {
-			blockageTextures[i] = new Texture(Gdx.files.internal("blockage" + (i + 1) + ".png"));
-		}
 		
 		ConnectionController.subscribeConnectionChanged(new ConnectionChangedListener() {
-			
-
 			@Override
 			public void removed(Connection connection) {
 				connection.getActor().remove();
@@ -162,8 +150,6 @@ public class StationController {
 		});
 
 		station.setActor(stationActor);
-
-		//context.getStage().addActor(stationActor);
 		return stationActor;
 	}
 
@@ -194,7 +180,6 @@ public class StationController {
 			}
 		});
 		return collisionStationActor;
-		//context.getStage().addActor(collisionStationActor);
 	}
 
 	public static Color[] colours = {Color.ORANGE, Color.PINK, Color.PURPLE};
@@ -278,8 +263,6 @@ public class StationController {
 		}
 	}
 
-	
-
 	public void addConnections(List<Connection> connections, final Color color) {
 		connectionActors = new Group();
 		for (Connection connection : connections) {
@@ -292,45 +275,11 @@ public class StationController {
 		context.getStage().addActor(connectionActors);
 	}
 	
-	/*public static void addConnection(Connection connection, final Color color) {
-		final IPositionable start = connection.getStation1().getLocation();
-		final IPositionable end = connection.getStation2().getLocation();
-		ConnectionActor connectionActor = new ConnectionActor(Color.GRAY, start, end, CONNECTION_LINE_WIDTH);
-		connection.setActor(connectionActor);
-		context.getStage().addActor(connectionActor);
-	}*/
-	
-	public void drawBlockedInfo(List<Connection> connections){
+	public void drawRoutingInfo(List<Connection> connections){
 		TaxeGame game = context.getTaxeGame();
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-		game.shapeRenderer.setColor(translucentBlack);
-
-		// draw an icon on connections that are blocked, showing how many turns remain until they
-		// become unblocked
-		// if the game is in routing mode, then all connections that aren't blocked have a
-		// translucent black circle drawn on their midpoint, to increase visibility of the white
-		// text that will be drawn on top showing the length of the connection
-		for (Connection connection : connections) {
-			IPositionable midpoint = connection.getMidpoint();
-			if (connection.isBlocked()) {
-				game.batch.begin();
-				game.shapeRenderer.circle(midpoint.getX(), midpoint.getY(), 10);
-				game.batch.draw(blockageTextures[connection.getTurnsBlocked() - 1],
-						midpoint.getX() - 10, midpoint.getY() - 10, 20, 20);
-				game.batch.end();
-			}
-		}
-		game.shapeRenderer.end();
-		Gdx.gl.glDisable(GL20.GL_BLEND);
-
-
 		// if the game is in routing mode, then the length of the connection is displayed
 		for (Connection connection : connections) {
-			if (connection.isBlocked()) {
-
-			} else if (Game.getInstance().getState() == GameState.ROUTING) {
+			 if (Game.getInstance().getState() == GameState.ROUTING) {
 				IPositionable midpoint = connection.getMidpoint();
 				game.batch.begin();
 				game.fontTiny.setColor(Color.BLACK);

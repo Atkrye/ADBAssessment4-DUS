@@ -79,7 +79,7 @@ public class RouteController {
 		//This is checked here as we do not wish to route the train from its position to (-1,-1), hence this is only done when the train is at a station
 		if (train.getPosition().getX() != -1) {
 			positions.add(train.getPosition());
-		}else{
+		} else{
 			editingRoute = true;
 		}
 
@@ -279,8 +279,6 @@ public class RouteController {
 
 	public void viewRoute(Train train) {
 		//This method is used to draw the trains current route so that the user can see where their trains are going
-
-
 		routingButtons.clear();
 
 		train.getRoute();

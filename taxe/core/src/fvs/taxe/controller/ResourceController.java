@@ -66,17 +66,6 @@ public class ResourceController {
                     y -= 30;
                 }
 
-            } else if (resource instanceof Obstacle) {
-                //Creates a clickListener for the button and adds it to the list of buttons
-                Obstacle obstacle = (Obstacle) resource;
-                ObstacleClicked listener = new ObstacleClicked(context, obstacle);
-                TextButton button = new TextButton("Obstacle", context.getSkin());
-                button.setPosition(x, y);
-                button.addListener(listener);
-                resourceButtons.addActor(button);
-
-                y -= 30;
-
             } else if (resource instanceof Skip) {
                 //Creates a clickListener for the button and adds it to the list of buttons
                 Skip skip = (Skip) resource;
@@ -87,19 +76,7 @@ public class ResourceController {
                 resourceButtons.addActor(button);
 
                 y -= 30;
-
-            } else if (resource instanceof Engineer) {
-                //Creates a clickListener for the button and adds it to the list of buttons
-                Engineer engineer = (Engineer) resource;
-                EngineerClicked listener = new EngineerClicked(context, engineer);
-                TextButton button = new TextButton("Engineer", context.getSkin());
-                button.setPosition(x, y);
-                button.addListener(listener);
-                resourceButtons.addActor(button);
-
-                y -= 30;
-            }
-
+            } 
         }
         //Adds all generated buttons to the stage
         context.getStage().addActor(resourceButtons);
