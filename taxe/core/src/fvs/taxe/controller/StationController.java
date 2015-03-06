@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -29,6 +30,7 @@ import gameLogic.Game;
 import gameLogic.GameState;
 import gameLogic.player.Player;
 import gameLogic.goal.Goal;
+import gameLogic.listeners.ConnectionChangedListener;
 import gameLogic.map.CollisionStation;
 import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
@@ -39,7 +41,7 @@ import gameLogic.resource.Train;
 public class StationController {
 	public final static int CONNECTION_LINE_WIDTH = 5;
 
-	private Context context;
+	private static Context context;
 	private Tooltip tooltip;
 	/*
 	have to use CopyOnWriteArrayList because when we iterate through our listeners and execute
@@ -48,14 +50,35 @@ public class StationController {
 	 */
 	private static List<StationClickListener> stationClickListeners = new CopyOnWriteArrayList<StationClickListener>();
 	private Color translucentBlack = new Color(0, 0, 0, 0.8f);
+
+	private Group stationActors;
+	private Group connectionActors;
 	private static final Texture[] blockageTextures = new Texture[5];
 
-	public StationController(Context context, Tooltip tooltip) {
-		this.context = context;
+	public StationController(final Context context, Tooltip tooltip) {
+		StationController.context = context;
 		this.tooltip = tooltip;
 		for (int i = 0; i < 5; i++) {
 			blockageTextures[i] = new Texture(Gdx.files.internal("blockage" + (i + 1) + ".png"));
 		}
+		
+		ConnectionController.subscribeConnectionChanged(new ConnectionChangedListener() {
+			
+
+			@Override
+			public void removed(Connection connection) {
+				connection.getActor().remove();
+			}
+			
+			@Override
+			public void added(Connection connection) {
+				final IPositionable start = connection.getStation1().getLocation();
+				final IPositionable end = connection.getStation2().getLocation();
+				ConnectionActor connectionActor = new ConnectionActor(Color.GRAY, start, end, CONNECTION_LINE_WIDTH);
+				connection.setActor(connectionActor);
+				connectionActors.addActor(connectionActor);
+			}
+		});
 	}
 
 	public static void subscribeStationClick(StationClickListener listener) {
@@ -72,8 +95,24 @@ public class StationController {
 		}
 	}
 
+	public void renderStations() {
+		//Calls the relevant rendering methods from within the controller class based on what type of station needs to be rendered
+		List<Station> stations = context.getGameLogic().getMap().getStations();
+		
+		stationActors = new Group();
+		//Iterates through every station and renders them on the GUI
+		for (Station station : stations) {
+			if (station instanceof CollisionStation) {
+				stationActors.addActor(renderCollisionStation(station));
+			} else {
+				stationActors.addActor(renderStation(station));
+			}
+		}
+		renderStationGoalHighlights();
+		context.getStage().addActor(stationActors);
+	}
 
-	private void renderStation(final Station station) {
+	private StationActor renderStation(final Station station) {
 		//This method renders the station passed to the method
 		final StationActor stationActor = new StationActor(station.getLocation(), station);
 
@@ -124,10 +163,11 @@ public class StationController {
 
 		station.setActor(stationActor);
 
-		context.getStage().addActor(stationActor);
+		//context.getStage().addActor(stationActor);
+		return stationActor;
 	}
 
-	private void renderCollisionStation(final Station collisionStation) {
+	private CollisionStationActor renderCollisionStation(final Station collisionStation) {
 		//Carries out the same code but this time as a collision station
 		final CollisionStationActor collisionStationActor = new CollisionStationActor(
 				collisionStation.getLocation());
@@ -153,8 +193,8 @@ public class StationController {
 				tooltip.hide();
 			}
 		});
-
-		context.getStage().addActor(collisionStationActor);
+		return collisionStationActor;
+		//context.getStage().addActor(collisionStationActor);
 	}
 
 	public static Color[] colours = {Color.ORANGE, Color.PINK, Color.PURPLE};
@@ -238,30 +278,27 @@ public class StationController {
 		}
 	}
 
-	public void renderStations() {
-		//Calls the relevant rendering methods from within the controller class based on what type of station needs to be rendered
-		List<Station> stations = context.getGameLogic().getMap().getStations();
+	
 
-		//Iterates through every station and renders them on the GUI
-		for (Station station : stations) {
-			if (station instanceof CollisionStation) {
-				renderCollisionStation(station);
-			} else {
-				renderStation(station);
-			}
-		}
-		renderStationGoalHighlights();
-	}
-
-	public void drawConnections(List<Connection> connections, final Color color) {
+	public void addConnections(List<Connection> connections, final Color color) {
+		connectionActors = new Group();
 		for (Connection connection : connections) {
 			final IPositionable start = connection.getStation1().getLocation();
 			final IPositionable end = connection.getStation2().getLocation();
 			ConnectionActor connectionActor = new ConnectionActor(Color.GRAY, start, end, CONNECTION_LINE_WIDTH);
 			connection.setActor(connectionActor);
-			context.getStage().addActor(connectionActor);
+			connectionActors.addActor(connectionActor);
 		}
+		context.getStage().addActor(connectionActors);
 	}
+	
+	/*public static void addConnection(Connection connection, final Color color) {
+		final IPositionable start = connection.getStation1().getLocation();
+		final IPositionable end = connection.getStation2().getLocation();
+		ConnectionActor connectionActor = new ConnectionActor(Color.GRAY, start, end, CONNECTION_LINE_WIDTH);
+		connection.setActor(connectionActor);
+		context.getStage().addActor(connectionActor);
+	}*/
 	
 	public void drawBlockedInfo(List<Connection> connections){
 		TaxeGame game = context.getTaxeGame();

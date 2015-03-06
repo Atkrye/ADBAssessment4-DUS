@@ -1,7 +1,10 @@
 package gameLogic.map;
 
 import com.badlogic.gdx.math.Vector2;
+
+import fvs.taxe.controller.ConnectionController;
 import gameLogic.Game;
+import gameLogic.listeners.ConnectionChangedListener;
 import gameLogic.player.Player;
 import gameLogic.dijkstra.Dijkstra;
 import gameLogic.resource.Train;
@@ -26,6 +29,21 @@ public class Map {
 
         //Analyses the graph using Dijkstra's algorithm
         dijkstra = new Dijkstra(this);
+        
+        ConnectionController.subscribeConnectionChanged(new ConnectionChangedListener() {
+			
+			@Override
+			public void removed(Connection connection) {
+				connections.remove(connection);
+				dijkstra = new Dijkstra(Map.this);
+			}
+			
+			@Override
+			public void added(Connection connection) {
+				connections.add(connection);
+				dijkstra = new Dijkstra(Map.this);
+			}
+		});
     }
 
     public boolean doesConnectionExist(String stationName, String anotherStationName) {

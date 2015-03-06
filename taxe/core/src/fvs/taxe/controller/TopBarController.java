@@ -27,6 +27,8 @@ public class TopBarController {
 
 	private TopBarActor topBarBackground;
 
+	private TextButton createRouteButton;
+
     public TopBarController(Context context) {
         this.context = context;
         //This creates a listener that changes the bar colour based on the state that the game is in
@@ -168,5 +170,25 @@ public class TopBarController {
 
         context.getStage().addActor(endTurnButton);
     }
+
+	public void addCreateRouteButton() {
+		createRouteButton = new TextButton("Create Route", context.getSkin());
+		createRouteButton.setPosition(100, 100);
+		createRouteButton.addListener(new ClickListener() {
+			@Override
+            public void clicked(InputEvent event, float x, float y) {
+                //This sets the turn to be over in the backend
+				if (context.getGameLogic().getState() != GameState.CREATING_CONNECTIION){
+					context.getGameLogic().setState(GameState.CREATING_CONNECTIION);
+					createRouteButton.setText("Cancel");
+				} else {
+					context.getGameLogic().setState(GameState.NORMAL);
+					createRouteButton.setText("Create Route");
+				}
+            }
+        });
+		
+		context.getStage().addActor(createRouteButton);
+	}
     
 }

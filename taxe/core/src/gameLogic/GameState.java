@@ -7,5 +7,6 @@ public enum GameState {
     PLACING_RESOURCE,
     ROUTING,
     ANIMATING,
-    WAITING
+    WAITING, 
+    CREATING_CONNECTIION
 }

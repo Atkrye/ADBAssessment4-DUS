@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 
+
 import fvs.taxe.clickListener.StationClickListener;
 import fvs.taxe.controller.*;
 import fvs.taxe.dialog.DialogEndGame;
@@ -47,8 +48,11 @@ public class GameScreen extends ScreenAdapter {
 	private ObstacleController obstacleController;
 	private Rumble rumble;
 	public TrongScreen trongScreen = null;
+	private ConnectionController connectionController;
 
 	public GameScreen(TaxeGame game) {
+
+        instance = this;
 		GameScreen.game = game;
 		stage = new Stage();
 
@@ -74,6 +78,7 @@ public class GameScreen extends ScreenAdapter {
 		goalController = new GoalController(context);
 		routeController = new RouteController(context);
 		obstacleController = new ObstacleController(context);
+		connectionController = new ConnectionController(context);
 		context.setRouteController(routeController);
 		context.setTopBarController(topBarController);
 
@@ -176,7 +181,7 @@ public class GameScreen extends ScreenAdapter {
 		//Initially some of this functionality was in the draw() routine, but it was found that when the player clicked on a button a new one was rendered before the input could be handled
 		//This is why the header texts and the buttons are rendered separately, to prevent these issues from occuring
 		obstacleController.drawObstacles();
-		stationController.drawConnections(map.getConnections(), Color.GRAY);
+		stationController.addConnections(map.getConnections(), Color.GRAY);
 		stationController.renderStations();
 		obstacleController.drawObstacleEffects();
 		resourceController.drawPlayerResources(gameLogic.getPlayerManager().getCurrentPlayer());
@@ -184,6 +189,7 @@ public class GameScreen extends ScreenAdapter {
 		topBarController.drawLabels();
 		topBarController.addEndTurnButton();
 		goalController.showCurrentPlayerGoals();
+		topBarController.addCreateRouteButton();
 	}
 
 	@Override
