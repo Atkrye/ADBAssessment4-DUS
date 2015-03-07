@@ -70,6 +70,15 @@ public class TrainMoveController {
 						train.getActor().setRecentlyPaused(true);
 
 					}
+					
+					// check that the connection hasnt been destroyed
+					if (!context.getGameLogic().getMap().doesConnectionExist(station.getName(), nextStation.getName())) {
+						IPositionable position = station.getPosition();
+						train.getActor().setPosition(position.getX(), position.getY());
+						train.setFinalDestination(station);
+						train.getActor().addAction(afterAction());
+						train.getActor().setPaused(false);
+					}
 				} else {
 					//If the train is at its final destination then the train is set to unpaused so that it does not cause issues elsewhere in the program.
 					train.getActor().setPaused(false);

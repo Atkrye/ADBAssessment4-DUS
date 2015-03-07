@@ -29,7 +29,7 @@ public class DialogStationMultitrain extends Dialog {
             if (train.getFinalDestination() != null) {
                 destination = " to " + train.getFinalDestination().getName();
             }
-            button(train.getName() + destination + " (player " + train.getPlayer().getPlayerNumber() + ")", train);
+            button(train.getName() + destination + " (Player " + train.getPlayer().getPlayerNumber() + ")", train);
             getButtonTable().row();
         }
 
