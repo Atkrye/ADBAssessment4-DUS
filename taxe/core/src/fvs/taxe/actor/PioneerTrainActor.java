@@ -2,6 +2,7 @@ package fvs.taxe.actor;
 
 import fvs.taxe.controller.Context;
 import gameLogic.GameState;
+import gameLogic.map.CollisionStation;
 import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Position;
@@ -25,7 +26,7 @@ public class PioneerTrainActor extends TrainActor {
 	@Override
 	public void act(float delta) {
 		super.act(delta);
-		if (train.isCreating()) {
+		if (train.isCreating() && isVisible()) {
 			if (context.getGameLogic().getState() == GameState.ANIMATING) {
 				moveBy((float) (train.getSpeed()*Math.cos(angle))*delta, (float) (train.getSpeed()*Math.sin(angle))*delta);
 				
@@ -34,7 +35,10 @@ public class PioneerTrainActor extends TrainActor {
 				float nextx = position2.getX();
 				float trainy = getY() + height/2;
 				float nexty = position2.getY();
-				if (Math.abs(trainx-nextx)<1 && Math.abs(trainy- nexty)<1){
+				
+				System.out.println("nextx " + nextx + " , " + nexty);
+				System.out.println("trainx " + trainx + " , " + trainy);
+				if (Math.abs(trainx-nextx)<=2 && Math.abs(trainy- nexty)<=2){
 					context.getConnectionController().connectionAdded(connection);
 					train.creationCompleted();
 				}

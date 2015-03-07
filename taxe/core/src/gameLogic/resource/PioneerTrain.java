@@ -7,7 +7,7 @@ import gameLogic.map.Connection;
 public class PioneerTrain extends Train {
 
 	private Connection connection;	// connection that the train is creating
-	private boolean creating;
+	private boolean creating = false;
 	private PioneerTrainActor actor;
 	
 	public PioneerTrain() {

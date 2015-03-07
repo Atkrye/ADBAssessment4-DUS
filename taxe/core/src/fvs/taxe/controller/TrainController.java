@@ -70,7 +70,7 @@ public class TrainController {
 			trainActor.setVisible(false);
 			context.getStage().addActor(trainActor);
 
-		} if (train.getClass().equals(KamikazeTrain.class)){
+		} else if (train.getClass().equals(KamikazeTrain.class)){
 			trainActor = new KamikazeTrainActor((KamikazeTrain) train, context);
 			trainActor.addListener(new TrainClicked(context, train));
 
@@ -99,8 +99,21 @@ public class TrainController {
 							break;
 						}
 					}
+					/*if (resource.getClass().equals(PioneerTrain.class)){
+						// if a train is creating a route, its visibility doesnt get changed
+						if (!((PioneerTrain) resource).isCreating()) {
+							((Train) resource).getActor().setVisible(visible);
+						}
+					}*/
 					if (((Train) resource).getActor() != null && resource != train && !trainAtStation) {
-						((Train) resource).getActor().setVisible(visible);
+						if (resource.getClass().equals(PioneerTrain.class)){
+							// if a train is creating a route, its visibility doesnt get changed
+							if (!((PioneerTrain) resource).isCreating()) {
+								((Train) resource).getActor().setVisible(visible);
+							}
+						} else {
+							((Train) resource).getActor().setVisible(visible);
+						}
 					}
 				}
 			}

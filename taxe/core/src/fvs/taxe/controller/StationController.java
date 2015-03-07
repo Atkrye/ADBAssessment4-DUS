@@ -162,6 +162,28 @@ public class StationController {
 		collisionStationActor.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (Game.getInstance().getState() == GameState.NORMAL) {
+					ArrayList<Train> trains = new ArrayList<Train>();
+					for (Player player : context.getGameLogic().getPlayerManager().getAllPlayers()) {
+						for (Resource resource : player.getResources()) {
+							if (resource instanceof Train) {
+								if (((Train) resource).getPosition() == collisionStation.getPosition()) {
+									trains.add((Train) resource);
+								}
+							}
+						}
+					}
+					if (trains.size() == 1) {
+						//If there is only one train here it immediately simulates the train click
+						TrainClicked clicker = new TrainClicked(context, trains.get(0));
+						clicker.clicked(null, -1, 0);
+					} else if (trains.size() > 1) {
+						//If there is more than one of a particular train then the multitrain dialog is called using the list of trains
+						DialogStationMultitrain dia = new DialogStationMultitrain(trains,
+								context.getSkin(), context);
+						dia.show(context.getStage());
+					}
+				}
 				stationClicked(collisionStation);
 			}
 

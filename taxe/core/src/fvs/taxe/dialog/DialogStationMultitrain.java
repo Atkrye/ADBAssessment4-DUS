@@ -46,13 +46,13 @@ public class DialogStationMultitrain extends Dialog {
     @Override
     public void hide() {
         //Hides the dialog
-    	context.getGameLogic().setState(GameState.NORMAL);
         hide(null);
     }
 
     @Override
     protected void result(Object obj) {
         if (obj == "CANCEL") {
+        	context.getGameLogic().setState(GameState.NORMAL);
             //If the user clicks cancel then it deletes the dialog
             this.remove();
         } else {

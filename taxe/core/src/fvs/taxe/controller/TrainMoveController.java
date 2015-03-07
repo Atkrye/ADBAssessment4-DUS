@@ -9,6 +9,8 @@ import gameLogic.resource.Train;
 
 import java.util.ArrayList;
 
+import Util.Tuple;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -67,14 +69,12 @@ public class TrainMoveController {
 					if (train.getActor().isPaused()) {
 						train.getActor().setPaused(false);
 						train.getActor().setRecentlyPaused(true);
-
 					}
 					
 					// check that the connection hasnt been destroyed
 					if (!context.getGameLogic().getMap().doesConnectionExist(station.getName(), nextStation.getName())) {
-						IPositionable position = station.getPosition();
-						train.getActor().setPosition(position.getX(), position.getY());
 						train.setFinalDestination(station);
+						train.getActor().clearActions();
 						train.getActor().addAction(afterAction());
 						train.getActor().setPaused(false);
 					}
@@ -95,7 +95,11 @@ public class TrainMoveController {
 				for (String message : completedGoals) {
 					context.getTopBarController().displayFlashMessage(message, Color.WHITE, 2);
 				}
-
+				
+				// set actor position for if train has moved beyond track (occurs if track destroyed)
+				IPositionable position = train.getFinalDestination() .getPosition();
+				train.getActor().setPosition(position.getX() - TrainActor.width/2, position.getY() - TrainActor.height/2);
+				
 				//Sets the train's position to be equal to its final destination's position so that it is appropriately hidden and linked to the station
 				train.setPosition(train.getFinalDestination().getPosition());
 				train.getActor().setVisible(false);

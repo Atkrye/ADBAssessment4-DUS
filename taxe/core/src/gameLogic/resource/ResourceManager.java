@@ -28,15 +28,13 @@ public class ResourceManager {
 
     private Resource getRandomResource() {
         //Returns a random resource
-
-
         int idx = random.nextInt(11);
         if (idx == 1) {
             //1 in 10 chance to return a skip
             return new Skip();
-        } else if (idx == 2){
+        } else if (idx<6){
         	return new KamikazeTrain();	
-        } else if (idx == 3){
+        } else if (idx<11){
         	return new PioneerTrain();
         } else {
             //Otherwise randomly selects a train to give the player.

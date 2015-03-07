@@ -78,6 +78,9 @@ public class ConnectionController {
 		train.setPosition(new Position(-1, -1));
 		train.setCreating(connection);
 		context.getGameLogic().setState(GameState.NORMAL);
+		
+		TrainController trainController = new TrainController(context);
+		trainController.setTrainsVisible(train, true);
 		back.setVisible(false);
 	}
 
