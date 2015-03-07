@@ -1,28 +1,20 @@
 package fvs.taxe.controller;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveBy;
 import fvs.taxe.TaxeGame;
-import fvs.taxe.actor.StationActor;
-import fvs.taxe.actor.TrainActor;
 import fvs.taxe.clickListener.StationClickListener;
 import gameLogic.GameState;
 import gameLogic.listeners.ConnectionChangedListener;
-import gameLogic.listeners.GameStateListener;
 import gameLogic.map.Connection;
-import gameLogic.map.IPositionable;
 import gameLogic.map.Position;
 import gameLogic.map.Station;
+import gameLogic.resource.KamikazeTrain;
 import gameLogic.resource.PioneerTrain;
-import gameLogic.resource.Train;
 
 import java.util.ArrayList;
-
-import Util.Tuple;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -53,12 +45,20 @@ public class ConnectionController {
 							context.getTopBarController().displayFlashMessage("Connection already exists", Color.RED);
 						}
 					}
-				}
-			}
+				} 
+			} 
 		});
 	}
 
-	public void begin(PioneerTrain train) {
+	public void destroyConnection(KamikazeTrain train) {
+		Station l1 = train.getLastStation();
+		Station l2 = train.getNextStation();
+		Connection connection = context.getGameLogic().getMap().getConnection(l1, l2);
+		
+		connectionRemoved(connection);
+	}
+
+	public void beginCreating(PioneerTrain train) {
 		context.getGameLogic().setState(GameState.CREATING_CONNECTION);
 		firstStation = train.getLastStation();
 		this.train = train;
@@ -81,6 +81,16 @@ public class ConnectionController {
 		back.setVisible(false);
 	}
 
+	public void drawMouse() {
+		ShapeRenderer shapeRenderer = context.getTaxeGame().shapeRenderer;
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(Color.BLACK);
+		context.getTaxeGame();
+		shapeRenderer.rectLine(firstStation.getPosition().getX(), firstStation.getPosition().getY(), 
+				Gdx.input.getX(), TaxeGame.HEIGHT- Gdx.input.getY(), 5);
+		shapeRenderer.end();
+	}
+	
 	private void drawCancelButton() {
 		//Adds a button to leave the view route screen
 		if (back == null) {
@@ -101,16 +111,6 @@ public class ConnectionController {
 		} else {
 			back.setVisible(true);
 		}
-	}
-
-	public void drawMouse() {
-		ShapeRenderer shapeRenderer = context.getTaxeGame().shapeRenderer;
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.setColor(Color.BLACK);
-		context.getTaxeGame();
-		shapeRenderer.rectLine(firstStation.getPosition().getX(), firstStation.getPosition().getY(), 
-				Gdx.input.getX(), TaxeGame.HEIGHT- Gdx.input.getY(), 5);
-		shapeRenderer.end();
 	}
 
 	public static void subscribeConnectionChanged(ConnectionChangedListener connectionChangedListener) {

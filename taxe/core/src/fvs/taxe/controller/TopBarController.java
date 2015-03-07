@@ -1,19 +1,21 @@
 package fvs.taxe.controller;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 import fvs.taxe.TaxeGame;
 import gameLogic.GameState;
 import gameLogic.listeners.GameStateListener;
 import gameLogic.obstacle.Obstacle;
 import gameLogic.obstacle.ObstacleListener;
 import gameLogic.obstacle.ObstacleType;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class TopBarController {
     //This class controls what is displayed in the topBar, the primary method of informing the players of events that occur in game
@@ -26,8 +28,6 @@ public class TopBarController {
 	private Label obstacleLabel;
 
 	private TopBarActor topBarBackground;
-
-	private TextButton createRouteButton;
 
     public TopBarController(Context context) {
         this.context = context;
@@ -170,25 +170,4 @@ public class TopBarController {
 
         context.getStage().addActor(endTurnButton);
     }
-
-	public void addRemoveRouteButton() {
-		createRouteButton = new TextButton("Remove Route", context.getSkin());
-		createRouteButton.setPosition(100, 100);
-		createRouteButton.addListener(new ClickListener() {
-			@Override
-            public void clicked(InputEvent event, float x, float y) {
-                /*//This sets the turn to be over in the backend
-				if (context.getGameLogic().getState() != GameState.CREATING_CONNECTION){
-					context.getGameLogic().setState(GameState.CREATING_CONNECTION);
-					createRouteButton.setText("Cancel");
-				} else {
-					context.getGameLogic().setState(GameState.NORMAL);
-					createRouteButton.setText("Create Route");
-				}*/
-            }
-        });
-		
-		context.getStage().addActor(createRouteButton);
-	}
-    
 }

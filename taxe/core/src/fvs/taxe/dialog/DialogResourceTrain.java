@@ -8,6 +8,7 @@ import fvs.taxe.Button;
 import fvs.taxe.clickListener.ResourceDialogClickListener;
 import fvs.taxe.controller.Context;
 import gameLogic.GameState;
+import gameLogic.resource.KamikazeTrain;
 import gameLogic.resource.PioneerTrain;
 import gameLogic.resource.Train;
 
@@ -27,7 +28,12 @@ public class DialogResourceTrain extends Dialog {
 		if (train.getClass().equals(PioneerTrain.class)) {
 			isPioneer = true;
 		}
-
+		
+		boolean isKamikaze = false;
+		if (train.getClass().equals(KamikazeTrain.class)) {
+			isKamikaze = true;
+		}
+		
 		//Generates the buttons required to allow the user to interact with the dialog
 		if (!trainPlaced) {
 			//If the train is not placed, generate button allowing placement
@@ -45,6 +51,9 @@ public class DialogResourceTrain extends Dialog {
 			} 
 
 		} else if (train.getRoute() != null) {
+			if (isKamikaze) {
+				button("Kamikaze", "KAMIKAZE");
+			}
 			//If the train has a route then generate button to change the route
 			button("Change route", "CHANGE_ROUTE");
 			//Generate button to view the route
@@ -97,6 +106,8 @@ public class DialogResourceTrain extends Dialog {
 			clicked(Button.TRAIN_CHANGE_ROUTE);
 		} else if (obj == "CREATE_CONNECTION") {
 			clicked(Button.TRAIN_CREATE_CONNECTION);
-		} 
+		} else if (obj == "KAMIKAZE") {
+			clicked(Button.TRAIN_KAMIKAZE);
+		}
 	}
 }

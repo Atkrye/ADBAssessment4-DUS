@@ -19,6 +19,7 @@ import gameLogic.GameState;
 import gameLogic.map.CollisionStation;
 import gameLogic.map.Station;
 import gameLogic.player.Player;
+import gameLogic.resource.KamikazeTrain;
 import gameLogic.resource.PioneerTrain;
 import gameLogic.resource.Skip;
 import gameLogic.resource.Train;
@@ -175,9 +176,15 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 			
 		case TRAIN_CREATE_CONNECTION:
 			// Begin creating the connection between 2 points
-			context.getConnectionController().begin((PioneerTrain) train);
+			context.getConnectionController().beginCreating((PioneerTrain) train);
 			break;
 		
+		case TRAIN_KAMIKAZE:
+			// Kamikaze, destroy the connection
+			context.getConnectionController().destroyConnection((KamikazeTrain) train);
+			((KamikazeTrain) train).selfDestruct();
+			break;
+			
 		default:
 			break;
 		}

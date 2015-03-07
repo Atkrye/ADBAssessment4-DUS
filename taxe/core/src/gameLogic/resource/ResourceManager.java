@@ -40,7 +40,7 @@ public class ResourceManager {
             //i.e we could have 30 trains, but still retain a 1 in 10 chance to get an skip
             
         	//return getRandomTrain();
-        	return new PioneerTrain();
+        	return new KamikazeTrain();
         }
     }
 

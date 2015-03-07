@@ -195,7 +195,6 @@ public class GameScreen extends ScreenAdapter {
 		topBarController.drawLabels();
 		topBarController.addEndTurnButton();
 		goalController.showCurrentPlayerGoals();
-		topBarController.addRemoveRouteButton();
 	}
 
 	@Override

@@ -74,8 +74,6 @@ public class TrainMoveController {
 					//If the train is at its final destination then the train is set to unpaused so that it does not cause issues elsewhere in the program.
 					train.getActor().setPaused(false);
 				}
-
-
 			}
 		};
 	}

@@ -244,14 +244,12 @@ public class RouteController {
 	}
 
 	public void drawRoute(Color color) {
-		System.out.println("drawRoute");
 		for (Connection connection : connections) {
 			connection.getActor().setConnectionColor(color);
 		}
 	}
 
 	private void drawPartialRoute() {
-		System.out.println("drawPartialRoute");
 		// draws a route with a train partially on it
 		
 		// calculate where train is
@@ -262,7 +260,6 @@ public class RouteController {
 		partialConnection.getActor().setPartialPosition(train.getActor().getX()+ TrainActor.width/2, train.getActor().getY() + TrainActor.height/2, next.getPosition());
 
 		for (int i = connections.indexOf(partialConnection)+1; i<connections.size(); i++){
-			System.out.println("drawing connection" );
 			connections.get(i).getActor().setConnectionColor(Color.BLACK);
 		}
 	}

@@ -55,7 +55,7 @@ public class StationController {
 		ConnectionController.subscribeConnectionChanged(new ConnectionChangedListener() {
 			@Override
 			public void removed(Connection connection) {
-				connection.getActor().remove();
+				connectionActors.removeActor(connection.getActor());
 			}
 			
 			@Override
