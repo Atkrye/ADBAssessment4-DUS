@@ -1,5 +1,7 @@
 package gameLogic.map;
 
+import com.badlogic.gdx.math.Vector2;
+
 import fvs.taxe.actor.ConnectionActor;
 
 public class Connection {
@@ -9,10 +11,14 @@ public class Connection {
 	//We could have used a boolean to indicate whether it was blocked but this implementation makes it very easy to set the connections to be blocked for a certain number of turns
 	//private int blocked;
 	private ConnectionActor actor;
+	private Vector2 vector;
 
 	public Connection(Station station1, Station station2) {
 		this.station1 = station1;
 		this.station2 = station2;
+		
+		vector = new Vector2(station1.getPosition().getX(), station1.getPosition().getY());
+		vector.add(station2.getPosition().getX(), station2.getPosition().getY());
 	}
 
 	public Station getStation1() {
@@ -59,5 +65,9 @@ public class Connection {
 				return false;
 			}
 		};
+	}
+	
+	public Vector2 getVector(){
+		return vector;
 	}
 }
