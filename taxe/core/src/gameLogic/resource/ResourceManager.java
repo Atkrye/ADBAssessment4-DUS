@@ -34,13 +34,17 @@ public class ResourceManager {
         if (idx == 1) {
             //1 in 10 chance to return a skip
             return new Skip();
+        } else if (idx == 2){
+        	return new KamikazeTrain();	
+        } else if (idx == 3){
+        	return new PioneerTrain();
         } else {
             //Otherwise randomly selects a train to give the player.
             //We decided not to use the value of idx to choose the train as this allows us to change the number of trains in the system independently of this routine
             //i.e we could have 30 trains, but still retain a 1 in 10 chance to get an skip
             
-        	//return getRandomTrain();
-        	return new KamikazeTrain();
+        	return getRandomTrain();
+        	
         }
     }
 

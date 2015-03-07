@@ -37,7 +37,6 @@ public class TrainMoveController {
 				//This is where the (-1,-1) principle comes from as it is set to (-1,-1) before every action.
 				//I don't understand exactly why this is, but it is how it was initially implemented and we did not understand enough to change it
 				//Instead we now exploit this fact to determine whether a train is already in motion
-				//A+ programming FVS!
 				train.setPosition(new Position(-1, -1));
 			}
 		};

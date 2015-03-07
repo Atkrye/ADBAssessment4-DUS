@@ -17,7 +17,6 @@ public class DialogStationMultitrain extends Dialog {
 
     public DialogStationMultitrain(ArrayList<Train> trains, Skin skin, Context context) {
     	
-    	
         //This constructor is called when there are multiple blocked trains sitting on top of each other
         super("Select Train", skin);
         this.context = context;
@@ -32,7 +31,6 @@ public class DialogStationMultitrain extends Dialog {
             button(train.getName() + destination + " (Player " + train.getPlayer().getPlayerNumber() + ")", train);
             getButtonTable().row();
         }
-
         button("Cancel", "CANCEL");
     }
 
