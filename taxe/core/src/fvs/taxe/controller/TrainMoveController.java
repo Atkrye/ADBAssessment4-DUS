@@ -91,7 +91,7 @@ public class TrainMoveController {
 				}
 
 				//Sets the train's position to be equal to its final destination's position so that it is appropriately hidden and linked to the station
-				train.setPosition(train.getFinalDestination().getLocation());
+				train.setPosition(train.getFinalDestination().getPosition());
 				train.getActor().setVisible(false);
 				train.setFinalDestination(null);
 			}
@@ -112,7 +112,7 @@ public class TrainMoveController {
 		actions.addAction(beforeAction());
 
 		for (final Station station : train.getRoute()) {
-			IPositionable next = station.getLocation();
+			IPositionable next = station.getPosition();
 			//This calculates how long it will take for the train to travel to the next station on the route
 			float duration = getDistance(current, next) / train.getSpeed();
 

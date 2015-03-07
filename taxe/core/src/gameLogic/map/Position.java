@@ -42,7 +42,7 @@ public class Position extends IPositionable {
 
     }
 
-	public static float getAngle(Position p1, Position p2) {
+	public static float getAngle(IPositionable position1, IPositionable position2) {
 		/*// convert to vector2's instead?
 		int dot = p1.getX() * p2.getX() + p1.getY() + p1.getY();
 		
@@ -54,7 +54,7 @@ public class Position extends IPositionable {
 		double angle = Math.acos(cosa);
 		return angle;*/
 		
-		float dx = p2.getX() - p1.getX(), dy = p2.getY() - p1.getY();
+		float dx = position2.getX() - position1.getX(), dy = position2.getY() - position1.getY();
 		float angle = MathUtils.atan2(dy, dx);
 		return angle;
 	}

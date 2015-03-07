@@ -60,8 +60,8 @@ public class StationController {
 			
 			@Override
 			public void added(Connection connection) {
-				final IPositionable start = connection.getStation1().getLocation();
-				final IPositionable end = connection.getStation2().getLocation();
+				final IPositionable start = connection.getStation1().getPosition();
+				final IPositionable end = connection.getStation2().getPosition();
 				ConnectionActor connectionActor = new ConnectionActor(Color.GRAY, start, end, CONNECTION_LINE_WIDTH);
 				connection.setActor(connectionActor);
 				connectionActors.addActor(connectionActor);
@@ -102,7 +102,7 @@ public class StationController {
 
 	private StationActor renderStation(final Station station) {
 		//This method renders the station passed to the method
-		final StationActor stationActor = new StationActor(station.getLocation(), station);
+		final StationActor stationActor = new StationActor(station.getPosition(), station);
 
 		//Creates new click listener for that station
 		stationActor.addListener(new ClickListener() {
@@ -115,7 +115,7 @@ public class StationController {
 							.getAllPlayers()) {
 						for (Resource resource : player.getResources()) {
 							if (resource instanceof Train) {
-								if (((Train) resource).getPosition() == station.getLocation()) {
+								if (((Train) resource).getPosition() == station.getPosition()) {
 									trains.add((Train) resource);
 								}
 							}
@@ -156,7 +156,7 @@ public class StationController {
 	private CollisionStationActor renderCollisionStation(final Station collisionStation) {
 		//Carries out the same code but this time as a collision station
 		final CollisionStationActor collisionStationActor = new CollisionStationActor(
-				collisionStation.getLocation());
+				collisionStation.getPosition());
 
 		//No need for a thorough clicked routine in the collision station unlike the standard station as trains cannot be located on a collision station
 		collisionStationActor.addListener(new ClickListener() {
@@ -227,8 +227,8 @@ public class StationController {
 			//Iterates through the list of StationHighlights and draws circles based on the values stored in the data structure
 			game.shapeRenderer.begin(ShapeType.Filled);
 			game.shapeRenderer.setColor(sh.getColour());
-			game.shapeRenderer.circle(sh.getStation().getLocation().getX(),
-					sh.getStation().getLocation().getY(), sh.getRadius());
+			game.shapeRenderer.circle(sh.getStation().getPosition().getX(),
+					sh.getStation().getPosition().getY(), sh.getRadius());
 			game.shapeRenderer.end();
 		}
 	}
@@ -266,8 +266,8 @@ public class StationController {
 	public void addConnections(List<Connection> connections, final Color color) {
 		connectionActors = new Group();
 		for (Connection connection : connections) {
-			final IPositionable start = connection.getStation1().getLocation();
-			final IPositionable end = connection.getStation2().getLocation();
+			final IPositionable start = connection.getStation1().getPosition();
+			final IPositionable end = connection.getStation2().getPosition();
 			ConnectionActor connectionActor = new ConnectionActor(Color.GRAY, start, end, CONNECTION_LINE_WIDTH);
 			connection.setActor(connectionActor);
 			connectionActors.addActor(connectionActor);
@@ -362,8 +362,8 @@ public class StationController {
 			if (trainsAtStation(station) > 0) {
 				//if the number of trains at that station is greater than 0 then it renders the number in the correct place
 				game.fontSmall.draw(game.batch, trainsAtStation(station) + "",
-						(float) station.getLocation().getX() - 6,
-						(float) station.getLocation().getY() + 26);
+						(float) station.getPosition().getX() - 6,
+						(float) station.getPosition().getY() + 26);
 			}
 		}
 
@@ -377,7 +377,7 @@ public class StationController {
 			for (Resource resource : player.getResources()) {
 				if (resource instanceof Train) {
 					if (((Train) resource).getActor() != null) {
-						if (((Train) resource).getPosition().equals(station.getLocation())) {
+						if (((Train) resource).getPosition().equals(station.getPosition())) {
 							count++;
 						}
 					}

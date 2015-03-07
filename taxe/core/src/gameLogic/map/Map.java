@@ -136,7 +136,7 @@ public class Map {
     public Station getStationFromPosition(IPositionable position) {
         //Returns the station located at the position passed to the method
         for (Station station : stations) {
-            if (station.getLocation().equals(position)) {
+            if (station.getPosition().equals(position)) {
                 return station;
             }
         }
@@ -158,7 +158,7 @@ public class Map {
 
     public float getDistance(Station s1, Station s2) {
         //Uses vector maths to find the absolute distance between two stations' locations in pixels
-        return Vector2.dst(s1.getLocation().getX(), s1.getLocation().getY(), s2.getLocation().getX(), s2.getLocation().getY());
+        return Vector2.dst(s1.getPosition().getX(), s1.getPosition().getY(), s2.getPosition().getX(), s2.getPosition().getY());
     }
 
     public double getShortestDistance(Station s1, Station s2) {

@@ -171,20 +171,20 @@ public class TopBarController {
         context.getStage().addActor(endTurnButton);
     }
 
-	public void addCreateRouteButton() {
-		createRouteButton = new TextButton("Create Route", context.getSkin());
+	public void addRemoveRouteButton() {
+		createRouteButton = new TextButton("Remove Route", context.getSkin());
 		createRouteButton.setPosition(100, 100);
 		createRouteButton.addListener(new ClickListener() {
 			@Override
             public void clicked(InputEvent event, float x, float y) {
-                //This sets the turn to be over in the backend
+                /*//This sets the turn to be over in the backend
 				if (context.getGameLogic().getState() != GameState.CREATING_CONNECTION){
 					context.getGameLogic().setState(GameState.CREATING_CONNECTION);
 					createRouteButton.setText("Cancel");
 				} else {
 					context.getGameLogic().setState(GameState.NORMAL);
 					createRouteButton.setText("Create Route");
-				}
+				}*/
             }
         });
 		

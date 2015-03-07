@@ -19,6 +19,7 @@ import gameLogic.GameState;
 import gameLogic.map.CollisionStation;
 import gameLogic.map.Station;
 import gameLogic.player.Player;
+import gameLogic.resource.PioneerTrain;
 import gameLogic.resource.Skip;
 import gameLogic.resource.Train;
 
@@ -53,6 +54,7 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 		case TRAIN_DROP:
 			//If a TRAIN_DROP button is pressed then the train is removed from the player's resources
 			currentPlayer.removeResource(train);
+			train.getActor().remove();
 			break;
 
 			//The reason that all the placement case statements are in their own scope ({}) is due to the fact that switch statements do not create their own scopes between cases.
@@ -61,7 +63,6 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 			//If the TRAIN_PLACE button is pressed then the game is set up so that the train can be placed
 
 			//This sets the cursor to be the one associated with the train loaded from the assets folder
-			//We updated the cursors from FVS' original ones to add clarity to the player
 			Pixmap pixmap = new Pixmap(Gdx.files.internal(train.getCursorImage()));
 			Gdx.input.setCursorImage(pixmap, 0, 0); // these numbers will need tweaking
 			pixmap.dispose();
@@ -83,7 +84,7 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 
 					} else {
 						//This puts the train at the station that the user clicks and adds it to the trains visited history
-						train.setPosition(station.getLocation());
+						train.setPosition(station.getPosition());
 						train.addHistory(station, Game.getInstance().getPlayerManager().getTurnNumber());
 
 						//Resets the cursor
@@ -94,7 +95,7 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 						TrainActor trainActor = trainController.renderTrain(train);
 						trainController.setTrainsVisible(null, true);
 						train.setActor(trainActor);
-
+						
 						//Unsubscribes from the listener so that it does not call this code again when it is obviously not necessary, without this placing of trains would never end
 						StationController.unsubscribeStationClick(this);
 						Game.getInstance().setState(GameState.NORMAL);
@@ -173,8 +174,11 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 			break;
 			
 		case TRAIN_CREATE_CONNECTION:
-			// Begin creating the route
-			context.getConnectionController().begin(train);
+			// Begin creating the connection between 2 points
+			context.getConnectionController().begin((PioneerTrain) train);
+			break;
+		
+		default:
 			break;
 		}
 	}

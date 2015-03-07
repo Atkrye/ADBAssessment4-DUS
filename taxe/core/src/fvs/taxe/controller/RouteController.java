@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Util.Tuple;
+import fvs.taxe.actor.TrainActor;
 import fvs.taxe.clickListener.StationClickListener;
 import fvs.taxe.TaxeGame;
 import gameLogic.GameState;
@@ -26,7 +27,6 @@ import gameLogic.resource.Train;
 
 public class RouteController {
 	private Context context;
-	private Group routingButtons = new Group();
 	private List<IPositionable> positions;
 	private boolean isRouting = false;
 	private Train train;
@@ -34,6 +34,9 @@ public class RouteController {
 	private boolean editingRoute = false;
 	private double distance = 0;
 	private ArrayList<Connection> connections;
+	private TextButton doneRouting;
+	private TextButton cancel;
+	private int indexPartial = -1;
 
 	public RouteController(Context context) {
 		this.context = context;
@@ -46,19 +49,6 @@ public class RouteController {
 				if (isRouting) {
 					addStationToRoute(station);
 				}
-			}
-		});
-
-		ConnectionController.subscribeConnectionChanged( new ConnectionChangedListener() {
-
-			@Override
-			public void removed(Connection connection) {
-				connections.remove(connection);
-			}
-
-			@Override
-			public void added(Connection connection) {
-				connections.add(connection);
 			}
 		});
 	}
@@ -102,7 +92,7 @@ public class RouteController {
 					Station lastStation = train.getLastStation();
 					//Checks if a connection exists between the station the train is paused at and the clicked station
 					if (context.getGameLogic().getMap().doesConnectionExist(lastStation.getName(),station.getName())){
-						positions.add(station.getLocation());
+						positions.add(station.getPosition());
 
 						//Sets the relevant boolean checking if the last node on the route is a junction or not
 						canEndRouting = !(station instanceof CollisionStation);
@@ -114,7 +104,7 @@ public class RouteController {
 					Station nextStation = train.getNextStation();
 					if (station.getName() == lastStation.getName() || nextStation.getName() == station.getName()) {
 						//If the connection exists then the station passed to the method is added to the route
-						positions.add(station.getLocation());
+						positions.add(station.getPosition());
 
 						//Sets the relevant boolean checking if the last node on the route is a junction or not
 						canEndRouting = !(station instanceof CollisionStation);
@@ -122,8 +112,8 @@ public class RouteController {
 						context.getTopBarController().displayFlashMessage("This connection doesn't exist", Color.RED);
 					}
 				}
-			} else{
-				positions.add(station.getLocation());
+			} else {
+				positions.add(station.getPosition());
 			}
 		} else {
 			//Finds the last station in the current route
@@ -132,19 +122,16 @@ public class RouteController {
 
 			//Check whether a connection exists using the function in Map
 			boolean hasConnection = context.getGameLogic().getMap().doesConnectionExist(station.getName(), lastStation.getName());
-			System.out.println("here , hasConnection " + hasConnection);
 			if (!hasConnection) {
 				//If the connection doesn't exist then this informs the user
 				context.getTopBarController().displayFlashMessage("This connection doesn't exist", Color.RED);
-
 			} else {
 				distance+= context.getGameLogic().getMap().getDistance(lastStation, station);
 				DecimalFormat integer = new DecimalFormat("0");
 
 				context.getTopBarController().displayMessage("Total Distance: " + integer.format(distance) + ". Will take " + integer.format(Math.ceil(distance / train.getSpeed() / 2)) + " turns.", Color.BLACK);
 				//If the connection exists then the station passed to the method is added to the route
-				positions.add(station.getLocation());
-
+				positions.add(station.getPosition());
 				connections.add(context.getGameLogic().getMap().getConnection(station, lastStation));
 
 				//Sets the relevant boolean checking if the last node on the route is a junction or not
@@ -154,42 +141,44 @@ public class RouteController {
 	}
 
 	private void addRoutingButtons() {
-		TextButton doneRouting = new TextButton("Route Complete", context.getSkin());
-		TextButton cancel = new TextButton("Cancel", context.getSkin());
+		if (doneRouting == null){
+			doneRouting = new TextButton("Route Complete", context.getSkin());
+			cancel = new TextButton("Cancel", context.getSkin());
 
-		doneRouting.setPosition(TaxeGame.WIDTH - 250, TaxeGame.HEIGHT - 33);
-		cancel.setPosition(TaxeGame.WIDTH - 100, TaxeGame.HEIGHT - 33);
+			doneRouting.setPosition(TaxeGame.WIDTH - 250, TaxeGame.HEIGHT - 33);
+			cancel.setPosition(TaxeGame.WIDTH - 100, TaxeGame.HEIGHT - 33);
 
-		//If the cancel button is clicked then the routing is ended but none of the positions are saved as a route in the backend
-		cancel.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				endRouting();
-			}
-		});
-
-		//If the finished button is pressed then the routing is ended and the route is saved in the backend
-		doneRouting.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				//Checks whether or not the route is legal and can end
-				if (!canEndRouting) {
-					//If not, informs the user of what they must do to make the route legal
-					context.getTopBarController().displayFlashMessage("Your route must end at a station", Color.RED);
-
-				} else {
-					//If the route is legal then the route is saved and routing ended
-					confirmed();
+			//If the cancel button is clicked then the routing is ended but none of the positions are saved as a route in the backend
+			cancel.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
 					endRouting();
 				}
-			}
-		});
+			});
 
-		//Adds the buttons to the screen
-		routingButtons.addActor(doneRouting);
-		routingButtons.addActor(cancel);
-
-		context.getStage().addActor(routingButtons);
+			//If the finished button is pressed then the routing is ended and the route is saved in the backend
+			doneRouting.addListener(new ClickListener() {
+				@Override
+				public void clicked(InputEvent event, float x, float y) {
+					//Checks whether or not the route is legal and can end
+					if (!canEndRouting) {
+						//If not, informs the user of what they must do to make the route legal
+						context.getTopBarController().displayFlashMessage("Your route must end at a station", Color.RED);
+					} else {
+						//If the route is legal then the route is saved and routing ended
+						confirmed();
+						endRouting();
+					}
+				}
+			});
+			//Adds the buttons to the screen
+			context.getStage().addActor(cancel);
+			context.getStage().addActor(doneRouting);
+		} else {
+			//routingButtons.setVisible(true);
+			cancel.setVisible(true);
+			doneRouting.setVisible(true);
+		}
 	}
 
 	private void confirmed() {
@@ -197,8 +186,7 @@ public class RouteController {
 		train.setRoute(context.getGameLogic().getMap().createRoute(positions));
 
 		//A move controller is created to allow the train to move along its route.
-		//Although move is never used later on in the program, it must be instantiated or else the trains will not move.
-		//Hence you should not remove this even though it appears useless, I tried and trains do not move at all.
+		@SuppressWarnings("unused")
 		TrainMoveController move = new TrainMoveController(context, train);
 	}
 
@@ -206,7 +194,8 @@ public class RouteController {
 		//This routine sets the gamescreen back to how it should be for normal operation
 		context.getGameLogic().setState(GameState.NORMAL);
 		//All buttons are removed and flags set to the relevant values.
-		routingButtons.remove();
+		cancel.setVisible(false);
+		doneRouting.setVisible(false);
 		isRouting = false;
 		editingRoute = false;
 		distance = 0;
@@ -215,9 +204,13 @@ public class RouteController {
 		TrainController trainController = new TrainController(context);
 		trainController.setTrainsVisible(train, true);
 
+		if (indexPartial != -1){
+			connections.get(indexPartial).getActor().clearPartialPosition();
+		}
+		indexPartial = -1;
 		drawRoute(Color.GRAY);
 		connections.clear();
-
+		
 		//Again using the principle that (-1,-1) is a moving train, this sets the train being routed to invisible if not already on a route, but makes it visible if it already had a route previously
 		//This was necessary to add as without it, when editing a route and then cancelling, the train would become invisible for the duration of its original journey
 		if (train.getPosition().getX() != -1) {
@@ -225,101 +218,52 @@ public class RouteController {
 		}
 	}
 
-	public void drawRoute(Color color) {
-		for (Connection connection : connections) {
-			System.out.println("Connection is " + connection.getStation1().getName() + " , " + connection.getStation2().getName());
-			connection.getActor().setConnectionColor(color);
-
-		}
-	}
-	/*
-	public void drawRoute(Color color) {
-		TaxeGame game = context.getTaxeGame();
-
-		IPositionable previousPosition = null;
-		game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		game.shapeRenderer.setColor(color);
-
-		// get a list of all stations that the train has passed so far
-		ArrayList<Station> history = Tuple.getFirstsFromList(train.getHistory());
-		// iterate through all positions in the route
-		for (int i = 0; i < positions.size(); i++) {
-			if (i > 0) {
-				boolean b = false;
-				// check to see if the connection between to 2 positions is one that has been
-				// visited, and if it has been visited then change the colour of the connection line
-				for (int j = i; j < history.size(); j++) {
-					if (history.get(j).getLocation().equals(positions.get(i)) &&
-							history.get(j - 1).getLocation().equals(previousPosition)) {
-						game.shapeRenderer.setColor(Color.RED);
-						b = true;
-						break;
-					}
-				}
-				// otherwise, use the default connection line colour
-				if (!b) {
-					game.shapeRenderer.setColor(color);
-				}
-			}else if (editingRoute){
-                Rectangle bounds = train.getActor().getBounds();
-                previousPosition = new Position((int) (bounds.getX()+(bounds.getWidth()/2)),(int) (train.getActor().getBounds().getY()+(bounds.getHeight()/2)));
-            }
-			if (previousPosition != null) {
-				game.shapeRenderer.rectLine(previousPosition.getX(), previousPosition.getY(),
-						positions.get(i).getX(), positions.get(i).getY(),
-						StationController.CONNECTION_LINE_WIDTH);
-			}
-
-			//Need to keep track of the previous node as we are not using an index based for-loop and the previous node is required to find one of the end points of the line
-			previousPosition = positions.get(i);
-		}
-
-		game.shapeRenderer.end();
-	}*/
-
 	public void viewRoute(Train train) {
 		//This method is used to draw the trains current route so that the user can see where their trains are going
-		routingButtons.clear();
-
-		//train.getRoute();
 
 		//This works by simulating the creation of a new route, but without the ability to save the route
 		//This will instead draw the route passed to it, which is the one located in train.getRoute()
+		this.train = train;
 		positions = new ArrayList<IPositionable>();
 		Station prevStation=null;
 		for (Station station : train.getRoute()) {
-			positions.add(station.getLocation());
+			positions.add(station.getPosition());
 			if (prevStation!=null) {
 				distance += context.getGameLogic().getMap().getDistance(station,prevStation);
 				DecimalFormat integer = new DecimalFormat("0");
 				context.getTopBarController().displayMessage("Total Distance: " + integer.format(distance) + ". Will take " + integer.format(Math.ceil(distance / train.getSpeed() / 2)) + " turns.", Color.BLACK);
+				connections.add(context.getGameLogic().getMap().getConnection(station, prevStation));
 			}
 			prevStation = station;
 		}
 
 		context.getGameLogic().setState(GameState.ROUTING);
-
-		//Adds a button to leave the view route screen
-		TextButton back = new TextButton("Return", context.getSkin());
-
-		back.setPosition(TaxeGame.WIDTH - 100, TaxeGame.HEIGHT - 33);
-
-		back.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				context.getGameLogic().setState(GameState.NORMAL);
-				context.getTopBarController().clearMessage();
-				routingButtons.remove();
-				distance = 0;
-
-			}
-		});
-
-		routingButtons.addActor(back);
-
-		context.getStage().addActor(routingButtons);
 		
-		drawRoute(Color.BLACK);
+		cancel.setVisible(true);
+		drawPartialRoute();
 	}
 
+	public void drawRoute(Color color) {
+		System.out.println("drawRoute");
+		for (Connection connection : connections) {
+			connection.getActor().setConnectionColor(color);
+		}
+	}
+
+	private void drawPartialRoute() {
+		System.out.println("drawPartialRoute");
+		// draws a route with a train partially on it
+		
+		// calculate where train is
+		Station next = train.getNextStation();
+		Connection partialConnection = context.getGameLogic().getMap().getConnection(next, train.getLastStation());
+		indexPartial  = connections.indexOf(partialConnection);
+		// set the connection actor to render a portion of it (from train to station)
+		partialConnection.getActor().setPartialPosition(train.getActor().getX()+ TrainActor.width/2, train.getActor().getY() + TrainActor.height/2, next.getPosition());
+
+		for (int i = connections.indexOf(partialConnection)+1; i<connections.size(); i++){
+			System.out.println("drawing connection" );
+			connections.get(i).getActor().setConnectionColor(Color.BLACK);
+		}
+	}
 }

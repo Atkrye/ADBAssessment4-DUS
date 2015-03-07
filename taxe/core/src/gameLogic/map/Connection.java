@@ -36,12 +36,12 @@ public class Connection {
 		return new IPositionable() {
 			@Override
 			public int getX() {
-				return (station1.getLocation().getX() + station2.getLocation().getX()) / 2;
+				return (station1.getPosition().getX() + station2.getPosition().getX()) / 2;
 			}
 
 			@Override
 			public int getY() {
-				return (station1.getLocation().getY() + station2.getLocation().getY()) / 2;
+				return (station1.getPosition().getY() + station2.getPosition().getY()) / 2;
 			}
 
 			@Override

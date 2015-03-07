@@ -2,6 +2,7 @@ package gameLogic.resource;
 
 import Util.Tuple;
 import fvs.taxe.actor.TrainActor;
+import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Station;
 

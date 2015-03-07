@@ -16,7 +16,7 @@ public class StationTest {
 
         Station testStation = new Station(name, new Position(x, y));
 
-        assertTrue("Position is wrong", testStation.getLocation().getX() == x && testStation.getLocation().getY() == y);
+        assertTrue("Position is wrong", testStation.getPosition().getX() == x && testStation.getPosition().getY() == y);
         assertTrue("Name is wrong", testStation.getName().equals(name));
     }
 }

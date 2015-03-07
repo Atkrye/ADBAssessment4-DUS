@@ -8,6 +8,7 @@ import fvs.taxe.Button;
 import fvs.taxe.clickListener.ResourceDialogClickListener;
 import fvs.taxe.controller.Context;
 import gameLogic.GameState;
+import gameLogic.resource.PioneerTrain;
 import gameLogic.resource.Train;
 
 import java.util.ArrayList;
@@ -22,23 +23,30 @@ public class DialogResourceTrain extends Dialog {
 		this.context = context;
 		text("What do you want to do with this train?");
 
+		boolean isPioneer = false;
+		if (train.getClass().equals(PioneerTrain.class)) {
+			isPioneer = true;
+		}
+
 		//Generates the buttons required to allow the user to interact with the dialog
 		if (!trainPlaced) {
 			//If the train is not placed, generate button allowing placement
 			button("Place at a station", "PLACE");
 
 		} else if (!train.isMoving()) {
-			//If the train is not moving then generate button to specify a route
-			button("Choose a route", "ROUTE");
-
-			System.out.println(train.getName().toLowerCase());
-			if (train.getName().toLowerCase().equals("pioneer")) {
+			if ((isPioneer && !((PioneerTrain) train).isCreating())) {
+				//If the train is not moving then generate button to specify a route
+				button("Choose a route", "ROUTE");
 				button("Create a connection", "CREATE_CONNECTION");
-			}
+
+			} else if (!isPioneer){
+				//Generate button to view the route
+				button("Choose a route", "ROUTE");
+			} 
+
 		} else if (train.getRoute() != null) {
 			//If the train has a route then generate button to change the route
 			button("Change route", "CHANGE_ROUTE");
-
 			//Generate button to view the route
 			button("View Route", "VIEW_ROUTE");
 		}
@@ -89,6 +97,6 @@ public class DialogResourceTrain extends Dialog {
 			clicked(Button.TRAIN_CHANGE_ROUTE);
 		} else if (obj == "CREATE_CONNECTION") {
 			clicked(Button.TRAIN_CREATE_CONNECTION);
-		}
+		} 
 	}
 }

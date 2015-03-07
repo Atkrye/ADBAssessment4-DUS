@@ -32,7 +32,7 @@ public class Obstacle {
 	public Obstacle(ObstacleType type, Station station) {
 		this.type = type;
 		this.station = station;
-		this.position = station.getLocation();
+		this.position = station.getPosition();
 		this.active = false;
 	}
 	

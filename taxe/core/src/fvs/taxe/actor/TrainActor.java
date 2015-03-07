@@ -27,7 +27,7 @@ public class TrainActor extends Image {
     private float previousX;
     private Drawable leftDrawable;
     private Drawable rightDrawable;
-    private Context context;
+    protected Context context;
     private boolean paused;
     private boolean recentlyPaused;
 

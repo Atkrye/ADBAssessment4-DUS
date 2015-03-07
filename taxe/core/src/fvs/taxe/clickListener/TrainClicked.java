@@ -59,7 +59,7 @@ public class TrainClicked extends ClickListener {
                                 for (Player player : context.getGameLogic().getPlayerManager().getAllPlayers()) {
                                     for (Resource resource : player.getResources()) {
                                         if (resource instanceof Train) {
-                                            if (((Train) resource).getPosition() == StationActor.getStation().getLocation()) {
+                                            if (((Train) resource).getPosition() == StationActor.getStation().getPosition()) {
                                                 stackedTrains.add((Train) resource);
                                             }
                                         }
@@ -71,12 +71,12 @@ public class TrainClicked extends ClickListener {
                     }
                     if (stackedTrains.size()==1) {
                         clicked(event,-1,-1);
-                    }else{
+                    } else {
                         //Creates a new multitrain dialog based on the number of trains at that location
                         DialogStationMultitrain dia = new DialogStationMultitrain(stackedTrains, context.getSkin(), context);
                         dia.show(context.getStage());
                     }
-                }else{
+                } else {
                     if (train.isOwnedBy(currentPlayer)) {
                         DialogButtonClicked listener = new DialogButtonClicked(context, currentPlayer, train);
                         DialogResourceTrain dia = new DialogResourceTrain(context, train, context.getSkin(), train.getPosition() != null);
