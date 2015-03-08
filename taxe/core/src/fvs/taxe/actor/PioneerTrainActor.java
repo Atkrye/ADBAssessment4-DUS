@@ -50,7 +50,7 @@ public class PioneerTrainActor extends TrainActor {
 				if (Math.abs(trainx-nextx)<=2 && Math.abs(trainy- nexty)<=2) {
 					// if the train has reached the target station
 
-					collidedConnection2();
+					collidedConnection();
 
 					if (collidedPositions.size() == 0){
 						context.getConnectionController().connectionAdded(connection);
@@ -109,7 +109,7 @@ public class PioneerTrainActor extends TrainActor {
 		}
 	}
 
-	private void collidedConnection2() {
+	private void collidedConnection() {
 		// find all connections that collide with the new connection, and where
 		List<Connection> connections = context.getGameLogic().getMap().getConnections();
 		int x1,x2,x3,x4,y1,y2,y3,y4;
@@ -125,35 +125,12 @@ public class PioneerTrainActor extends TrainActor {
 			x2 = connection.getStation2().getPosition().getX();
 			y2 = connection.getStation2().getPosition().getY();
 
-			Position point = getLineIntersect(x1, y1, x2, y2, x3, y3, x4, y4);
+			Position point = Position.getLineIntersect(x1, y1, x2, y2, x3, y3, x4, y4);
 
 			if (point != null){
 				collidedPositions.add(new Tuple<Connection, Position>(connection, point));
 			}
 		}
-	}
-
-	// Returns 1 if the lines intersect, otherwise 0. In addition, if the lines 
-	// intersect the intersection point may be stored in the floats i_x and i_y.
-	private Position getLineIntersect(float p0_x, float p0_y, float p1_x, float p1_y, 
-			float p2_x, float p2_y, float p3_x, float p3_y) {
-		float s1_x, s1_y, s2_x, s2_y;
-		s1_x = p1_x - p0_x;     
-		s1_y = p1_y - p0_y;
-		s2_x = p3_x - p2_x;     
-		s2_y = p3_y - p2_y;
-
-		float s, t;
-		s = (-s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-s2_x * s1_y + s1_x * s2_y);
-		t = ( s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
-
-		if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
-			// Collision detected
-			float i_x = p0_x + (t * s1_x);
-			float i_y = p0_y + (t * s1_y);
-			return new Position((int) i_x, (int) i_y);
-		}
-		return null; // No collision
 	}
 
 	public void setStationPositions(Connection connection){
