@@ -43,8 +43,6 @@ public class Map {
 			public void added(Connection connection) {
 				connections.add(connection);
 				dijkstra = new Dijkstra(Map.this);
-				
-				//addJunctions
 			}
 		});
     }
@@ -125,7 +123,6 @@ public class Map {
         return addConnection(st1, st2);
     }
 
-
     public Station getStationByName(String name) {
         //Returns the station whose name matches the string passed to the method
         int i = 0;
@@ -146,7 +143,6 @@ public class Map {
                 return station;
             }
         }
-
        return null;
     }
 
@@ -158,7 +154,6 @@ public class Map {
         for (IPositionable position : positions) {
             route.add(getStationFromPosition(position));
         }
-
         return route;
     }
 
@@ -176,20 +171,4 @@ public class Map {
         //This method calls the relevant method from Dijkstra's algorithm which checks whether or not s3 is in the shortest path from s1 to s2
         return dijkstra.inShortestPath(s1, s2, s3);
     }
-
-	public void addNewConnection(Tuple<Connection, Position> pair) {
-		System.out.println(pair.getSecond());
-		Connection connection = pair.getFirst();
-		Position position = pair.getSecond();
-		
-		Station station1 = connection.getStation1();
-		Station station2 = connection.getStation2();
-		
-		CollisionStation junction = addJunction("Blah", position);
-		addConnection(station1, junction);
-		addConnection(station2, junction);
-		//addConnection(station1, station2)
-		
-		
-	}
 }

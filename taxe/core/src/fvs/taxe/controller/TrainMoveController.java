@@ -9,8 +9,6 @@ import gameLogic.resource.Train;
 
 import java.util.ArrayList;
 
-import Util.Tuple;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;

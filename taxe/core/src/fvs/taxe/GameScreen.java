@@ -203,19 +203,16 @@ public class GameScreen extends ScreenAdapter {
 		stage.dispose();
 	}
 
-	public void setScreen(ScreenAdapter screen)
-	{
+	public void setScreen(ScreenAdapter screen) {
 		game.setScreen(screen);
 	}
 
-	public static Tuple<TaxeGame, GameScreen> getInstance()
-	{
+	public static Tuple<TaxeGame, GameScreen> getInstance() {
 		return new Tuple<TaxeGame, GameScreen>(game, instance);
 	}
 
 	@Override
-	public void resume()
-	{
+	public void resume() {
 		trongScreen = null;
 		super.resume();
 	}

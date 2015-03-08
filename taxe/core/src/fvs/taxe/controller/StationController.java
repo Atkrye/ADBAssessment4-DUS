@@ -320,64 +320,6 @@ public class StationController {
 			}
 		}
 	}
-	/*public void drawConnections(List<Connection> connections, Color color) {
-		//Renders all of the connections between each station
-		TaxeGame game = context.getTaxeGame();
-
-		game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-		for (Connection connection : connections) {
-			//This draws the line representing each connection between the 2 stations stored in that connection
-			IPositionable start = connection.getStation1().getLocation();
-			IPositionable end = connection.getStation2().getLocation();
-			game.shapeRenderer.setColor(color);
-			game.shapeRenderer.rectLine(start.getX(), start.getY(), end.getX(), end.getY(),
-					CONNECTION_LINE_WIDTH);
-		}
-		game.shapeRenderer.end();
-
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-		game.shapeRenderer.setColor(translucentBlack);
-
-		// draw an icon on connections that are blocked, showing how many turns remain until they
-		// become unblocked
-		// if the game is in routing mode, then all connections that aren't blocked have a
-		// translucent black circle drawn on their midpoint, to increase visibility of the white
-		// text that will be drawn on top showing the length of the connection
-		for (Connection connection : connections) {
-			IPositionable midpoint = connection.getMidpoint();
-			if (connection.isBlocked()) {
-				game.batch.begin();
-				game.shapeRenderer.circle(midpoint.getX(), midpoint.getY(), 10);
-				game.batch.draw(blockageTextures[connection.getTurnsBlocked() - 1],
-						midpoint.getX() - 10, midpoint.getY() - 10, 20, 20);
-				game.batch.end();
-			}
-		}
-		game.shapeRenderer.end();
-		Gdx.gl.glDisable(GL20.GL_BLEND);
-
-
-		// if the game is in routing mode, then the length of the connection is displayed
-		for (Connection connection : connections) {
-			if (connection.isBlocked()) {
-
-			} else if (Game.getInstance().getState() == GameState.ROUTING) {
-				IPositionable midpoint = connection.getMidpoint();
-				game.batch.begin();
-				game.fontTiny.setColor(Color.BLACK);
-				String text = String.valueOf(Math.round(
-						context.getGameLogic().getMap().getDistance(connection.getStation1(),connection.getStation2())
-				));
-				game.fontTiny.draw(game.batch, text,
-						midpoint.getX() - game.fontTiny.getBounds(text).width / 2f,
-						midpoint.getY() + game.fontTiny.getBounds(text).height / 2f);
-				game.batch.end();
-			}
-		}
-	}*/
 
 	public void displayNumberOfTrainsAtStations() {
 		//This renders the number next to each station of how many trains are located there

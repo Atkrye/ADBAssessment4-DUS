@@ -11,7 +11,7 @@ public class PioneerTrain extends Train {
 	private PioneerTrainActor actor;
 	
 	public PioneerTrain() {
-		super("Pioneer", "BulletTrain.png", "BulletTrainRight.png", 10);
+		super("Pioneer", "BulletTrain.png", "BulletTrainRight.png", 50);
 	}
 	
 	@Override
