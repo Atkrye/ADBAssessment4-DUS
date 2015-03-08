@@ -58,7 +58,7 @@ public class TrainClicked extends ClickListener {
                                 for (Player player : context.getGameLogic().getPlayerManager().getAllPlayers()) {
                                     for (Resource resource : player.getResources()) {
                                         if (resource instanceof Train) {
-                                            if (((Train) resource).getPosition() == StationActor.getStation().getPosition()) {
+                                            if (((Train) resource).getPosition() == ((StationActor) actor).getStation().getPosition()) {
                                                 stackedTrains.add((Train) resource);
                                             }
                                         }

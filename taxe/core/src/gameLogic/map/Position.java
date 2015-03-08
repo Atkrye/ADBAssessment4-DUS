@@ -42,6 +42,10 @@ public class Position extends IPositionable {
 
     }
 
+    @Override
+    public String toString(){
+    	return "( " + x + " , " + y + " )";
+    }
 	public static float getAngle(IPositionable position1, IPositionable position2) {
 		/*// convert to vector2's instead?
 		int dot = p1.getX() * p2.getX() + p1.getY() + p1.getY();

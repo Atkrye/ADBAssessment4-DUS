@@ -37,7 +37,7 @@ public class StationController {
 	public final static int CONNECTION_LINE_WIDTH = 5;
 
 	private static Context context;
-	private Tooltip tooltip;
+	private static Tooltip tooltip;
 	/*
 	have to use CopyOnWriteArrayList because when we iterate through our listeners and execute
 	their handler's method, one case unsubscribes from the event removing itself from this list
@@ -45,12 +45,12 @@ public class StationController {
 	 */
 	private static List<StationClickListener> stationClickListeners = new CopyOnWriteArrayList<StationClickListener>();
 
-	private Group stationActors;
+	private static Group stationActors;
 	private Group connectionActors;
 
 	public StationController(final Context context, Tooltip tooltip) {
 		StationController.context = context;
-		this.tooltip = tooltip;
+		StationController.tooltip = tooltip;
 		
 		ConnectionController.subscribeConnectionChanged(new ConnectionChangedListener() {
 			@Override
@@ -82,7 +82,7 @@ public class StationController {
 			listener.clicked(station);
 		}
 	}
-
+	
 	public void renderStations() {
 		//Calls the relevant rendering methods from within the controller class based on what type of station needs to be rendered
 		List<Station> stations = context.getGameLogic().getMap().getStations();
@@ -91,16 +91,18 @@ public class StationController {
 		//Iterates through every station and renders them on the GUI
 		for (Station station : stations) {
 			if (station instanceof CollisionStation) {
-				stationActors.addActor(renderCollisionStation(station));
+				//stationActors.addActor(renderCollisionStation(station));
+				renderCollisionStation((CollisionStation) station);
 			} else {
-				stationActors.addActor(renderStation(station));
+				//stationActors.addActor(renderStation(station));
+				renderStation(station);
 			}
 		}
 		renderStationGoalHighlights();
 		context.getStage().addActor(stationActors);
 	}
 
-	private StationActor renderStation(final Station station) {
+	public static StationActor renderStation(final Station station) {
 		//This method renders the station passed to the method
 		final StationActor stationActor = new StationActor(station.getPosition(), station);
 
@@ -150,13 +152,14 @@ public class StationController {
 		});
 
 		station.setActor(stationActor);
+		stationActors.addActor(stationActor);
 		return stationActor;
 	}
 
-	private CollisionStationActor renderCollisionStation(final Station collisionStation) {
+	public static CollisionStationActor renderCollisionStation(final CollisionStation collisionStation) {
 		//Carries out the same code but this time as a collision station
 		final CollisionStationActor collisionStationActor = new CollisionStationActor(
-				collisionStation.getPosition());
+				collisionStation.getPosition(), collisionStation);
 
 		//No need for a thorough clicked routine in the collision station unlike the standard station as trains cannot be located on a collision station
 		collisionStationActor.addListener(new ClickListener() {
@@ -201,6 +204,8 @@ public class StationController {
 				tooltip.hide();
 			}
 		});
+		collisionStation.setActor(collisionStationActor);
+		stationActors.addActor(collisionStationActor);
 		return collisionStationActor;
 	}
 
