@@ -195,7 +195,7 @@ public class StationController {
 				//Shows tooltip indicating the station's name
 				tooltip.setPosition(collisionStationActor.getX() + 10,
 						collisionStationActor.getY() + 10);
-				tooltip.show("Junction: " + collisionStation.getName());
+				tooltip.show("Junction");
 			}
 
 			@Override

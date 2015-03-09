@@ -29,12 +29,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class ConnectionController {
 	private static ArrayList<ConnectionChangedListener> listeners = new ArrayList<ConnectionChangedListener>();
 	private Context context;
-	//private ArrayList<Tuple<PioneerTrain,Connection>> connections;	// pairs of station that have not yet been created 
 
 	// when currently selecting a connection
 	private PioneerTrain train;
 	private Station firstStation;
 	private TextButton back;
+	
+	private static int junctionNumber = 0;
+	
+	
 	// class used for creating connections when in creating_connection mode mode
 
 
@@ -186,5 +189,11 @@ public class ConnectionController {
 		for (ConnectionChangedListener listener: listeners){
 			listener.removed(connection);
 		}
+	}
+
+	public static String getNextJunctionNum() {
+		String string = Integer.toString(junctionNumber);
+		junctionNumber+=1;
+		return string;
 	}
 }

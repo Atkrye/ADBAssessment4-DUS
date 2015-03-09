@@ -1,5 +1,6 @@
 package fvs.taxe.actor;
 
+import fvs.taxe.controller.ConnectionController;
 import fvs.taxe.controller.Context;
 import fvs.taxe.controller.StationController;
 import gameLogic.GameState;
@@ -61,7 +62,7 @@ public class PioneerTrainActor extends TrainActor {
 							Tuple<Connection, Position> pair = collidedPositions.get(i);
 							Connection connection = pair.getFirst();
 							Position position = pair.getSecond();
-							CollisionStation junction = context.getGameLogic().getMap().addJunction("1", position);
+							CollisionStation junction = context.getGameLogic().getMap().addJunction(ConnectionController.getNextJunctionNum(), position);
 
 							Station station1 = connection.getStation1();
 							Station station2 = connection.getStation2();
