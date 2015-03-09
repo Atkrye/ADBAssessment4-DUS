@@ -123,6 +123,7 @@ public class RouteController {
 			IPositionable lastPosition = positions.get(positions.size() - 1);
 			Station lastStation = context.getGameLogic().getMap().getStationFromPosition(lastPosition);
 
+			System.out.println(lastPosition);
 			//Check whether a connection exists using the function in Map
 			boolean hasConnection = context.getGameLogic().getMap().doesConnectionExist(station.getName(), lastStation.getName());
 			if (!hasConnection) {

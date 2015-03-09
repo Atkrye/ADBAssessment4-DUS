@@ -3,7 +3,8 @@ package gameLogic.map;
 import fvs.taxe.controller.ConnectionController;
 import gameLogic.dijkstra.Dijkstra;
 import gameLogic.listeners.ConnectionChangedListener;
-import gameLogic.listeners.JunctionRemovedListener;
+import gameLogic.listeners.StationAddedListener;
+import gameLogic.listeners.StationRemovedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,11 @@ public class Map {
     private Random random = new Random();
     private Dijkstra dijkstra;
     private JSONImporter jsonImporter;
-	private static ArrayList<JunctionRemovedListener> listeners = new ArrayList<JunctionRemovedListener>();
+	private MapActor actor;
+	private static ArrayList<StationRemovedListener> listeners = new ArrayList<StationRemovedListener>();
 
     public Map() {
+    	
         stations = new ArrayList<Station>();
         connections = new ArrayList<Connection>();
 
@@ -56,15 +59,22 @@ public class Map {
 				dijkstra = new Dijkstra(Map.this);
 			}
 		});
+        
+        ConnectionController.subscribeStationAdded(new StationAddedListener() {
+			@Override
+			public void stationAdded(Station station) {
+				stations.add(station);
+			}
+		});
     }
 
     private void junctionRemoved(CollisionStation station1) {
-		for (JunctionRemovedListener listener : listeners){
-			listener.junctionRemoved(station1);
+		for (StationRemovedListener listener : listeners){
+			listener.stationRemoved(station1);
 		}
 	}
     
-    public static void subscribeJunctionRemovedListener(JunctionRemovedListener listener) {
+    public static void subscribeJunctionRemovedListener(StationRemovedListener listener) {
     	listeners.add(listener);
     }
 
@@ -196,11 +206,17 @@ public class Map {
     public boolean hasConnection(Station station){
     	for (Connection connection: connections){
     		if (connection.getStation1().equals(station) || connection.getStation2().equals(station)) {
-    			System.out.println("true");
     			return true;
     		}
     	}
-    	System.out.println("false");
     	return false;
     }
+
+	public MapActor getMapActor() {
+		return this.actor;
+	}
+	
+	public void setMapActor(MapActor actor){
+		this.actor = actor;
+	}
 }

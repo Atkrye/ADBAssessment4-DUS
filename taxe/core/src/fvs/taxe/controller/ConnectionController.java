@@ -5,6 +5,8 @@ import fvs.taxe.actor.StationActor;
 import fvs.taxe.clickListener.StationClickListener;
 import gameLogic.GameState;
 import gameLogic.listeners.ConnectionChangedListener;
+import gameLogic.listeners.StationAddedListener;
+import gameLogic.listeners.StationRemovedListener;
 import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Position;
@@ -15,6 +17,7 @@ import gameLogic.resource.PioneerTrain;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -22,6 +25,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class ConnectionController {
+	// class used for creating connections when in creating_connection mode 
 	private static ArrayList<ConnectionChangedListener> listeners = new ArrayList<ConnectionChangedListener>();
 	private Context context;
 
@@ -29,14 +33,12 @@ public class ConnectionController {
 	private PioneerTrain train;
 	private Station firstStation;
 	private TextButton back;
-	
-	private static int junctionNumber = 0;
-	
-	
-	// class used for creating connections when in creating_connection mode mode
+	private static ArrayList<StationAddedListener> slisteners = new ArrayList<StationAddedListener>();
 
+	private static int junctionNumber = 0;
 
 	public ConnectionController(final Context context) {
+		context.getGameLogic().getMap().getMapActor();
 		this.context = context;
 		//connections = new ArrayList<Tuple<PioneerTrain,Connection>>();
 		StationController.subscribeStationClick(new StationClickListener() {
@@ -57,6 +59,30 @@ public class ConnectionController {
 				} 
 			} 
 		});
+
+		context.getGameLogic().getMap().getMapActor().addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				if (context.getGameLogic().getState() == GameState.CREATING_CONNECTION){
+					if (firstStation != null){
+						
+						Position location = new Position((int) x,(int)y);
+						System.out.println(location);
+						if (!nearStation(location)) {
+							Station station = new Station("1", location); 
+							StationController.renderStation(station);
+							stationAdded(station);
+							endCreating(station);
+						}
+					}
+				}
+			}
+		});
+	}
+
+	protected boolean nearStation(Position location) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	protected boolean connectionOverlaps(Station station) {
@@ -68,34 +94,34 @@ public class ConnectionController {
 		y3 = position1.getY();
 		x4 = position2.getX();
 		y4 = position2.getY();
-		
+
 		ArrayList<Station> stations = (ArrayList<Station>) context.getGameLogic().getMap().getStations();
 
 		for (Station s: stations){
 			if (s == firstStation || s == station){
 				continue;
 			}
-			
+
 			x1 = s.getPosition().getX() - StationActor.width/2 - 10;
 			y1 = s.getPosition().getY() - StationActor.height/2 - 10;
 			x2 = s.getPosition().getX() + StationActor.width/2 + 10;
 			y2 = s.getPosition().getY() + StationActor.height/2 + 10;
-			
+
 			Position value = Position.getLineIntersect(x1, y1, x1, y2, x3, y3, x4, y4);
 			if (value != null){
 				return true;
 			}
-			
+
 			value = Position.getLineIntersect(x1, y1, x2, y1, x3, y3, x4, y4);
 			if (value != null){
 				return true;
 			}
-			
+
 			value = Position.getLineIntersect(x1, y2, x2, y2, x3, y3, x4, y4);
 			if (value != null){
 				return true;
 			}
-			
+
 			value = Position.getLineIntersect(x2, y1, x2, y2, x3, y3, x4, y4);
 			if (value != null){
 				return true;
@@ -190,5 +216,15 @@ public class ConnectionController {
 		String string = Integer.toString(junctionNumber);
 		junctionNumber+=1;
 		return string;
+	}
+
+	public static void subscribeStationAdded(StationAddedListener stationAddedListener){
+		slisteners.add(stationAddedListener);
+	}
+	
+	private void stationAdded(Station station) {
+		for (StationAddedListener listener : slisteners ){
+			listener.stationAdded(station);
+		}
 	}
 }

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 
 
+
 import fvs.taxe.clickListener.StationClickListener;
 import fvs.taxe.controller.*;
 import fvs.taxe.dialog.DialogEndGame;
@@ -21,6 +22,7 @@ import gameLogic.GameState;
 import gameLogic.listeners.GameStateListener;
 import gameLogic.listeners.TurnListener;
 import gameLogic.map.Map;
+import gameLogic.map.MapActor;
 import gameLogic.map.Station;
 import gameLogic.obstacle.Rumble;
 import gameLogic.resource.Train;
@@ -31,7 +33,7 @@ public class GameScreen extends ScreenAdapter {
 	private static TaxeGame game;
 	public static GameScreen instance;
 	private Stage stage;
-	private Texture mapTexture;
+	private MapActor mapActor;
 	private Game gameLogic;
 	private Skin skin;
 	private Map map;
@@ -65,9 +67,12 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.input.setInputProcessor(stage);
 
 		//Draw background
-		mapTexture = new Texture(Gdx.files.internal("gamemap.png"));
+		//mapActor = new Texture(Gdx.files.internal("gamemap.png"));
+		mapActor = new MapActor();
+		stage.addActor(mapActor);
 		map = gameLogic.getMap();
-
+		map.setMapActor(mapActor);
+		
 		tooltip = new Tooltip(skin);
 		stage.addActor(tooltip);
 
@@ -134,13 +139,15 @@ public class GameScreen extends ScreenAdapter {
 
 		if (rumble.time > 0){
 			Vector2 mapPosition = rumble.tick(delta);
-			game.batch.begin();
-			game.batch.draw(mapTexture, mapPosition.x, mapPosition.y);
-			game.batch.end();
+			//game.batch.begin();
+			//game.batch.draw(mapActor, mapPosition.x, mapPosition.y);
+			//game.batch.end();
+			mapActor.setPosition(mapPosition.x, mapPosition.y);
 		} else {
-			game.batch.begin();
-			game.batch.draw(mapTexture, 0, 0);
-			game.batch.end();
+			/*game.batch.begin();
+			game.batch.draw(mapActor, 0, 0);
+			game.batch.end();*/
+			mapActor.setPosition(0, 0);
 		}
 
 		if (gameLogic.getState() == GameState.PLACING_TRAIN || gameLogic.getState() == GameState.ROUTING) {
@@ -199,7 +206,7 @@ public class GameScreen extends ScreenAdapter {
 
 	@Override
 	public void dispose() {
-		mapTexture.dispose();
+		//mapActor.dispose();
 		stage.dispose();
 	}
 

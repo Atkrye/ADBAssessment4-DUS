@@ -25,7 +25,8 @@ import gameLogic.Game;
 import gameLogic.GameState;
 import gameLogic.goal.Goal;
 import gameLogic.listeners.ConnectionChangedListener;
-import gameLogic.listeners.JunctionRemovedListener;
+import gameLogic.listeners.StationAddedListener;
+import gameLogic.listeners.StationRemovedListener;
 import gameLogic.map.CollisionStation;
 import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
@@ -53,26 +54,13 @@ public class StationController {
 	public StationController(final Context context, Tooltip tooltip) {
 		StationController.context = context;
 		StationController.tooltip = tooltip;
-		
+
 		ConnectionController.subscribeConnectionChanged(new ConnectionChangedListener() {
 			@Override
 			public void removed(Connection connection) {
-				
-				connectionActors.removeActor(connection.getActor());/*
-				
-				if (connection.getStation1().equals(CollisionStation.class)) {
-					if (!context.getGameLogic().getMap().hasConnection(connection.getStation1())) {
-						stations.remove(connection.getStation1());
-					}
-				}
-				
-				if (connection.getStation2().equals(CollisionStation.class)) {
-					if (!hasConnection(connection.getStation2())) {
-						stations.remove(connection.getStation2());
-					}
-				}*/
+				connectionActors.removeActor(connection.getActor());
 			}
-			
+
 			@Override
 			public void added(Connection connection) {
 				final IPositionable start = connection.getStation1().getPosition();
@@ -82,12 +70,21 @@ public class StationController {
 				connectionActors.addActor(connectionActor);
 			}
 		});
-		
-		Map.subscribeJunctionRemovedListener(new JunctionRemovedListener() {
-			
+
+		Map.subscribeJunctionRemovedListener(new StationRemovedListener() {
 			@Override
-			public void junctionRemoved(CollisionStation station) {
-				stationActors.removeActor(station.getCollisionStationActor());
+			public void stationRemoved(Station station) {
+				if (station.getClass().equals(CollisionStation.class)) {
+					stationActors.removeActor(((CollisionStation) station).getCollisionStationActor());
+				}
+			}
+		});
+
+		ConnectionController.subscribeStationAdded(new StationAddedListener() {
+			@Override
+			public void stationAdded(Station station) {
+				// TODO Auto-generated method stub
+				stationActors.addActor(station.getActor());
 			}
 		});
 	}
@@ -105,11 +102,11 @@ public class StationController {
 			listener.clicked(station);
 		}
 	}
-	
+
 	public void renderStations() {
 		//Calls the relevant rendering methods from within the controller class based on what type of station needs to be rendered
 		List<Station> stations = context.getGameLogic().getMap().getStations();
-		
+
 		stationActors = new Group();
 		//Iterates through every station and renders them on the GUI
 		for (Station station : stations) {
@@ -324,18 +321,18 @@ public class StationController {
 		}
 		context.getStage().addActor(connectionActors);
 	}
-	
+
 	public void drawRoutingInfo(List<Connection> connections){
 		TaxeGame game = context.getTaxeGame();
 		// if the game is in routing mode, then the length of the connection is displayed
 		for (Connection connection : connections) {
-			 if (Game.getInstance().getState() == GameState.ROUTING) {
+			if (Game.getInstance().getState() == GameState.ROUTING) {
 				IPositionable midpoint = connection.getMidpoint();
 				game.batch.begin();
 				game.fontTiny.setColor(Color.BLACK);
 				String text = String.valueOf(Math.round(
 						context.getGameLogic().getMap().getDistance(connection.getStation1(),connection.getStation2())
-				));
+						));
 				game.fontTiny.draw(game.batch, text,
 						midpoint.getX() - game.fontTiny.getBounds(text).width / 2f,
 						midpoint.getY() + game.fontTiny.getBounds(text).height / 2f);
