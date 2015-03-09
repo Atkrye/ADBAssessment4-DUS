@@ -123,14 +123,13 @@ public class RouteController {
 			IPositionable lastPosition = positions.get(positions.size() - 1);
 			Station lastStation = context.getGameLogic().getMap().getStationFromPosition(lastPosition);
 
-			System.out.println(lastPosition);
 			//Check whether a connection exists using the function in Map
 			boolean hasConnection = context.getGameLogic().getMap().doesConnectionExist(station.getName(), lastStation.getName());
 			if (!hasConnection) {
 				//If the connection doesn't exist then this informs the user
 				context.getTopBarController().displayFlashMessage("This connection doesn't exist", Color.RED);
 			} else {
-				distance+= context.getGameLogic().getMap().getDistance(lastStation, station);
+				distance+= context.getGameLogic().getMap().getStationDistance(lastStation, station);
 				DecimalFormat integer = new DecimalFormat("0");
 
 				context.getTopBarController().displayMessage("Total Distance: " + integer.format(distance) + ". Will take " + integer.format(Math.ceil(distance / train.getSpeed() / 2)) + " turns.", Color.BLACK);
@@ -237,7 +236,7 @@ public class RouteController {
 		for (Station station : train.getRoute()) {
 			positions.add(station.getPosition());
 			if (prevStation!=null) {
-				distance += context.getGameLogic().getMap().getDistance(station,prevStation);
+				distance += context.getGameLogic().getMap().getStationDistance(station,prevStation);
 				DecimalFormat integer = new DecimalFormat("0");
 				context.getTopBarController().displayMessage("Total Distance: " + integer.format(distance) + ". Will take " + integer.format(Math.ceil(distance / train.getSpeed() / 2)) + " turns.", Color.BLACK);
 				connections.add(context.getGameLogic().getMap().getConnection(station, prevStation));

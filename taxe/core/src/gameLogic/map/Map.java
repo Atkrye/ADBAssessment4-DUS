@@ -18,7 +18,7 @@ public class Map {
     private Random random = new Random();
     private Dijkstra dijkstra;
     private JSONImporter jsonImporter;
-	private MapActor actor;
+	private BlankMapActor actor;
 	private static ArrayList<StationRemovedListener> listeners = new ArrayList<StationRemovedListener>();
 
     public Map() {
@@ -188,7 +188,7 @@ public class Map {
         return route;
     }
 
-    public float getDistance(Station s1, Station s2) {
+    public float getStationDistance(Station s1, Station s2) {
         //Uses vector maths to find the absolute distance between two stations' locations in pixels
         return Vector2.dst(s1.getPosition().getX(), s1.getPosition().getY(), s2.getPosition().getX(), s2.getPosition().getY());
     }
@@ -212,11 +212,11 @@ public class Map {
     	return false;
     }
 
-	public MapActor getMapActor() {
+	public BlankMapActor getMapActor() {
 		return this.actor;
 	}
 	
-	public void setMapActor(MapActor actor){
+	public void setMapActor(BlankMapActor actor){
 		this.actor = actor;
 	}
 }

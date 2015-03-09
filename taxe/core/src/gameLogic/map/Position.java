@@ -1,6 +1,7 @@
 package gameLogic.map;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 
 public class Position extends IPositionable {
 	//This is the class that implements IPositionable and allows you to create new Positions that can be compared to existing ones
@@ -46,6 +47,11 @@ public class Position extends IPositionable {
 		return "( " + x + " , " + y + " )";
 	}
 
+	public static float getDistance(IPositionable a, IPositionable b) {
+		//This method returns the absolute distance from point A to point B in pixels
+		return Vector2.dst(a.getX(), a.getY(), b.getX(), b.getY());
+	}
+	
 	public static float getAngle(IPositionable position1, IPositionable position2) {
 		float dx = position2.getX() - position1.getX();
 		float dy = position2.getY() - position1.getY();

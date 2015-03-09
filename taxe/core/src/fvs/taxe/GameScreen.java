@@ -22,7 +22,7 @@ import gameLogic.GameState;
 import gameLogic.listeners.GameStateListener;
 import gameLogic.listeners.TurnListener;
 import gameLogic.map.Map;
-import gameLogic.map.MapActor;
+import gameLogic.map.BlankMapActor;
 import gameLogic.map.Station;
 import gameLogic.obstacle.Rumble;
 import gameLogic.resource.Train;
@@ -33,7 +33,7 @@ public class GameScreen extends ScreenAdapter {
 	private static TaxeGame game;
 	public static GameScreen instance;
 	private Stage stage;
-	private MapActor mapActor;
+	private BlankMapActor blankMapActor;
 	private Game gameLogic;
 	private Skin skin;
 	private Map map;
@@ -51,9 +51,9 @@ public class GameScreen extends ScreenAdapter {
 	private Rumble rumble;
 	public TrongScreen trongScreen = null;
 	private ConnectionController connectionController;
+	private Texture mapTexture;
 
 	public GameScreen(TaxeGame game) {
-
         instance = this;
 		GameScreen.game = game;
 		stage = new Stage();
@@ -67,11 +67,11 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.input.setInputProcessor(stage);
 
 		//Draw background
-		//mapActor = new Texture(Gdx.files.internal("gamemap.png"));
-		mapActor = new MapActor();
-		stage.addActor(mapActor);
+		mapTexture = new Texture(Gdx.files.internal("gamemap.png"));
+		blankMapActor = new BlankMapActor();
+		stage.addActor(blankMapActor);
 		map = gameLogic.getMap();
-		map.setMapActor(mapActor);
+		map.setMapActor(blankMapActor);
 		
 		tooltip = new Tooltip(skin);
 		stage.addActor(tooltip);
@@ -139,22 +139,21 @@ public class GameScreen extends ScreenAdapter {
 
 		if (rumble.time > 0){
 			Vector2 mapPosition = rumble.tick(delta);
-			//game.batch.begin();
-			//game.batch.draw(mapActor, mapPosition.x, mapPosition.y);
-			//game.batch.end();
-			mapActor.setPosition(mapPosition.x, mapPosition.y);
+			game.batch.begin();
+			game.batch.draw(mapTexture, mapPosition.x, mapPosition.y);
+			game.batch.end();
+			
 		} else {
-			/*game.batch.begin();
-			game.batch.draw(mapActor, 0, 0);
-			game.batch.end();*/
-			mapActor.setPosition(0, 0);
+			game.batch.begin();
+			game.batch.draw(mapTexture, 0, 0);
+			game.batch.end();
 		}
 
 		if (gameLogic.getState() == GameState.PLACING_TRAIN || gameLogic.getState() == GameState.ROUTING) {
 			stationController.renderStationGoalHighlights();
 			//This colours the start and end nodes of each goal to allow the player to easily see where they need to route
 		}
-
+		
 		if (gameLogic.getState() == GameState.ANIMATING) {
 			timeAnimated += delta;
 			if (timeAnimated >= ANIMATION_TIME) {
@@ -167,11 +166,10 @@ public class GameScreen extends ScreenAdapter {
 			connectionController.drawMouse();
 		}
 		
-		//connectionController.drawCreatingConnection(delta);
 		//Causes all the actors to perform their actions (i.e trains to move)
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-
+		
 		stationController.drawRoutingInfo(map.getConnections());
 		//Draw the number of trains at each station
 		if (gameLogic.getState() == GameState.NORMAL || gameLogic.getState() == GameState.PLACING_TRAIN) {
@@ -206,7 +204,7 @@ public class GameScreen extends ScreenAdapter {
 
 	@Override
 	public void dispose() {
-		//mapActor.dispose();
+		mapTexture.dispose();
 		stage.dispose();
 	}
 

@@ -15,6 +15,7 @@ import gameLogic.resource.KamikazeTrain;
 import gameLogic.resource.PioneerTrain;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -40,7 +41,6 @@ public class ConnectionController {
 	public ConnectionController(final Context context) {
 		context.getGameLogic().getMap().getMapActor();
 		this.context = context;
-		//connections = new ArrayList<Tuple<PioneerTrain,Connection>>();
 		StationController.subscribeStationClick(new StationClickListener() {
 			@Override
 			public void clicked(Station station) {
@@ -65,14 +65,18 @@ public class ConnectionController {
 			public void clicked(InputEvent event, float x, float y) {
 				if (context.getGameLogic().getState() == GameState.CREATING_CONNECTION){
 					if (firstStation != null){
-						
 						Position location = new Position((int) x,(int)y);
-						System.out.println(location);
-						if (!nearStation(location)) {
+						if (!nearStation(location) ) {
+							if (!nearConnection(location)) {
 							Station station = new Station("1", location); 
 							StationController.renderStation(station);
 							stationAdded(station);
 							endCreating(station);
+							} else {
+								context.getTopBarController().displayFlashMessage("New city too close to connection", Color.RED);
+							}
+						} else {
+							context.getTopBarController().displayFlashMessage("New city too close to existing city", Color.RED);
 						}
 					}
 				}
@@ -81,7 +85,16 @@ public class ConnectionController {
 	}
 
 	protected boolean nearStation(Position location) {
-		// TODO Auto-generated method stub
+		ArrayList<Station> stations = (ArrayList<Station>) context.getGameLogic().getMap().getStations();
+		for (Station station : stations) {
+			if (Position.getDistance(location, station.getPosition()) <= StationActor.height + 20) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	protected boolean nearConnection(Position location) {
 		return false;
 	}
 
@@ -196,6 +209,12 @@ public class ConnectionController {
 		}
 	}
 
+	public static String getNextJunctionNum() {
+		String string = Integer.toString(junctionNumber);
+		junctionNumber+=1;
+		return string;
+	}
+	
 	public static void subscribeConnectionChanged(ConnectionChangedListener connectionChangedListener) {
 		listeners.add(connectionChangedListener);
 	}
@@ -210,12 +229,6 @@ public class ConnectionController {
 		for (ConnectionChangedListener listener: listeners){
 			listener.removed(connection);
 		}
-	}
-
-	public static String getNextJunctionNum() {
-		String string = Integer.toString(junctionNumber);
-		junctionNumber+=1;
-		return string;
 	}
 
 	public static void subscribeStationAdded(StationAddedListener stationAddedListener){
