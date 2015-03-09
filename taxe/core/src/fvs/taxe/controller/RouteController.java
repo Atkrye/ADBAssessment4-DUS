@@ -1,29 +1,24 @@
 package fvs.taxe.controller;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import fvs.taxe.TaxeGame;
+import fvs.taxe.actor.TrainActor;
+import fvs.taxe.clickListener.StationClickListener;
+import gameLogic.GameState;
+import gameLogic.map.CollisionStation;
+import gameLogic.map.Connection;
+import gameLogic.map.IPositionable;
+import gameLogic.map.Station;
+import gameLogic.resource.KamikazeTrain;
+import gameLogic.resource.Train;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import Util.Tuple;
-import fvs.taxe.actor.TrainActor;
-import fvs.taxe.clickListener.StationClickListener;
-import fvs.taxe.TaxeGame;
-import gameLogic.GameState;
-import gameLogic.listeners.ConnectionChangedListener;
-import gameLogic.map.CollisionStation;
-import gameLogic.map.Connection;
-import gameLogic.map.IPositionable;
-import gameLogic.map.Position;
-import gameLogic.map.Station;
-import gameLogic.resource.Train;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class RouteController {
 	private Context context;
@@ -94,8 +89,12 @@ public class RouteController {
 					if (context.getGameLogic().getMap().doesConnectionExist(lastStation.getName(),station.getName())){
 						positions.add(station.getPosition());
 
-						//Sets the relevant boolean checking if the last node on the route is a junction or not
-						canEndRouting = !(station instanceof CollisionStation);
+						if (!(this.train.getClass().equals(KamikazeTrain.class))) {
+							//Sets the relevant boolean checking if the last node on the route is a junction or not
+							canEndRouting = !(station instanceof CollisionStation);
+						} else {
+							canEndRouting = true;
+						}
 					} else {
 						context.getTopBarController().displayFlashMessage("This connection doesn't exist", Color.RED);
 					}
@@ -106,8 +105,12 @@ public class RouteController {
 						//If the connection exists then the station passed to the method is added to the route
 						positions.add(station.getPosition());
 
-						//Sets the relevant boolean checking if the last node on the route is a junction or not
-						canEndRouting = !(station instanceof CollisionStation);
+						if (!(this.train.getClass().equals(KamikazeTrain.class))) {
+							//Sets the relevant boolean checking if the last node on the route is a junction or not
+							canEndRouting = !(station instanceof CollisionStation);
+						} else {
+							canEndRouting = true;
+						}
 					} else {
 						context.getTopBarController().displayFlashMessage("This connection doesn't exist", Color.RED);
 					}
@@ -134,8 +137,12 @@ public class RouteController {
 				positions.add(station.getPosition());
 				connections.add(context.getGameLogic().getMap().getConnection(station, lastStation));
 
-				//Sets the relevant boolean checking if the last node on the route is a junction or not
-				canEndRouting = !(station instanceof CollisionStation);
+				if (!(this.train.getClass().equals(KamikazeTrain.class))) {
+					//Sets the relevant boolean checking if the last node on the route is a junction or not
+					canEndRouting = !(station instanceof CollisionStation);
+				} else {
+					canEndRouting = true;
+				}
 			}
 		}
 	}
@@ -210,7 +217,7 @@ public class RouteController {
 		indexPartial = -1;
 		drawRoute(Color.GRAY);
 		connections.clear();
-		
+
 		//Again using the principle that (-1,-1) is a moving train, this sets the train being routed to invisible if not already on a route, but makes it visible if it already had a route previously
 		//This was necessary to add as without it, when editing a route and then cancelling, the train would become invisible for the duration of its original journey
 		if (train.getPosition().getX() != -1) {
@@ -238,7 +245,7 @@ public class RouteController {
 		}
 
 		context.getGameLogic().setState(GameState.ROUTING);
-		
+
 		cancel.setVisible(true);
 		drawPartialRoute();
 	}
@@ -251,7 +258,7 @@ public class RouteController {
 
 	private void drawPartialRoute() {
 		// draws a route with a train partially on it
-		
+
 		// calculate where train is
 		Station next = train.getNextStation();
 		Connection partialConnection = context.getGameLogic().getMap().getConnection(next, train.getLastStation());

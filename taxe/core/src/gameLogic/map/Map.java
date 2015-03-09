@@ -1,16 +1,13 @@
 package gameLogic.map;
 
 import fvs.taxe.controller.ConnectionController;
-import fvs.taxe.controller.Context;
-import fvs.taxe.controller.StationController;
 import gameLogic.dijkstra.Dijkstra;
 import gameLogic.listeners.ConnectionChangedListener;
+import gameLogic.listeners.JunctionRemovedListener;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import Util.Tuple;
 
 import com.badlogic.gdx.math.Vector2;
 
@@ -20,6 +17,7 @@ public class Map {
     private Random random = new Random();
     private Dijkstra dijkstra;
     private JSONImporter jsonImporter;
+	private static ArrayList<JunctionRemovedListener> listeners = new ArrayList<JunctionRemovedListener>();
 
     public Map() {
         stations = new ArrayList<Station>();
@@ -36,6 +34,19 @@ public class Map {
 			@Override
 			public void removed(Connection connection) {
 				connections.remove(connection);
+				if (connection.getStation1().getClass().equals(CollisionStation.class)) {
+					if (!hasConnection(connection.getStation1())) {
+						stations.remove(connection.getStation1());
+						junctionRemoved((CollisionStation) connection.getStation1());
+					}
+				}
+				
+				if (connection.getStation2().getClass().equals(CollisionStation.class)) {
+					if (!hasConnection(connection.getStation2())) {
+						stations.remove(connection.getStation2());
+						junctionRemoved((CollisionStation) connection.getStation2());
+					}
+				}
 				dijkstra = new Dijkstra(Map.this);
 			}
 			
@@ -47,7 +58,17 @@ public class Map {
 		});
     }
 
-    public boolean doesConnectionExist(String stationName, String anotherStationName) {
+    private void junctionRemoved(CollisionStation station1) {
+		for (JunctionRemovedListener listener : listeners){
+			listener.junctionRemoved(station1);
+		}
+	}
+    
+    public static void subscribeJunctionRemovedListener(JunctionRemovedListener listener) {
+    	listeners.add(listener);
+    }
+
+	public boolean doesConnectionExist(String stationName, String anotherStationName) {
         //Returns whether or not the connection exists by checking the two station names passed to it
         for (Connection connection : connections) {
             String s1 = connection.getStation1().getName();
@@ -170,5 +191,16 @@ public class Map {
     public boolean inShortestPath(Station s1, Station s2, Station s3) {
         //This method calls the relevant method from Dijkstra's algorithm which checks whether or not s3 is in the shortest path from s1 to s2
         return dijkstra.inShortestPath(s1, s2, s3);
+    }
+    
+    public boolean hasConnection(Station station){
+    	for (Connection connection: connections){
+    		if (connection.getStation1().equals(station) || connection.getStation2().equals(station)) {
+    			System.out.println("true");
+    			return true;
+    		}
+    	}
+    	System.out.println("false");
+    	return false;
     }
 }

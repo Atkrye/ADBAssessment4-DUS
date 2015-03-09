@@ -25,9 +25,11 @@ import gameLogic.Game;
 import gameLogic.GameState;
 import gameLogic.goal.Goal;
 import gameLogic.listeners.ConnectionChangedListener;
+import gameLogic.listeners.JunctionRemovedListener;
 import gameLogic.map.CollisionStation;
 import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
+import gameLogic.map.Map;
 import gameLogic.map.Station;
 import gameLogic.player.Player;
 import gameLogic.resource.Resource;
@@ -55,7 +57,20 @@ public class StationController {
 		ConnectionController.subscribeConnectionChanged(new ConnectionChangedListener() {
 			@Override
 			public void removed(Connection connection) {
-				connectionActors.removeActor(connection.getActor());
+				
+				connectionActors.removeActor(connection.getActor());/*
+				
+				if (connection.getStation1().equals(CollisionStation.class)) {
+					if (!context.getGameLogic().getMap().hasConnection(connection.getStation1())) {
+						stations.remove(connection.getStation1());
+					}
+				}
+				
+				if (connection.getStation2().equals(CollisionStation.class)) {
+					if (!hasConnection(connection.getStation2())) {
+						stations.remove(connection.getStation2());
+					}
+				}*/
 			}
 			
 			@Override
@@ -65,6 +80,14 @@ public class StationController {
 				ConnectionActor connectionActor = new ConnectionActor(Color.GRAY, start, end, CONNECTION_LINE_WIDTH);
 				connection.setActor(connectionActor);
 				connectionActors.addActor(connectionActor);
+			}
+		});
+		
+		Map.subscribeJunctionRemovedListener(new JunctionRemovedListener() {
+			
+			@Override
+			public void junctionRemoved(CollisionStation station) {
+				stationActors.removeActor(station.getCollisionStationActor());
 			}
 		});
 	}
