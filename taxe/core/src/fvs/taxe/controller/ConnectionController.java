@@ -63,6 +63,7 @@ public class ConnectionController {
 		context.getGameLogic().getMap().getMapActor().addListener(new ClickListener(){
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				x += 290; // offset for sidebar
 				if (context.getGameLogic().getState() == GameState.CREATING_CONNECTION){
 					if (firstStation != null){
 						Position location = new Position((int) x,(int)y);

@@ -3,6 +3,8 @@ package fvs.taxe.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.scenes.scene2d.Group;
+
 import fvs.taxe.actor.KamikazeTrainActor;
 import fvs.taxe.actor.PioneerTrainActor;
 import fvs.taxe.actor.TrainActor;
@@ -20,11 +22,12 @@ import gameLogic.resource.Train;
 public class TrainController {
 	//This class controls all the train actors
 	private Context context;
-
+	private Group TrainActors;
 
 	public TrainController(final Context context) {
 		this.context = context;
-
+		TrainActors = new Group();
+		context.getStage().addActor(TrainActors);
 		ConnectionController.subscribeConnectionChanged(new ConnectionChangedListener() {
 			@Override
 			public void removed(Connection connection) {
@@ -65,24 +68,15 @@ public class TrainController {
 		TrainActor trainActor;
 		if (train.getClass().equals(PioneerTrain.class)){
 			trainActor = new PioneerTrainActor((PioneerTrain) train, context);
-			trainActor.addListener(new TrainClicked(context, train));
-
-			trainActor.setVisible(false);
-			context.getStage().addActor(trainActor);
-
 		} else if (train.getClass().equals(KamikazeTrain.class)){
 			trainActor = new KamikazeTrainActor((KamikazeTrain) train, context);
-			trainActor.addListener(new TrainClicked(context, train));
-
-			trainActor.setVisible(false);
-			context.getStage().addActor(trainActor);
 		} else {
 			trainActor = new TrainActor(train, context);
-			trainActor.addListener(new TrainClicked(context, train));
-
-			trainActor.setVisible(false);
-			context.getStage().addActor(trainActor);
 		}
+		
+		trainActor.addListener(new TrainClicked(context, train));
+		trainActor.setVisible(false);
+		TrainActors.addActor(trainActor);
 		return trainActor;
 	}
 

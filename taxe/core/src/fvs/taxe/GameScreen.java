@@ -8,12 +8,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-
-
-
+import fvs.taxe.actor.SideBarActor;
 import fvs.taxe.clickListener.StationClickListener;
 import fvs.taxe.controller.*;
 import fvs.taxe.dialog.DialogEndGame;
@@ -54,7 +53,7 @@ public class GameScreen extends ScreenAdapter {
 	private Texture mapTexture;
 
 	public GameScreen(TaxeGame game) {
-        instance = this;
+		instance = this;
 		GameScreen.game = game;
 		stage = new Stage();
 
@@ -72,7 +71,7 @@ public class GameScreen extends ScreenAdapter {
 		stage.addActor(blankMapActor);
 		map = gameLogic.getMap();
 		map.setMapActor(blankMapActor);
-		
+
 		tooltip = new Tooltip(skin);
 		stage.addActor(tooltip);
 
@@ -140,20 +139,26 @@ public class GameScreen extends ScreenAdapter {
 		if (rumble.time > 0){
 			Vector2 mapPosition = rumble.tick(delta);
 			game.batch.begin();
-			game.batch.draw(mapTexture, mapPosition.x, mapPosition.y);
-			game.batch.end();
-			
+			game.batch.draw(mapTexture, 290+ mapPosition.x, mapPosition.y);
 		} else {
 			game.batch.begin();
-			game.batch.draw(mapTexture, 0, 0);
-			game.batch.end();
+			game.batch.draw(mapTexture, 290, 0);
 		}
+		game.batch.end();
+		
+/*game.batch.begin();
+		
+		game.batch.draw(sidebarTexture, 0, 0);
+		game.batch.end();*/
+
+		
+
 
 		if (gameLogic.getState() == GameState.PLACING_TRAIN || gameLogic.getState() == GameState.ROUTING) {
 			stationController.renderStationGoalHighlights();
 			//This colours the start and end nodes of each goal to allow the player to easily see where they need to route
 		}
-		
+
 		if (gameLogic.getState() == GameState.ANIMATING) {
 			timeAnimated += delta;
 			if (timeAnimated >= ANIMATION_TIME) {
@@ -161,14 +166,16 @@ public class GameScreen extends ScreenAdapter {
 				timeAnimated = 0;
 			}
 		}
-		
+
 		if (gameLogic.getState() == GameState.CREATING_CONNECTION){
 			connectionController.drawMouse();
 		}
-		
+
 		//Causes all the actors to perform their actions (i.e trains to move)
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+
+		
 		
 		stationController.drawRoutingInfo(map.getConnections());
 		//Draw the number of trains at each station
@@ -176,12 +183,23 @@ public class GameScreen extends ScreenAdapter {
 			stationController.displayNumberOfTrainsAtStations();
 		}
 
+
+		// Bounds for turn text 'Turn'
+		TextBounds lightBounds = game.fontTinyLight.getBounds("Turn");
+		// Bounds for turn text '1/30'
+		TextBounds boldBounds = game.fontTinyBold.getBounds(((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS);
+
 		game.batch.begin();
-		//If statement checks whether the turn is above 30, if it is then display 30 anyway
-		game.fontSmall.draw(game.batch, "Turn " + ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + "/" + gameLogic.TOTAL_TURNS, (float) TaxeGame.WIDTH - 90.0f, 20.0f);
+
+		// Draw 'Turn'
+		game.fontTinyLight.setColor(Color.WHITE);
+		game.fontTinyLight.draw(game.batch, "Turn", 290/2 - (lightBounds.width/2), 132);
+
+		// Draw turn number i.e '1/30'
+		game.fontTinyBold.setColor(Color.WHITE);
+		game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 290/2 - (boldBounds.width/2), 105.0f);
 		game.batch.end();
 
-		resourceController.drawHeaderText();
 		goalController.drawHeaderText();
 	}
 
@@ -195,11 +213,17 @@ public class GameScreen extends ScreenAdapter {
 		stationController.addConnections(map.getConnections(), Color.GRAY);
 		stationController.renderStations();
 		obstacleController.drawObstacleEffects();
-		resourceController.drawPlayerResources(gameLogic.getPlayerManager().getCurrentPlayer());
 		topBarController.drawBackground();
 		topBarController.drawLabels();
 		topBarController.addEndTurnButton();
+		drawSidebar();
+		resourceController.drawPlayerResources(gameLogic.getPlayerManager().getCurrentPlayer());
 		goalController.showCurrentPlayerGoals();
+	}
+
+	private void drawSidebar() {
+		SideBarActor sb = new SideBarActor();
+		context.getStage().addActor(sb);
 	}
 
 	@Override

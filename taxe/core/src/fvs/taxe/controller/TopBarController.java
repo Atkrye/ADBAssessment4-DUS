@@ -1,5 +1,6 @@
 package fvs.taxe.controller;
 
+
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
@@ -20,7 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class TopBarController {
     //This class controls what is displayed in the topBar, the primary method of informing the players of events that occur in game
     //It's very possible to move away from a topBar orientated design and more to dialogs as we have done, but we decided not to entirely due to the work required.
-    public final static int CONTROLS_HEIGHT = 40;
+    public final static int CONTROLS_HEIGHT = 75;
 
     private Context context;
     private TextButton endTurnButton;
@@ -70,7 +71,7 @@ public class TopBarController {
     
 	public void drawFlashLabel() {
 		flashMessage = new Label("", context.getSkin());
-		flashMessage.setPosition(450, TaxeGame.HEIGHT - 24);
+		flashMessage.setPosition(690, TaxeGame.HEIGHT - 44);
 		flashMessage.setAlignment(0);
 		context.getStage().addActor(flashMessage);
 	}
@@ -78,7 +79,7 @@ public class TopBarController {
 	public void drawObstacleLabel() {
 		obstacleLabel = new Label("", context.getSkin());
 		obstacleLabel.setColor(Color.BLACK);
-		obstacleLabel.setPosition(10,TaxeGame.HEIGHT - 34);
+		obstacleLabel.setPosition(300,TaxeGame.HEIGHT - 44);
 		context.getStage().addActor(obstacleLabel);
 	}
     
@@ -146,7 +147,8 @@ public class TopBarController {
     public void addEndTurnButton() {
         //This method adds an endTurn button to the topBar which allows the user to end their turn
         endTurnButton = new TextButton("End Turn", context.getSkin());
-        endTurnButton.setPosition(TaxeGame.WIDTH - 100.0f, TaxeGame.HEIGHT - 33.0f);
+        endTurnButton.setPosition(TaxeGame.WIDTH - 120.0f, TaxeGame.HEIGHT - 56.0f);
+        endTurnButton.setSize(106, 37);
         endTurnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

@@ -16,12 +16,22 @@ public class TaxeGame extends Game {
 
     // Using native res of the map image we are using at the moment
     //Did not change this to allow resizing as this was deemed to be too much work
-    public static final int WIDTH = 1022, HEIGHT = 678;
+    public static final int WIDTH = 1280, HEIGHT = 700;
 
     public SpriteBatch batch;
-    public BitmapFont font;
-	public BitmapFont fontSmall;
-	public BitmapFont fontTiny;
+    
+    public BitmapFont fontRegular;
+	public BitmapFont fontSmallRegular;
+	public BitmapFont fontTinyRegular;
+	
+	public BitmapFont fontLight;
+	public BitmapFont fontSmallLight;
+	public BitmapFont fontTinyLight;
+	
+	public BitmapFont fontBold;
+	public BitmapFont fontSmallBold;
+	public BitmapFont fontTinyBold;
+	
     public ShapeRenderer shapeRenderer;
 
     @Override
@@ -29,25 +39,68 @@ public class TaxeGame extends Game {
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
 
-        //create font
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("arial.ttf"));
+        //Create regular font
+        FreeTypeFontGenerator generatorRegular = new FreeTypeFontGenerator(Gdx.files.internal("OpenSans-Regular.ttf"));
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
 
         // font size 50pt
         parameter.size = 50;
-        font = generator.generateFont(parameter);
+        fontRegular = generatorRegular.generateFont(parameter);
+
+        //font size 30pt
+        parameter.size = 30;
+        fontSmallRegular = generatorRegular.generateFont(parameter);
+
+		//font size 15pt
+		parameter.size = 15;
+		fontTinyRegular = generatorRegular.generateFont(parameter);
+
+
+		generatorRegular.dispose();
+        // don't forget to dispose to avoid memory leaks!
+		//--------------------
+		
+		//Create light font
+        FreeTypeFontGenerator generatorLight = new FreeTypeFontGenerator(Gdx.files.internal("OpenSans-Light.ttf"));
+        FreeTypeFontParameter parameterLight = new FreeTypeFontParameter();
+
+        // font size 50pt
+        parameterLight.size = 50;
+        fontLight = generatorLight.generateFont(parameterLight);
 
         //font size 20pt
-        parameter.size = 20;
-        fontSmall = generator.generateFont(parameter);
+        parameterLight.size = 20;
+        fontSmallLight = generatorLight.generateFont(parameterLight);
 
-		//font size 12pt
-		parameter.size = 14;
-		fontTiny = generator.generateFont(parameter);
+		//font size 15pt
+        parameterLight.size = 15;
+		fontTinyLight = generatorLight.generateFont(parameterLight);
 
 
-        generator.dispose();
+		generatorLight.dispose();
         // don't forget to dispose to avoid memory leaks!
+		//--------------------
+		
+		//Create bold font
+        FreeTypeFontGenerator generatorBold = new FreeTypeFontGenerator(Gdx.files.internal("OpenSans-Bold.ttf"));
+        FreeTypeFontParameter parameterBold = new FreeTypeFontParameter();
+
+        // font size 50pt
+        parameterBold.size = 50;
+        fontBold = generatorBold.generateFont(parameterBold);
+
+        //font size 20pt
+        parameterBold.size = 20;
+        fontSmallBold = generatorBold.generateFont(parameterBold);
+
+		//font size 15pt
+        parameterBold.size = 15;
+		fontTinyBold = generatorBold.generateFont(parameterBold);
+
+
+		generatorBold.dispose();
+        // don't forget to dispose to avoid memory leaks!
+		//--------------------
 
         //Sets the main screen to be the menu
         setScreen(new MainMenuScreen(this));
@@ -59,7 +112,7 @@ public class TaxeGame extends Game {
 
     public void dispose() {
         batch.dispose();
-        font.dispose();
+        fontRegular.dispose();
         shapeRenderer.dispose();
     }
 

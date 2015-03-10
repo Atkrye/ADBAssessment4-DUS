@@ -27,6 +27,15 @@ public class PlayerManager {
     public Player getCurrentPlayer() {
         return players.get(currentTurn);
     }
+    
+    public Player getOtherPlayer() {
+    	if (currentTurn == 0) {
+    		return players.get(currentTurn + 1);
+    	}
+    	else {
+    		return players.get(currentTurn - 1);
+    	}
+    }
 
     public List<Player> getAllPlayers() {
         return players;

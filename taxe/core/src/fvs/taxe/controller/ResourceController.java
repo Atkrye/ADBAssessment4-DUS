@@ -1,5 +1,6 @@
 package fvs.taxe.controller;
 
+
 import fvs.taxe.TaxeGame;
 import fvs.taxe.clickListener.SkipClicked;
 import fvs.taxe.clickListener.TrainClicked;
@@ -9,7 +10,6 @@ import gameLogic.resource.Resource;
 import gameLogic.resource.Skip;
 import gameLogic.resource.Train;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
@@ -28,22 +28,12 @@ public class ResourceController {
         });
     }
 
-    public void drawHeaderText() {
-        //This draws the header text for the resources, alter this method if you want to change what is displayed
-        TaxeGame game = context.getTaxeGame();
-
-        game.batch.begin();
-        game.fontSmall.setColor(Color.BLACK);
-        game.fontSmall.draw(game.batch, "Unplaced Resources:", 10.0f, (float) TaxeGame.HEIGHT - 250.0f);
-        game.batch.end();
-    }
-
     public void drawPlayerResources(Player player) {
         //This method draws the buttons representing the player's resources, alter this method if you want to change how resources are represented.
         float top = (float) TaxeGame.HEIGHT;
         float x = 10.0f;
         //The value of y is set based on how much space the header texts and goals have taken up (assumed that 3 goals are always present for a consistent interface)
-        float y = top - 250.0f;
+        float y = top - 280.0f;
         y -= 50;
 
         //Clears the resource buttons so that the other player's resources are not displayed
@@ -64,7 +54,7 @@ public class ResourceController {
                     button.setPosition(x, y);
                     button.addListener(listener);
                     resourceButtons.addActor(button);
-                    y -= 30;
+                    y -= 40;
                 }
 
             } else if (resource instanceof Skip) {

@@ -90,6 +90,7 @@ public class TrainClicked extends ClickListener {
             else if (!train.isOwnedBy(currentPlayer)) {
                 //If the train is not owned by the current player then its details are displayed but nothing more
                 context.getTopBarController().displayFlashMessage("Enemy's " + train.getName() + ". Speed: " + train.getSpeed(), Color.RED);
+                context.getGameLogic().setState(GameState.NORMAL);
             } else {
                 //If the train is owned by the player and has a final destination then a dialog is displayed allowing the user to interact with the train
                 DialogButtonClicked listener = new DialogButtonClicked(context, currentPlayer, train);
