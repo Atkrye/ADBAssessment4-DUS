@@ -57,9 +57,8 @@ public class GoalClickListener extends ClickListener {
         if (Game.getInstance().getState() == GameState.NORMAL) {
             //If the current game state is normal then a dialog is displayed allowing the user to interact with their goal
             Player currentPlayer = Game.getInstance().getPlayerManager().getCurrentPlayer();
-            DialogGoalButtonClicked listener = new DialogGoalButtonClicked(currentPlayer,
-                    goal);
-            DialogGoal dia = new DialogGoal(goal, context.getSkin());
+            DialogGoalButtonClicked listener = new DialogGoalButtonClicked(currentPlayer,goal);
+            DialogGoal dia = new DialogGoal(context, goal, context.getSkin());
             dia.show(context.getStage());
             dia.subscribeClick(listener);
         }

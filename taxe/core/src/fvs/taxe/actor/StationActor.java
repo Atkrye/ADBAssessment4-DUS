@@ -8,13 +8,14 @@ import gameLogic.map.IPositionable;
 import gameLogic.map.Station;
 
 public class StationActor extends Image {
-    private static int width = 20;
-    private static int height = 20;
+    public static int width = 20;
+    public static int height = 20;
     private Rectangle bounds;
-    private static Station station;
+    private Station station;
 
     public StationActor(IPositionable location, Station station) {
         super(new Texture(Gdx.files.internal("station_dot.png")));
+    
         setSize(width, height);
         setPosition(location.getX() - width / 2, location.getY() - height / 2);
         bounds = new Rectangle();
@@ -22,7 +23,7 @@ public class StationActor extends Image {
         this.station = station;
     }
 
-    public static Station getStation() {
+    public Station getStation() {
         return station;
     }
 

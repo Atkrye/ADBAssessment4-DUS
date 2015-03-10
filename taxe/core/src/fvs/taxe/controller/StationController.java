@@ -1,60 +1,92 @@
 package fvs.taxe.controller;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import fvs.taxe.clickListener.StationClickListener;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import fvs.taxe.TaxeGame;
 import fvs.taxe.Tooltip;
 import fvs.taxe.actor.CollisionStationActor;
+import fvs.taxe.actor.ConnectionActor;
 import fvs.taxe.actor.StationActor;
-import fvs.taxe.dialog.DialogStationMultitrain;
+import fvs.taxe.clickListener.StationClickListener;
 import fvs.taxe.clickListener.TrainClicked;
+import fvs.taxe.dialog.DialogStationMultitrain;
 import gameLogic.Game;
 import gameLogic.GameState;
-import gameLogic.player.Player;
 import gameLogic.goal.Goal;
+import gameLogic.listeners.ConnectionChangedListener;
+import gameLogic.listeners.StationAddedListener;
+import gameLogic.listeners.StationRemovedListener;
 import gameLogic.map.CollisionStation;
 import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
+import gameLogic.map.Map;
 import gameLogic.map.Station;
+import gameLogic.player.Player;
 import gameLogic.resource.Resource;
 import gameLogic.resource.Train;
 
 public class StationController {
 	public final static int CONNECTION_LINE_WIDTH = 5;
 
-	private Context context;
-	private Tooltip tooltip;
+	private static Context context;
+	private static Tooltip tooltip;
 	/*
 	have to use CopyOnWriteArrayList because when we iterate through our listeners and execute
 	their handler's method, one case unsubscribes from the event removing itself from this list
 	and this list implementation supports removing elements whilst iterating through it
-	*/
+	 */
 	private static List<StationClickListener> stationClickListeners = new CopyOnWriteArrayList<StationClickListener>();
-	private Color translucentBlack = new Color(0, 0, 0, 0.8f);
-	private static final Texture[] blockageTextures = new Texture[5];
 
-	public StationController(Context context, Tooltip tooltip) {
-		this.context = context;
-		this.tooltip = tooltip;
-		for (int i = 0; i < 5; i++) {
-			blockageTextures[i] = new Texture(Gdx.files.internal("blockage" + (i + 1) + ".png"));
-		}
+	private static Group stationActors;
+	private Group connectionActors;
+
+	public StationController(final Context context, Tooltip tooltip) {
+		StationController.context = context;
+		StationController.tooltip = tooltip;
+
+		ConnectionController.subscribeConnectionChanged(new ConnectionChangedListener() {
+			@Override
+			public void removed(Connection connection) {
+				connectionActors.removeActor(connection.getActor());
+			}
+
+			@Override
+			public void added(Connection connection) {
+				final IPositionable start = connection.getStation1().getPosition();
+				final IPositionable end = connection.getStation2().getPosition();
+				ConnectionActor connectionActor = new ConnectionActor(Color.GRAY, start, end, CONNECTION_LINE_WIDTH);
+				connection.setActor(connectionActor);
+				connectionActors.addActor(connectionActor);
+			}
+		});
+
+		Map.subscribeJunctionRemovedListener(new StationRemovedListener() {
+			@Override
+			public void stationRemoved(Station station) {
+				if (station.getClass().equals(CollisionStation.class)) {
+					stationActors.removeActor(((CollisionStation) station).getCollisionStationActor());
+				}
+			}
+		});
+
+		ConnectionController.subscribeStationAdded(new StationAddedListener() {
+			@Override
+			public void stationAdded(Station station) {
+				// TODO Auto-generated method stub
+				stationActors.addActor(station.getActor());
+			}
+		});
 	}
 
 	public static void subscribeStationClick(StationClickListener listener) {
@@ -71,10 +103,28 @@ public class StationController {
 		}
 	}
 
+	public void renderStations() {
+		//Calls the relevant rendering methods from within the controller class based on what type of station needs to be rendered
+		List<Station> stations = context.getGameLogic().getMap().getStations();
 
-	private void renderStation(final Station station) {
+		stationActors = new Group();
+		//Iterates through every station and renders them on the GUI
+		for (Station station : stations) {
+			if (station instanceof CollisionStation) {
+				//stationActors.addActor(renderCollisionStation(station));
+				renderCollisionStation((CollisionStation) station);
+			} else {
+				//stationActors.addActor(renderStation(station));
+				renderStation(station);
+			}
+		}
+		renderStationGoalHighlights();
+		context.getStage().addActor(stationActors);
+	}
+
+	public static StationActor renderStation(final Station station) {
 		//This method renders the station passed to the method
-		final StationActor stationActor = new StationActor(station.getLocation(), station);
+		final StationActor stationActor = new StationActor(station.getPosition(), station);
 
 		//Creates new click listener for that station
 		stationActor.addListener(new ClickListener() {
@@ -84,10 +134,10 @@ public class StationController {
 				if (Game.getInstance().getState() == GameState.NORMAL) {
 					ArrayList<Train> trains = new ArrayList<Train>();
 					for (Player player : context.getGameLogic().getPlayerManager()
-												.getAllPlayers()) {
+							.getAllPlayers()) {
 						for (Resource resource : player.getResources()) {
 							if (resource instanceof Train) {
-								if (((Train) resource).getPosition() == station.getLocation()) {
+								if (((Train) resource).getPosition() == station.getPosition()) {
 									trains.add((Train) resource);
 								}
 							}
@@ -122,19 +172,41 @@ public class StationController {
 		});
 
 		station.setActor(stationActor);
-
-		context.getStage().addActor(stationActor);
+		stationActors.addActor(stationActor);
+		return stationActor;
 	}
 
-	private void renderCollisionStation(final Station collisionStation) {
+	public static CollisionStationActor renderCollisionStation(final CollisionStation collisionStation) {
 		//Carries out the same code but this time as a collision station
 		final CollisionStationActor collisionStationActor = new CollisionStationActor(
-				collisionStation.getLocation());
+				collisionStation.getPosition(), collisionStation);
 
 		//No need for a thorough clicked routine in the collision station unlike the standard station as trains cannot be located on a collision station
 		collisionStationActor.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				if (Game.getInstance().getState() == GameState.NORMAL) {
+					ArrayList<Train> trains = new ArrayList<Train>();
+					for (Player player : context.getGameLogic().getPlayerManager().getAllPlayers()) {
+						for (Resource resource : player.getResources()) {
+							if (resource instanceof Train) {
+								if (((Train) resource).getPosition() == collisionStation.getPosition()) {
+									trains.add((Train) resource);
+								}
+							}
+						}
+					}
+					if (trains.size() == 1) {
+						//If there is only one train here it immediately simulates the train click
+						TrainClicked clicker = new TrainClicked(context, trains.get(0));
+						clicker.clicked(null, -1, 0);
+					} else if (trains.size() > 1) {
+						//If there is more than one of a particular train then the multitrain dialog is called using the list of trains
+						DialogStationMultitrain dia = new DialogStationMultitrain(trains,
+								context.getSkin(), context);
+						dia.show(context.getStage());
+					}
+				}
 				stationClicked(collisionStation);
 			}
 
@@ -152,11 +224,12 @@ public class StationController {
 				tooltip.hide();
 			}
 		});
-
-		context.getStage().addActor(collisionStationActor);
+		collisionStation.setActor(collisionStationActor);
+		stationActors.addActor(collisionStationActor);
+		return collisionStationActor;
 	}
 
-	public static Color[] colours = {Color.ORANGE, Color.GREEN, Color.PURPLE};
+	public static Color[] colours = {Color.ORANGE, Color.PINK, Color.PURPLE};
 
 	public void renderStationGoalHighlights() {
 		//This method is responsible for rendering the colours around the goal nodes
@@ -169,7 +242,7 @@ public class StationController {
 				//Creates a new hashmap which stores the maximum radius of each station
 				HashMap<String, Integer> map = new HashMap<String, Integer>();
 				for (Goal goal : Game.getInstance().getPlayerManager().getCurrentPlayer()
-									 .getGoals()) {
+						.getGoals()) {
 					if (!goal.getComplete()) {
 						if (goal.getOrigin().equals(station) ||
 								goal.getDestination().equals(station) ||
@@ -201,8 +274,8 @@ public class StationController {
 			//Iterates through the list of StationHighlights and draws circles based on the values stored in the data structure
 			game.shapeRenderer.begin(ShapeType.Filled);
 			game.shapeRenderer.setColor(sh.getColour());
-			game.shapeRenderer.circle(sh.getStation().getLocation().getX(),
-					sh.getStation().getLocation().getY(), sh.getRadius());
+			game.shapeRenderer.circle(sh.getStation().getPosition().getX(),
+					sh.getStation().getPosition().getY(), sh.getRadius());
 			game.shapeRenderer.end();
 		}
 	}
@@ -237,71 +310,28 @@ public class StationController {
 		}
 	}
 
-	public void renderStations() {
-		//Calls the relevant rendering methods from within the controller class based on what type of station needs to be rendered
-		List<Station> stations = context.getGameLogic().getMap().getStations();
-
-		//Iterates through every station and renders them on the GUI
-		for (Station station : stations) {
-			if (station instanceof CollisionStation) {
-				renderCollisionStation(station);
-			} else {
-				renderStation(station);
-			}
+	public void addConnections(List<Connection> connections, final Color color) {
+		connectionActors = new Group();
+		for (Connection connection : connections) {
+			final IPositionable start = connection.getStation1().getPosition();
+			final IPositionable end = connection.getStation2().getPosition();
+			ConnectionActor connectionActor = new ConnectionActor(Color.GRAY, start, end, CONNECTION_LINE_WIDTH);
+			connection.setActor(connectionActor);
+			connectionActors.addActor(connectionActor);
 		}
-		renderStationGoalHighlights();
+		context.getStage().addActor(connectionActors);
 	}
 
-	public void renderConnections(List<Connection> connections, Color color) {
-		//Renders all of the connections between each station
+	public void drawRoutingInfo(List<Connection> connections){
 		TaxeGame game = context.getTaxeGame();
-
-		game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-
-		for (Connection connection : connections) {
-			//This draws the line representing each connection between the 2 stations stored in that connection
-			IPositionable start = connection.getStation1().getLocation();
-			IPositionable end = connection.getStation2().getLocation();
-			game.shapeRenderer.setColor(color);
-			game.shapeRenderer.rectLine(start.getX(), start.getY(), end.getX(), end.getY(),
-					CONNECTION_LINE_WIDTH);
-		}
-		game.shapeRenderer.end();
-
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		game.shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-		game.shapeRenderer.setColor(translucentBlack);
-
-		// draw an icon on connections that are blocked, showing how many turns remain until they
-		// become unblocked
-		// if the game is in routing mode, then all connections that aren't blocked have a
-		// translucent black circle drawn on their midpoint, to increase visibility of the white
-		// text that will be drawn on top showing the length of the connection
-		for (Connection connection : connections) {
-			IPositionable midpoint = connection.getMidpoint();
-			if (connection.isBlocked()) {
-				game.batch.begin();
-				game.shapeRenderer.circle(midpoint.getX(), midpoint.getY(), 10);
-				game.batch.draw(blockageTextures[connection.getTurnsBlocked() - 1],
-						midpoint.getX() - 10, midpoint.getY() - 10, 20, 20);
-				game.batch.end();
-			}
-		}
-		game.shapeRenderer.end();
-		Gdx.gl.glDisable(GL20.GL_BLEND);
-
-
 		// if the game is in routing mode, then the length of the connection is displayed
 		for (Connection connection : connections) {
-			if (connection.isBlocked()) {
-
-			} else if (Game.getInstance().getState() == GameState.ROUTING) {
+			if (Game.getInstance().getState() == GameState.ROUTING) {
 				IPositionable midpoint = connection.getMidpoint();
 				game.batch.begin();
 				game.fontTinyLight.setColor(Color.BLACK);
 				String text = String.valueOf(Math.round(
-						context.getGameLogic().getMap().getDistance(connection.getStation1(),connection.getStation2())
+						context.getGameLogic().getMap().getStationDistance(connection.getStation1(),connection.getStation2())
 				));
 				game.fontTinyLight.draw(game.batch, text,
 						midpoint.getX() - game.fontTinyLight.getBounds(text).width / 2f,
@@ -321,8 +351,8 @@ public class StationController {
 			if (trainsAtStation(station) > 0) {
 				//if the number of trains at that station is greater than 0 then it renders the number in the correct place
 				game.fontSmallLight.draw(game.batch, trainsAtStation(station) + "",
-						(float) station.getLocation().getX() - 6,
-						(float) station.getLocation().getY() + 26);
+						(float) station.getPosition().getX() - 6,
+						(float) station.getPosition().getY() + 26);
 			}
 		}
 
@@ -331,12 +361,12 @@ public class StationController {
 
 	private int trainsAtStation(Station station) {
 		int count = 0;
-//This method iterates through every train and checks whether or not the location of the train matches the location of the station. Returns the number of trains at that station
+		//This method iterates through every train and checks whether or not the location of the train matches the location of the station. Returns the number of trains at that station
 		for (Player player : context.getGameLogic().getPlayerManager().getAllPlayers()) {
 			for (Resource resource : player.getResources()) {
 				if (resource instanceof Train) {
 					if (((Train) resource).getActor() != null) {
-						if (((Train) resource).getPosition().equals(station.getLocation())) {
+						if (((Train) resource).getPosition().equals(station.getPosition())) {
 							count++;
 						}
 					}

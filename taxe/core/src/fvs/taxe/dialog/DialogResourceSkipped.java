@@ -3,19 +3,22 @@ package fvs.taxe.dialog;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+
 import fvs.taxe.Button;
 import fvs.taxe.clickListener.ResourceDialogClickListener;
 import fvs.taxe.controller.Context;
+import gameLogic.GameState;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DialogResourceSkipped extends Dialog {
     private List<ResourceDialogClickListener> clickListeners = new ArrayList<ResourceDialogClickListener>();
+	private Context context;
 
     public DialogResourceSkipped(Context context) {
         super("Skip", context.getSkin());
-
+        this.context = context;
         text("What do you want to do with this resource?");
         //Generates all the buttons required to allow the user to interact with the dialog
         button("Use", "USE");
@@ -27,6 +30,7 @@ public class DialogResourceSkipped extends Dialog {
     public Dialog show(Stage stage) {
         //Shows the dialog
         show(stage, null);
+        context.getGameLogic().setState(GameState.WAITING);
         setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
         return this;
     }
@@ -34,6 +38,7 @@ public class DialogResourceSkipped extends Dialog {
     @Override
     public void hide() {
         //Hides the dialog
+    	context.getGameLogic().setState(GameState.NORMAL);
         hide(null);
     }
 

@@ -1,15 +1,17 @@
 package gameLogic.map;
 
 import fvs.taxe.actor.StationActor;
+import gameLogic.obstacle.Obstacle;
 
 public class Station {
     private String name;
-    private IPositionable location;
+    private IPositionable position;
     private StationActor actor;
+	private Obstacle obstacle;
 
     public Station(String name, IPositionable location) {
         this.name = name;
-        this.location = location;
+        this.position = location;
     }
 
     public String getName() {
@@ -20,12 +22,12 @@ public class Station {
         this.name = name;
     }
 
-    public IPositionable getLocation() {
-        return location;
+    public IPositionable getPosition() {
+        return position;
     }
 
-    public void setLocation(IPositionable location) {
-        this.location = location;
+    public void setLocation(IPositionable position) {
+        this.position = position;
     }
 
     public void setActor(StationActor actor) {
@@ -41,11 +43,31 @@ public class Station {
         if (o instanceof Station) {
             Station s = (Station) o;
             return getName().equals(s.getName()) &&
-                    getLocation().getX() == s.getLocation().getX() &&
-                    getLocation().getY() == s.getLocation().getY();
+                    getPosition().getX() == s.getPosition().getX() &&
+                    getPosition().getY() == s.getPosition().getY();
         } else {
             return false;
         }
     }
+    
+    public void setObstacle(Obstacle obstacle) {
+		this.obstacle = obstacle;
+	}
+
+	public boolean hasObstacle(){
+		if (this.obstacle == null){
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	public Obstacle getObstacle(){
+		return this.obstacle;
+	}
+	
+	public void clearObstacle() {
+		this.obstacle = null;
+	}
 
 }
