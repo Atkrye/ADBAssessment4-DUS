@@ -7,6 +7,7 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
@@ -26,6 +27,7 @@ public class GameScreen extends ScreenAdapter {
     private static TaxeGame game;
     private Stage stage;
     private Texture mapTexture;
+    private Texture sidebarTexture;
     private Game gameLogic;
     private Skin skin;
     private Map map;
@@ -57,6 +59,9 @@ public class GameScreen extends ScreenAdapter {
         //Draw background
         mapTexture = new Texture(Gdx.files.internal("gamemap.png"));
         map = gameLogic.getMap();
+        
+        // Draw sidebar
+        sidebarTexture = new Texture(Gdx.files.internal("Sidebar.png"));
 
         tooltip = new Tooltip(skin);
         stage.addActor(tooltip);
@@ -111,7 +116,10 @@ public class GameScreen extends ScreenAdapter {
         game.batch.begin();
 
         //Draws the map background
-        game.batch.draw(mapTexture, 0, 0);
+        game.batch.draw(mapTexture, 290, 0);
+        
+        //Draws sidebar
+        game.batch.draw(sidebarTexture, 0, 0);
         
         game.batch.end();
 
@@ -147,12 +155,23 @@ public class GameScreen extends ScreenAdapter {
         stage.act(Gdx.graphics.getDeltaTime());
 
         stage.draw();
-
+        
+        // Bounds for turn text 'Turn'
+        TextBounds lightBounds = game.fontTinyLight.getBounds("Turn");
+        // Bounds for turn text '1/30'
+        TextBounds boldBounds = game.fontTinyBold.getBounds(((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS);
+        
         game.batch.begin();
-        //If statement checks whether the turn is above 30, if it is then display 30 anyway
-        game.fontSmall.draw(game.batch, "Turn " + ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + "/" + gameLogic.TOTAL_TURNS, (float) TaxeGame.WIDTH - 90.0f, 20.0f);
+        
+        // Draw 'Turn'
+        game.fontTinyLight.setColor(Color.WHITE);
+        game.fontTinyLight.draw(game.batch, "Turn", 290/2 - (lightBounds.width/2), 132);
+        
+        // Draw turn number i.e '1/30'
+        game.fontTinyBold.setColor(Color.WHITE);
+        game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 290/2 - (boldBounds.width/2), 105.0f);
         game.batch.end();
-
+        
         resourceController.drawHeaderText();
         goalController.drawHeaderText();
     }

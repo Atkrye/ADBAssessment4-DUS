@@ -299,13 +299,13 @@ public class StationController {
 			} else if (Game.getInstance().getState() == GameState.ROUTING) {
 				IPositionable midpoint = connection.getMidpoint();
 				game.batch.begin();
-				game.fontTiny.setColor(Color.BLACK);
+				game.fontTinyLight.setColor(Color.BLACK);
 				String text = String.valueOf(Math.round(
 						context.getGameLogic().getMap().getDistance(connection.getStation1(),connection.getStation2())
 				));
-				game.fontTiny.draw(game.batch, text,
-						midpoint.getX() - game.fontTiny.getBounds(text).width / 2f,
-						midpoint.getY() + game.fontTiny.getBounds(text).height / 2f);
+				game.fontTinyLight.draw(game.batch, text,
+						midpoint.getX() - game.fontTinyLight.getBounds(text).width / 2f,
+						midpoint.getY() + game.fontTinyLight.getBounds(text).height / 2f);
 				game.batch.end();
 			}
 		}
@@ -315,12 +315,12 @@ public class StationController {
 		//This renders the number next to each station of how many trains are located there
 		TaxeGame game = context.getTaxeGame();
 		game.batch.begin();
-		game.fontSmall.setColor(Color.BLACK);
+		game.fontLight.setColor(Color.BLACK);
 
 		for (Station station : context.getGameLogic().getMap().getStations()) {
 			if (trainsAtStation(station) > 0) {
 				//if the number of trains at that station is greater than 0 then it renders the number in the correct place
-				game.fontSmall.draw(game.batch, trainsAtStation(station) + "",
+				game.fontSmallLight.draw(game.batch, trainsAtStation(station) + "",
 						(float) station.getLocation().getX() - 6,
 						(float) station.getLocation().getY() + 26);
 			}

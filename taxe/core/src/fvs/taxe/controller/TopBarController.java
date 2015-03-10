@@ -1,21 +1,22 @@
 package fvs.taxe.controller;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import fvs.taxe.TaxeGame;
 import gameLogic.GameState;
 import gameLogic.listeners.GameStateListener;
-
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class TopBarController {
     //This class controls what is displayed in the topBar, the primary method of informing the players of events that occur in game
     //It's very possible to move away from a topBar orientated design and more to dialogs as we have done, but we decided not to entirely due to the work required.
-    public final static int CONTROLS_HEIGHT = 40;
+    public final static int CONTROLS_HEIGHT = 75;
 
     private Context context;
     private Color controlsColor = Color.LIGHT_GRAY;
@@ -45,7 +46,7 @@ public class TopBarController {
 
     private void createFlashActor() {
         flashMessage = new Label("", context.getSkin());
-        flashMessage.setPosition(400, TaxeGame.HEIGHT - 24);
+        flashMessage.setPosition(690, TaxeGame.HEIGHT - 44);
         context.getStage().addActor(flashMessage);
     }
 
@@ -76,19 +77,21 @@ public class TopBarController {
 
     public void drawBackground() {
         TaxeGame game = context.getTaxeGame();
-        //This method draws the topBar onto the game screen
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(controlsColor);
-        game.shapeRenderer.rect(0, TaxeGame.HEIGHT - CONTROLS_HEIGHT, TaxeGame.WIDTH, CONTROLS_HEIGHT);
-        game.shapeRenderer.setColor(Color.BLACK);
-        game.shapeRenderer.rect(0, TaxeGame.HEIGHT - CONTROLS_HEIGHT, TaxeGame.WIDTH, 1);
-        game.shapeRenderer.end();
+        
+        Texture topbarTexture = new Texture(Gdx.files.internal("Topbar.png"));
+        
+        game.batch.begin();
+        game.batch.draw(topbarTexture, 290, TaxeGame.HEIGHT - CONTROLS_HEIGHT);
+        game.batch.end();
+        
     }
 
     public void addEndTurnButton() {
+
         //This method adds an endTurn button to the topBar which allows the user to end their turn
         endTurnButton = new TextButton("End Turn", context.getSkin());
-        endTurnButton.setPosition(TaxeGame.WIDTH - 100.0f, TaxeGame.HEIGHT - 33.0f);
+        endTurnButton.setPosition(TaxeGame.WIDTH - 120.0f, TaxeGame.HEIGHT - 56.0f);
+        endTurnButton.setSize(106, 37);
         endTurnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
