@@ -23,8 +23,8 @@ public class GoalTest extends TestCase {
 
 
 	Station intermediary = new Station("station3", new Position(5, 5));
-	Train train = new Train("RedTrain", "RedTrain.png", "RedTrainRight.png", 250);
-	Train train2 = new Train("RedTrain", "RedTrain.png", "RedTrainRight.png", 250);
+	Train train = new Train("RedTrain", "RedTrain.png", 250);
+	Train train2 = new Train("RedTrain", "RedTrain.png", 250);
 	Goal goal = new Goal(origin, destination, intermediary, 0, 4, 50, 20, train);
 	Goal goal2 = new Goal(origin, destination, intermediary, 0, 4, 50, 20, train2);
 
@@ -68,7 +68,7 @@ public class GoalTest extends TestCase {
 
 	public void testCompletedWithTrain() throws Exception {
 		assertEquals(true, goal.getTrain().getName()==train.getName());
-		Train timeOfMyLife = new Train("I just love testing", "RedTrain.png", "RedTrainRight.png", 250);
+		Train timeOfMyLife = new Train("I just love testing", "RedTrain.png",  250);
 		assertEquals(false, goal.getTrain().getName()==timeOfMyLife.getName());
 
 	}

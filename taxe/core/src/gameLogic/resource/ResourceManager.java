@@ -50,7 +50,7 @@ public class ResourceManager {
         //Uses a random number generator to pick a random train and return the complete train class for that train.
         int index = random.nextInt(trains.size());
         Tuple<String, Integer> train = trains.get(index);
-        return new Train(train.getFirst(), train.getFirst().replaceAll(" ", "") + ".png", train.getFirst().replaceAll(" ", "") + "Right.png", train.getSecond());
+        return new Train(train.getFirst(), train.getFirst().replaceAll(" ", "") + ".png", train.getSecond());
     }
 
 

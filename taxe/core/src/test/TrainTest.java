@@ -16,7 +16,7 @@ public class TrainTest {
 
     @Before
     public void trainSetup() throws Exception {
-        train = new Train("RedTrain", "RedTrain.png", "RedTrainRight.png", 250);
+        train = new Train("RedTrain", "RedTrain.png", 250);
     }
 
     @Test

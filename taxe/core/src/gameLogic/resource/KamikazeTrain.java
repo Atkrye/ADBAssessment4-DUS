@@ -8,7 +8,7 @@ public class KamikazeTrain extends Train {
 	private KamikazeTrainActor actor;
 	
 	public KamikazeTrain() {
-		super("Kamikaze", "BulletTrain.png", "BulletTrainRight.png", 10);
+		super("Kamikaze", "KamikazeTrain.png", 10);
 	}
 	
 	@Override

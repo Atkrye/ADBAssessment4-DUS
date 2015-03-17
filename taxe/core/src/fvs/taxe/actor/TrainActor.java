@@ -36,7 +36,7 @@ public class TrainActor extends Image {
 
     public TrainActor(Train train, Context context) {
         //The constructor initialises all the variables and gathers the relevant image for the actor based on the train it is acting for.
-        super(new Texture(Gdx.files.internal(train.getLeftImage())));
+        super(new Texture(Gdx.files.internal(train.getImage())));
        
         this.context = context;
 
