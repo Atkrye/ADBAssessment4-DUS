@@ -18,7 +18,8 @@ import Util.Tuple;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
 public class PioneerTrainActor extends TrainActor {
 	private PioneerTrain train;
@@ -38,6 +39,7 @@ public class PioneerTrainActor extends TrainActor {
 	@Override
 	public void act(float delta) {
 		super.act(delta);
+		
 		if (train.isCreating() && isVisible()) {
 			if (context.getGameLogic().getState() == GameState.ANIMATING) {
 				moveBy((float) (train.getSpeed()*Math.cos(angle))*delta, (float) (train.getSpeed()*Math.sin(angle))*delta);
@@ -153,5 +155,8 @@ public class PioneerTrainActor extends TrainActor {
 		this.position1 = connection.getStation1().getPosition();
 		this.position2 = connection.getStation2().getPosition();
 		this.angle = Position.getAngle(position1,position2);
+		
+		float degangle = (float) (MathUtils.radiansToDegrees*angle);
+		addAction(Actions.rotateTo((float) degangle));
 	}
 }

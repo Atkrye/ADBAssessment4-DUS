@@ -2,7 +2,6 @@ package fvs.taxe.actor;
 
 import fvs.taxe.controller.Context;
 import gameLogic.resource.KamikazeTrain;
-import gameLogic.resource.Train;
 
 public class KamikazeTrainActor extends TrainActor {
 	

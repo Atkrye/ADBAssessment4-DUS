@@ -50,7 +50,8 @@ public class GameScreen extends ScreenAdapter {
 	private Rumble rumble;
 	public TrongScreen trongScreen = null;
 	private ConnectionController connectionController;
-	private Texture mapTexture;
+	private Texture dayMapTexture;
+	private Texture nightMapTexture;
 
 	public GameScreen(TaxeGame game) {
 		instance = this;
@@ -66,7 +67,8 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.input.setInputProcessor(stage);
 
 		//Draw background
-		mapTexture = new Texture(Gdx.files.internal("gamemap.png"));
+		dayMapTexture = new Texture(Gdx.files.internal("DaytimeMap.png"));
+		nightMapTexture = new Texture(Gdx.files.internal("NightMap.png"));
 		blankMapActor = new BlankMapActor();
 		stage.addActor(blankMapActor);
 		map = gameLogic.getMap();
@@ -128,6 +130,8 @@ public class GameScreen extends ScreenAdapter {
 				}
 			}
 		});
+
+
 	}
 
 	// called every frame
@@ -136,22 +140,27 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		Texture texture = dayMapTexture;
+		if (context.getGameLogic().getPlayerManager().isNight()){
+			texture = nightMapTexture;
+		};
+		
 		if (rumble.time > 0){
 			Vector2 mapPosition = rumble.tick(delta);
 			game.batch.begin();
-			game.batch.draw(mapTexture, 290+ mapPosition.x, mapPosition.y);
+			game.batch.draw(texture, 290+ mapPosition.x, mapPosition.y);
 		} else {
 			game.batch.begin();
-			game.batch.draw(mapTexture, 290, 0);
+			game.batch.draw(texture, 290, 0);
 		}
 		game.batch.end();
-		
-/*game.batch.begin();
-		
+
+		/*game.batch.begin();
+
 		game.batch.draw(sidebarTexture, 0, 0);
 		game.batch.end();*/
 
-		
+
 
 
 		if (gameLogic.getState() == GameState.PLACING_TRAIN || gameLogic.getState() == GameState.ROUTING) {
@@ -175,8 +184,8 @@ public class GameScreen extends ScreenAdapter {
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 
-		
-		
+
+
 		stationController.drawRoutingInfo(map.getConnections());
 		//Draw the number of trains at each station
 		if (gameLogic.getState() == GameState.NORMAL || gameLogic.getState() == GameState.PLACING_TRAIN) {
@@ -228,7 +237,7 @@ public class GameScreen extends ScreenAdapter {
 
 	@Override
 	public void dispose() {
-		mapTexture.dispose();
+		dayMapTexture.dispose();
 		stage.dispose();
 	}
 

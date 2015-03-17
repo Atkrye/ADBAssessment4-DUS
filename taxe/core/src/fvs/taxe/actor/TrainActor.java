@@ -1,5 +1,15 @@
 package fvs.taxe.actor;
 
+import fvs.taxe.GameScreen;
+import fvs.taxe.controller.Context;
+import gameLogic.Game;
+import gameLogic.GameState;
+import gameLogic.map.IPositionable;
+import gameLogic.map.Station;
+import gameLogic.player.Player;
+import gameLogic.resource.Train;
+import gameLogic.trong.TrongScreen;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,17 +19,6 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
-import fvs.taxe.GameScreen;
-import fvs.taxe.controller.Context;
-import gameLogic.Game;
-import gameLogic.GameState;
-import gameLogic.player.Player;
-import gameLogic.map.IPositionable;
-import gameLogic.map.Station;
-import gameLogic.resource.Train;
-import gameLogic.trong.TrongScreen;
 
 public class TrainActor extends Image {
     public static int width = 36;

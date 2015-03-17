@@ -2,6 +2,7 @@ package gameLogic.player;
 
 import fvs.taxe.controller.Context;
 import fvs.taxe.dialog.DialogTurnSkipped;
+import gameLogic.listeners.DayChangedListener;
 import gameLogic.listeners.TurnListener;
 import gameLogic.listeners.PlayerChangedListener;
 import gameLogic.player.Player;
@@ -16,7 +17,9 @@ public class PlayerManager {
     private int turnNumber = 0;
     private List<TurnListener> turnListeners = new ArrayList<TurnListener>();
     private List<PlayerChangedListener> playerListeners = new ArrayList<PlayerChangedListener>();
-
+	private List<DayChangedListener> dayListeners = new ArrayList<DayChangedListener>();
+    private boolean isNight = false;
+    
     public void createPlayers(int count) {
         //Initialises all players (set by count)
         for (int i = 0; i < count; i++) {
@@ -65,6 +68,11 @@ public class PlayerManager {
 
     private void turnChanged() {
         turnNumber++;
+        if (turnNumber%4 == 0){
+        	isNight = !isNight;
+        	dayChanged();
+        }
+        
 		// reverse iterate to give priority to calls from Game() (obstacles)
 		for(int i = 0; i< turnListeners.size(); i++) {
 			turnListeners.get(turnListeners.size()-1-i).changed();
@@ -81,9 +89,23 @@ public class PlayerManager {
             listener.changed();
         }
     }
+    
+    public void subscribeDayChanged(DayChangedListener listener){
+    	dayListeners.add(listener);
+    }
+    
+    public void dayChanged() {
+    	for (DayChangedListener listener : dayListeners) {
+            listener.changed(isNight);
+        }
+    }
 
     public int getTurnNumber() {
         return turnNumber;
     }
+
+	public boolean isNight() {
+		return isNight;
+	}
 
 }
