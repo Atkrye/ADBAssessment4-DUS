@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -24,25 +26,18 @@ public class TrainActor extends Image {
     public static int height = 36;
     public Train train;
 
-    private Rectangle bounds;
+    private Polygon bounds;
+    private Rectangle rect;
     public boolean facingLeft;
-    private float previousX;
-    private Drawable leftDrawable;
-    private Drawable rightDrawable;
     protected Context context;
     private boolean paused;
     private boolean recentlyPaused;
-	private float angle;
-	private Texture texture;
 	private ShapeRenderer shapeRenderer;
 
     public TrainActor(Train train, Context context) {
         //The constructor initialises all the variables and gathers the relevant image for the actor based on the train it is acting for.
         super(new Texture(Gdx.files.internal(train.getLeftImage())));
-        texture = new Texture(Gdx.files.internal(train.getLeftImage()));
-        
-        //leftDrawable = getDrawable();
-        //rightDrawable = new Image(new Texture(Gdx.files.internal(train.getRightImage()))).getDrawable();
+       
         this.context = context;
 
         IPositionable position = train.getPosition();
@@ -50,23 +45,27 @@ public class TrainActor extends Image {
         train.setActor(this);
         this.train = train;
         setSize(width, height);
-        bounds = new Rectangle();
+        
+        bounds = new Polygon(new float[] {0,0,0, height, width, height, width, 0});
+        bounds.setOrigin(width/2, height/2);
+        
         setPosition(position.getX() - width / 2, position.getY() - height / 2);
-        previousX = getX();
-        facingLeft = true;
         paused = false;
         recentlyPaused = false;
         setOrigin(getWidth()/2, getHeight()/2);
         
-         
         shapeRenderer = context.getTaxeGame().shapeRenderer;
     }
 
     @Override
     public void draw(Batch batch, float alpha){
-        batch.draw(texture,this.getX(),getY(),this.getOriginX(),this.getOriginY(),this.getWidth(),
-                this.getHeight(),this.getScaleX(), this.getScaleY(),this.getRotation(),0,0,
-                texture.getWidth(),texture.getHeight(),false,false);
+    	super.draw(batch, alpha);
+        batch.end();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+		shapeRenderer.setColor(Color.RED);
+		shapeRenderer.polygon(bounds.getTransformedVertices());
+		shapeRenderer.end();
+		batch.begin();
     }
     
     @Override
@@ -76,7 +75,6 @@ public class TrainActor extends Image {
             //It renders everything every 1/delta seconds
             super.act(delta);
             updateBounds();
-            //updateFacingDirection();
 
             final Train collidedTrain = collided();
             if (collidedTrain != null) {
@@ -134,22 +132,15 @@ public class TrainActor extends Image {
                 this.recentlyPaused = true;
             }*/
         //}
-        
-        
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.setColor(Color.RED);
-		shapeRenderer.rect(getX(), getY(), getWidth(), getHeight());
-		shapeRenderer.end();
     }
 
     private void updateBounds() {
-    	//Rectangle rect = bounds;
-    	
-        bounds.set(getX(), getY(), getWidth(), getHeight());
+        bounds.setPosition(getX(), getY());
+    	bounds.setRotation(getRotation());
     }
 
     public Rectangle getBounds() {
-        return bounds;
+        return rect;
     }
 
     public void setPaused(boolean paused) {
@@ -197,8 +188,9 @@ public class TrainActor extends Image {
                                     //check if trains on same connection
 
 
-                                    if ((this.bounds.overlaps(otherTrain.getActor().getBounds())) && !((this.recentlyPaused) || (otherTrain.getActor().isRecentlyPaused()))) {
-                                        //Checks whether the two trains are recently paused, if either of them are then no collision should occur
+                                    //if ((this.rect.overlaps(otherTrain.getActor().getBounds())) && !((this.recentlyPaused) || (otherTrain.getActor().isRecentlyPaused()))) {
+                                    if ((Intersector.overlapConvexPolygons(bounds, otherTrain.getActor().bounds)) && !((this.recentlyPaused) || (otherTrain.getActor().isRecentlyPaused()))){
+                                	//Checks whether the two trains are recently paused, if either of them are then no collision should occur
                                         //This prevents the issue of two paused trains crashing when they shouldn't
                                         //There is still the potential issue of two blocked trains colliding when they shouldn't, as it is impossible to know which connection a blocked train will occupy. i.e when one train is rerouted but not the other
                                         return otherTrain;

@@ -67,7 +67,7 @@ public class TrainMoveController {
 					Station nextStation = train.getRoute().get(nextIndex);
 
 					float angle = Position.getAngle(train.getRoute().get(stationIndex).getPosition(), nextStation.getPosition());
-					train.getActor().setAngle(angle);
+					//train.getActor().setAngle(angle);
 					//train.getActor().setRotation(angle);
 					//train.getActor().addAction(Actions.rotateTo(angle));
 					
