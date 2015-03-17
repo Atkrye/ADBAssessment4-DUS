@@ -3,6 +3,8 @@ package fvs.taxe.actor;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
@@ -30,12 +32,17 @@ public class TrainActor extends Image {
     protected Context context;
     private boolean paused;
     private boolean recentlyPaused;
+	private float angle;
+	private Texture texture;
+	private ShapeRenderer shapeRenderer;
 
     public TrainActor(Train train, Context context) {
         //The constructor initialises all the variables and gathers the relevant image for the actor based on the train it is acting for.
         super(new Texture(Gdx.files.internal(train.getLeftImage())));
-        leftDrawable = getDrawable();
-        rightDrawable = new Image(new Texture(Gdx.files.internal(train.getRightImage()))).getDrawable();
+        texture = new Texture(Gdx.files.internal(train.getLeftImage()));
+        
+        //leftDrawable = getDrawable();
+        //rightDrawable = new Image(new Texture(Gdx.files.internal(train.getRightImage()))).getDrawable();
         this.context = context;
 
         IPositionable position = train.getPosition();
@@ -49,8 +56,19 @@ public class TrainActor extends Image {
         facingLeft = true;
         paused = false;
         recentlyPaused = false;
+        setOrigin(getWidth()/2, getHeight()/2);
+        
+         
+        shapeRenderer = context.getTaxeGame().shapeRenderer;
     }
 
+    @Override
+    public void draw(Batch batch, float alpha){
+        batch.draw(texture,this.getX(),getY(),this.getOriginX(),this.getOriginY(),this.getWidth(),
+                this.getHeight(),this.getScaleX(), this.getScaleY(),this.getRotation(),0,0,
+                texture.getWidth(),texture.getHeight(),false,false);
+    }
+    
     @Override
     public void act(float delta) {
         if ((Game.getInstance().getState() == GameState.ANIMATING) && (!this.paused)){
@@ -58,7 +76,7 @@ public class TrainActor extends Image {
             //It renders everything every 1/delta seconds
             super.act(delta);
             updateBounds();
-            updateFacingDirection();
+            //updateFacingDirection();
 
             final Train collidedTrain = collided();
             if (collidedTrain != null) {
@@ -116,24 +134,18 @@ public class TrainActor extends Image {
                 this.recentlyPaused = true;
             }*/
         //}
+        
+        
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+		shapeRenderer.setColor(Color.RED);
+		shapeRenderer.rect(getX(), getY(), getWidth(), getHeight());
+		shapeRenderer.end();
     }
 
     private void updateBounds() {
+    	//Rectangle rect = bounds;
+    	
         bounds.set(getX(), getY(), getWidth(), getHeight());
-    }
-
-    public void updateFacingDirection() {
-        float currentX = getX();
-        //This updates the direction that the train is facing and the image representing the train based on which direction it is travelling
-        if (facingLeft && previousX < currentX) {
-            setDrawable(rightDrawable);
-            facingLeft = false;
-        } else if (!facingLeft && previousX > currentX) {
-            setDrawable(leftDrawable);
-            facingLeft = true;
-        }
-
-        previousX = getX();
     }
 
     public Rectangle getBounds() {
@@ -203,6 +215,4 @@ public class TrainActor extends Image {
         }
         return null;
     }
-
-
 }

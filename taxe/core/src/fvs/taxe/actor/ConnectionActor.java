@@ -59,10 +59,6 @@ public class ConnectionActor extends Image{
 	}
 
 	public void setConnectionColor(Color color) {
-		/*partialDraw = false;
-		partialX = 0f;
-		partialY = 0f;
-		partialNext = null;*/
 		this.color = color;
 	}
 	

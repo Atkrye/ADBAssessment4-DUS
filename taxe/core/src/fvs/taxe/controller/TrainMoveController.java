@@ -10,8 +10,10 @@ import gameLogic.resource.Train;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
@@ -59,17 +61,23 @@ public class TrainMoveController {
 				int stationIndex = train.getRoute().indexOf(station); //find this station in route
 				int nextIndex = stationIndex + 1;
 
+	
 				//This checks whether or not the train is at its final destination by checking whether the index is still less than the list size
 				if (nextIndex < train.getRoute().size()) {
 					Station nextStation = train.getRoute().get(nextIndex);
 
+					float angle = Position.getAngle(train.getRoute().get(stationIndex).getPosition(), nextStation.getPosition());
+					train.getActor().setAngle(angle);
+					//train.getActor().setRotation(angle);
+					//train.getActor().addAction(Actions.rotateTo(angle));
+					
 					//Checks whether the next connection is blocked, if so the train is paused, if not the train is unpaused.
 					if (train.getActor().isPaused()) {
 						train.getActor().setPaused(false);
 						train.getActor().setRecentlyPaused(true);
 					}
 					
-					// check that the connection hasnt been destroyed
+					// check that the connection hasnt been destroyed, if so then stop the train
 					if (!context.getGameLogic().getMap().doesConnectionExist(station.getName(), nextStation.getName())) {
 						train.setFinalDestination(station);
 						train.getActor().clearActions();
@@ -124,9 +132,19 @@ public class TrainMoveController {
 			//This calculates how long it will take for the train to travel to the next station on the route
 			float duration = getDistance(current, next) / train.getSpeed();
 
+			System.out.println("next Station is " + station.getName());
+			// DOESNT WORK
+			float angle = MathUtils.radiansToDegrees*Position.getAngle(current, next);
+			System.out.println("Angle " + angle);
+			actions.addAction(Actions.rotateTo(angle));
+			
+			System.out.println("current " + current + " , next " + next);
 			//This adds the action to the actor which makes it move from point A to point B in a certain amount of time, calculated using duration and the two station positions.
+			
 			actions.addAction(moveTo(next.getX() - TrainActor.width / 2, next.getY() - TrainActor.height / 2, duration));
 			actions.addAction(perStationAction(station));
+			
+			
 			current = next;
 		}
 
