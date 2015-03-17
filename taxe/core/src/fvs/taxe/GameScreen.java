@@ -50,7 +50,11 @@ public class GameScreen extends ScreenAdapter {
 	private Rumble rumble;
 	public TrongScreen trongScreen = null;
 	private ConnectionController connectionController;
+	
 	private Texture mapTexture;
+	private Texture dayTexture;
+	private Texture nightTexture;
+	private boolean day;
 
 	public GameScreen(TaxeGame game) {
 		instance = this;
@@ -64,9 +68,13 @@ public class GameScreen extends ScreenAdapter {
 		gameLogic = Game.getInstance();
 		context = new Context(stage, skin, game, gameLogic);
 		Gdx.input.setInputProcessor(stage);
+		
+		dayTexture = new Texture(Gdx.files.internal("DaytimeMap.png"));
+		nightTexture = new Texture(Gdx.files.internal("NightMap.png"));
+		day = true;
 
 		//Draw background
-		mapTexture = new Texture(Gdx.files.internal("gamemap.png"));
+		mapTexture = dayTexture;
 		blankMapActor = new BlankMapActor();
 		stage.addActor(blankMapActor);
 		map = gameLogic.getMap();
@@ -96,7 +104,24 @@ public class GameScreen extends ScreenAdapter {
 				//The game will not be set into the animating state for the first turn to prevent player 1 from gaining an inherent advantage by gaining an extra turn of movement.
 				if (context.getGameLogic().getPlayerManager().getTurnNumber()!=1) {
 					gameLogic.setState(GameState.ANIMATING);
-					topBarController.displayFlashMessage("Time is passing...", Color.GREEN, Color.BLACK, 2f);
+					
+					String str = "Time is Passing";
+					
+					if ((gameLogic.getPlayerManager().getTurnNumber() % 4 == 0) && (gameLogic.getPlayerManager().getCurrentPlayer().getPlayerNumber() == 1)) {
+						System.out.println("Turn Number: " + gameLogic.getPlayerManager().getTurnNumber());
+						if (day) {
+							mapTexture = nightTexture;
+							str = "Changing to Night Mode";
+						}
+						else {
+							mapTexture = dayTexture;
+							str = "Changing to Day Mode";
+						}
+						
+						day =! day;
+					}
+					
+					topBarController.displayFlashMessage(str, Color.GREEN, Color.BLACK, 2f);
 				}
 			}
 		});
@@ -116,6 +141,7 @@ public class GameScreen extends ScreenAdapter {
 					//If the game state is normal then the goal colour are reset to grey
 					goalController.setColours(new Color[3]);
 				}
+				
 			}
 		});
 
