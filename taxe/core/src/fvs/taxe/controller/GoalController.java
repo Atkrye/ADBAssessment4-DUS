@@ -3,6 +3,7 @@ package fvs.taxe.controller;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
@@ -128,7 +129,7 @@ public class GoalController {
             if (!goal.getComplete()) {
 
                 y -= 50;
-                TextButton button = new TextButton(
+                ImageTextButton button = new ImageTextButton(
                         goal.baseGoalString() + "\n" + goal.bonusString(), context.getSkin());
                 button.getLabel().setAlignment(Align.left);
                 //The goal buttons are scaled so that they do not overlap nodes on the map, this was found to be necessary after changing the way goals were displayed
