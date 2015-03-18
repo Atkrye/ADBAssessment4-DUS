@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.SnapshotArray;
 
 import fvs.taxe.TaxeGame;
 import fvs.taxe.Tooltip;
@@ -25,6 +26,7 @@ import gameLogic.Game;
 import gameLogic.GameState;
 import gameLogic.goal.Goal;
 import gameLogic.listeners.ConnectionChangedListener;
+import gameLogic.listeners.DayChangedListener;
 import gameLogic.listeners.StationAddedListener;
 import gameLogic.listeners.StationRemovedListener;
 import gameLogic.map.CollisionStation;
@@ -85,6 +87,21 @@ public class StationController {
 			public void stationAdded(Station station) {
 				// TODO Auto-generated method stub
 				stationActors.addActor(station.getActor());
+			}
+		});
+		
+		context.getGameLogic().getPlayerManager().subscribeDayChanged(new DayChangedListener() {
+			
+			@Override
+			public void changed(Boolean isNight) {
+				SnapshotArray<Actor> list = stationActors.getChildren();
+				for (Actor actor : list){
+					if (actor.getClass().equals(StationActor.class)){
+						((StationActor) actor).setNight(isNight);
+					} else {
+						((CollisionStationActor) actor).setNight(isNight);
+					}
+				}
 			}
 		});
 	}
