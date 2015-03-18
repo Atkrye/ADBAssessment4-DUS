@@ -52,9 +52,6 @@ public class GameScreen extends ScreenAdapter {
 	private ConnectionController connectionController;
 	
 	private Texture mapTexture;
-	private Texture dayTexture;
-	private Texture nightTexture;
-	private boolean day;
 
 	public GameScreen(TaxeGame game) {
 		instance = this;
@@ -69,12 +66,8 @@ public class GameScreen extends ScreenAdapter {
 		context = new Context(stage, skin, game, gameLogic);
 		Gdx.input.setInputProcessor(stage);
 		
-		dayTexture = new Texture(Gdx.files.internal("DaytimeMap.png"));
-		nightTexture = new Texture(Gdx.files.internal("NightMap.png"));
-		day = true;
-
 		//Draw background
-		mapTexture = dayTexture;
+		mapTexture = new Texture(Gdx.files.internal("DaytimeMap.png"));
 		blankMapActor = new BlankMapActor();
 		stage.addActor(blankMapActor);
 		map = gameLogic.getMap();
@@ -106,21 +99,6 @@ public class GameScreen extends ScreenAdapter {
 					gameLogic.setState(GameState.ANIMATING);
 					
 					String str = "Time is Passing";
-					
-					if ((gameLogic.getPlayerManager().getTurnNumber() % 4 == 0) && (gameLogic.getPlayerManager().getCurrentPlayer().getPlayerNumber() == 1)) {
-						System.out.println("Turn Number: " + gameLogic.getPlayerManager().getTurnNumber());
-						if (day) {
-							mapTexture = nightTexture;
-							str = "Changing to Night Mode";
-						}
-						else {
-							mapTexture = dayTexture;
-							str = "Changing to Day Mode";
-						}
-						
-						day =! day;
-					}
-					
 					topBarController.displayFlashMessage(str, Color.GREEN, Color.BLACK, 2f);
 				}
 			}
