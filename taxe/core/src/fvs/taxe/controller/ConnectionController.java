@@ -21,6 +21,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -86,6 +88,7 @@ public class ConnectionController {
 	}
 
 	protected boolean nearStation(Position location) {
+		// test if a location is near another station
 		ArrayList<Station> stations = (ArrayList<Station>) context.getGameLogic().getMap().getStations();
 		for (Station station : stations) {
 			if (Position.getDistance(location, station.getPosition()) <= StationActor.height + 20) {
@@ -96,10 +99,26 @@ public class ConnectionController {
 	}
 	
 	protected boolean nearConnection(Position location) {
+		// test if a location is near a connection
+		ArrayList<Connection> connections = (ArrayList<Connection>) context.getGameLogic().getMap().getConnections();
+		for (Connection connection : connections) {
+			IPositionable p1 = connection.getStation1().getPosition();
+			Vector2 v1 = new Vector2(p1.getX(), p1.getY());
+			IPositionable p2 = connection.getStation2().getPosition();
+			Vector2 v2 = new Vector2(p2.getX(), p2.getY());
+			
+			Vector2 v3 = new Vector2(location.getX(), location.getY());
+			boolean intersect = Intersector.intersectSegmentCircle(v1, v2, v3, 1000);
+			System.out.println("Hello");
+			if (intersect){
+				return true;
+			}
+		}
 		return false;
 	}
 
 	protected boolean connectionOverlaps(Station station) {
+		// check if a connection overlaps with a station
 		IPositionable position1 = firstStation.getPosition();
 		IPositionable position2 = station.getPosition();
 		int x1,x2,x3,x4,y1,y2,y3,y4;
