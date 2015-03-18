@@ -24,6 +24,7 @@ import gameLogic.map.Map;
 import gameLogic.map.BlankMapActor;
 import gameLogic.map.Station;
 import gameLogic.obstacle.Rumble;
+import gameLogic.player.PlayerManager;
 import gameLogic.resource.Train;
 import gameLogic.trong.TrongScreen;
 
@@ -126,7 +127,11 @@ public class GameScreen extends ScreenAdapter {
 			public void clicked(Station station) {
 				// if the game is routing, set the route black when a new station is clicked
 				if(gameLogic.getState() == GameState.ROUTING) {
-					routeController.drawRoute(Color.BLACK);
+					if (PlayerManager.isNight()) {
+						routeController.drawRoute(Color.WHITE);
+					} else {
+						routeController.drawRoute(Color.BLACK);
+					}
 				}
 			}
 		});
@@ -141,10 +146,11 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		Texture texture = dayMapTexture;
-		if (context.getGameLogic().getPlayerManager().isNight()){
+		context.getGameLogic().getPlayerManager();
+		if (PlayerManager.isNight()){
 			texture = nightMapTexture;
 		};
-		
+
 		if (rumble.time > 0){
 			Vector2 mapPosition = rumble.tick(delta);
 			game.batch.begin();
@@ -154,13 +160,6 @@ public class GameScreen extends ScreenAdapter {
 			game.batch.draw(texture, 290, 0);
 		}
 		game.batch.end();
-
-		/*game.batch.begin();
-
-		game.batch.draw(sidebarTexture, 0, 0);
-		game.batch.end();*/
-
-
 
 
 		if (gameLogic.getState() == GameState.PLACING_TRAIN || gameLogic.getState() == GameState.ROUTING) {
@@ -186,7 +185,6 @@ public class GameScreen extends ScreenAdapter {
 		//Causes all the actors to perform their actions (i.e trains to move)
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
-
 
 
 		stationController.drawRoutingInfo(map.getConnections());

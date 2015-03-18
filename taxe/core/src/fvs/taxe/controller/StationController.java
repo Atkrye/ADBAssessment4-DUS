@@ -35,6 +35,7 @@ import gameLogic.map.IPositionable;
 import gameLogic.map.Map;
 import gameLogic.map.Station;
 import gameLogic.player.Player;
+import gameLogic.player.PlayerManager;
 import gameLogic.resource.Resource;
 import gameLogic.resource.Train;
 
@@ -89,9 +90,9 @@ public class StationController {
 				stationActors.addActor(station.getActor());
 			}
 		});
-		
+
 		context.getGameLogic().getPlayerManager().subscribeDayChanged(new DayChangedListener() {
-			
+
 			@Override
 			public void changed(Boolean isNight) {
 				SnapshotArray<Actor> list = stationActors.getChildren();
@@ -190,7 +191,8 @@ public class StationController {
 
 		station.setActor(stationActor);
 		stationActors.addActor(stationActor);
-		stationActor.setNight(context.getGameLogic().getPlayerManager().isNight());
+		context.getGameLogic().getPlayerManager();
+		stationActor.setNight(PlayerManager.isNight());
 		return stationActor;
 	}
 
@@ -244,7 +246,8 @@ public class StationController {
 		});
 		collisionStation.setActor(collisionStationActor);
 		stationActors.addActor(collisionStationActor);
-		collisionStationActor.setNight(context.getGameLogic().getPlayerManager().isNight());
+		context.getGameLogic().getPlayerManager();
+		collisionStationActor.setNight(PlayerManager.isNight());
 		return collisionStationActor;
 	}
 
@@ -348,10 +351,14 @@ public class StationController {
 			if (Game.getInstance().getState() == GameState.ROUTING) {
 				IPositionable midpoint = connection.getMidpoint();
 				game.batch.begin();
-				game.fontTinyLight.setColor(Color.BLACK);
+				if (PlayerManager.isNight()) {
+					game.fontTinyLight.setColor(Color.WHITE);
+				} else {
+					game.fontTinyLight.setColor(Color.BLACK);
+				}
 				String text = String.valueOf(Math.round(
 						context.getGameLogic().getMap().getStationDistance(connection.getStation1(),connection.getStation2())
-				));
+						));
 				game.fontTinyLight.draw(game.batch, text,
 						midpoint.getX() - game.fontTinyLight.getBounds(text).width / 2f,
 						midpoint.getY() + game.fontTinyLight.getBounds(text).height / 2f);

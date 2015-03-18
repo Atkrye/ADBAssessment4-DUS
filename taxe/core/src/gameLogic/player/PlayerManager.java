@@ -18,7 +18,7 @@ public class PlayerManager {
     private List<TurnListener> turnListeners = new ArrayList<TurnListener>();
     private List<PlayerChangedListener> playerListeners = new ArrayList<PlayerChangedListener>();
 	private List<DayChangedListener> dayListeners = new ArrayList<DayChangedListener>();
-    private boolean isNight = false;
+    private static boolean isNight = false;
     
     public void createPlayers(int count) {
         //Initialises all players (set by count)
@@ -104,7 +104,7 @@ public class PlayerManager {
         return turnNumber;
     }
 
-	public boolean isNight() {
+	public static boolean isNight() {
 		return isNight;
 	}
 

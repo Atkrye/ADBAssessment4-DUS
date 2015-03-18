@@ -6,19 +6,17 @@ import fvs.taxe.clickListener.StationClickListener;
 import gameLogic.GameState;
 import gameLogic.listeners.ConnectionChangedListener;
 import gameLogic.listeners.StationAddedListener;
-import gameLogic.listeners.StationRemovedListener;
 import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Position;
 import gameLogic.map.Station;
+import gameLogic.player.PlayerManager;
 import gameLogic.resource.KamikazeTrain;
 import gameLogic.resource.PioneerTrain;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
@@ -31,6 +29,7 @@ public class ConnectionController {
 	// class used for creating connections when in creating_connection mode 
 	private static ArrayList<ConnectionChangedListener> listeners = new ArrayList<ConnectionChangedListener>();
 	private Context context;
+	private static ArrayList<Connection> connections = new ArrayList<Connection>();
 
 	// when currently selecting a connection
 	private PioneerTrain train;
@@ -40,6 +39,7 @@ public class ConnectionController {
 
 	private static int junctionNumber = 0;
 
+	
 	public ConnectionController(final Context context) {
 		context.getGameLogic().getMap().getMapActor();
 		this.context = context;
@@ -50,7 +50,11 @@ public class ConnectionController {
 					if (station != firstStation){
 						if (!connectionOverlaps(station)){
 							if (!context.getGameLogic().getMap().doesConnectionExist(firstStation.getName(), station.getName())) {
-								endCreating(station);
+								if (!connectionBeingMade(station)){
+									endCreating(station);
+								} else {
+									context.getTopBarController().displayFlashMessage("Connection being created", Color.RED);
+								}
 							} else {
 								context.getTopBarController().displayFlashMessage("Connection already exists", Color.RED);
 							}
@@ -85,6 +89,21 @@ public class ConnectionController {
 				}
 			}
 		});
+	}
+
+	protected boolean connectionBeingMade(Station station) {
+		for (Connection connection: connections) {
+			if (connection.getStation1().equals(firstStation)){
+				if (connection.getStation2().equals(station)){
+					return true;
+				}
+			} else if (connection.getStation2().equals(firstStation)){
+				if (connection.getStation1().equals(station)){
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	protected boolean nearStation(Position location) {
@@ -188,6 +207,8 @@ public class ConnectionController {
 
 	private void endCreating(Station station) {
 		Connection connection = new Connection(firstStation, station);
+		connections.add(connection);
+		
 		train.setPosition(new Position(-1, -1));
 		train.setCreating(connection);
 		context.getGameLogic().setState(GameState.NORMAL);
@@ -200,7 +221,13 @@ public class ConnectionController {
 	public void drawMouse() {
 		ShapeRenderer shapeRenderer = context.getTaxeGame().shapeRenderer;
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-		shapeRenderer.setColor(Color.BLACK);
+		context.getGameLogic().getPlayerManager();
+		if (PlayerManager.isNight()){
+			shapeRenderer.setColor(Color.WHITE);
+		} else {
+			shapeRenderer.setColor(Color.BLACK);
+		}
+		
 		context.getTaxeGame();
 		shapeRenderer.rectLine(firstStation.getPosition().getX(), firstStation.getPosition().getY(), 
 				Gdx.input.getX(), TaxeGame.HEIGHT- Gdx.input.getY(), 5);

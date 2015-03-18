@@ -9,6 +9,7 @@ import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Position;
 import gameLogic.map.Station;
+import gameLogic.player.PlayerManager;
 import gameLogic.resource.PioneerTrain;
 
 import java.util.ArrayList;
@@ -105,7 +106,12 @@ public class PioneerTrainActor extends TrainActor {
 			}
 			ShapeRenderer shapeRenderer = context.getTaxeGame().shapeRenderer;
 			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-			shapeRenderer.setColor(Color.BLACK);
+			if (PlayerManager.isNight()) {
+				shapeRenderer.setColor(Color.WHITE);
+			} else {
+				shapeRenderer.setColor(Color.BLACK);
+			}
+			
 			shapeRenderer.rectLine(this.getX()+ width/2, this.getY()+ height/2, 
 					position1.getX() , position1.getY() , 5);
 			shapeRenderer.end();
