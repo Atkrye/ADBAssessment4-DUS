@@ -197,11 +197,11 @@ public class GameScreen extends ScreenAdapter {
 
 		// Draw 'Turn'
 		game.fontTinyLight.setColor(Color.WHITE);
-		game.fontTinyLight.draw(game.batch, "Turn", 290/2 - (lightBounds.width/2), 132);
+		game.fontTinyLight.draw(game.batch, "Turn", 290/2 - (lightBounds.width/2), 112);
 
 		// Draw turn number i.e '1/30'
 		game.fontTinyBold.setColor(Color.WHITE);
-		game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 290/2 - (boldBounds.width/2), 105.0f);
+		game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 290/2 - (boldBounds.width/2), 85.0f);
 		game.batch.end();
 
 		goalController.drawHeaderText();

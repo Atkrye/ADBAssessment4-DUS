@@ -46,7 +46,7 @@ public class GoalController {
         //This method draws the header for the goals, this is called at the beginning of every turn
         TaxeGame game = context.getTaxeGame();
         float top = (float) TaxeGame.HEIGHT;
-        float y = top - 530.0f - TopBarController.CONTROLS_HEIGHT;
+        float y = top - 550.0f - TopBarController.CONTROLS_HEIGHT;
         
         // Draw score labels
         game.batch.begin();
