@@ -13,8 +13,6 @@ import gameLogic.trong.TrongScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
@@ -31,9 +29,8 @@ public class TrainActor extends Image {
     protected Context context;
     private boolean paused;
     private boolean recentlyPaused;
-	private ShapeRenderer shapeRenderer;
-
-    public TrainActor(Train train, Context context) {
+    
+	public TrainActor(Train train, Context context) {
         //The constructor initialises all the variables and gathers the relevant image for the actor based on the train it is acting for.
         super(new Texture(Gdx.files.internal(train.getImage())));
        
@@ -52,8 +49,6 @@ public class TrainActor extends Image {
         paused = false;
         recentlyPaused = false;
         setOrigin(getWidth()/2, getHeight()/2);
-        
-        shapeRenderer = context.getTaxeGame().shapeRenderer;
     }
     
     @Override

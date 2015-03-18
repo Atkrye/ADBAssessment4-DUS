@@ -14,7 +14,8 @@ public class ResourceManager {
 
     public ResourceManager() {
         //This calls the JSON importer which sets the train
-        JSONImporter jsonImporter = new JSONImporter(this);
+        @SuppressWarnings("unused")
+		JSONImporter jsonImporter = new JSONImporter(this);
     }
 
     public ArrayList<Tuple<String, Integer>> getTrains() {

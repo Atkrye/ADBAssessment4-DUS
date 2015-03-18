@@ -1,14 +1,10 @@
 package fvs.taxe.actor;
 
-import fvs.taxe.controller.ConnectionController;
 import fvs.taxe.controller.Context;
-import fvs.taxe.controller.StationController;
 import gameLogic.GameState;
-import gameLogic.map.CollisionStation;
 import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Position;
-import gameLogic.map.Station;
 import gameLogic.player.PlayerManager;
 import gameLogic.resource.PioneerTrain;
 
@@ -28,19 +24,27 @@ public class PioneerTrainActor extends TrainActor {
 	private IPositionable position2;
 	private Connection connection;
 	private double angle;
-	private ArrayList<Tuple<Connection, Position>> collidedPositions;
+	//private ArrayList<Tuple<Connection, Position>> collidedPositions;
 	// orderd in order of increasing distance from 1st station in connection
 
 	public PioneerTrainActor(PioneerTrain train, Context context) {
 		super(train, context);
 		this.train = train;
-		collidedPositions = new ArrayList<Tuple<Connection, Position>>();
+		//collidedPositions = new ArrayList<Tuple<Connection, Position>>();
 	}
 
+	public Connection getConnection() {
+		return connection;
+	}
+
+	public PioneerTrain getTrain() {
+		return train;
+	}
+	
 	@Override
 	public void act(float delta) {
 		super.act(delta);
-		
+
 		if (train.isCreating() && isVisible()) {
 			if (context.getGameLogic().getState() == GameState.ANIMATING) {
 				moveBy((float) (train.getSpeed()*Math.cos(angle))*delta, (float) (train.getSpeed()*Math.sin(angle))*delta);
@@ -51,59 +55,12 @@ public class PioneerTrainActor extends TrainActor {
 				float trainy = getY() + height/2;
 				float nexty = position2.getY();
 
-				CollisionStation prevJunction = null;
-
 				if (Math.abs(trainx-nextx)<=2 && Math.abs(trainy- nexty)<=2) {
 					// if the train has reached the target station
-					collidedConnection();
-
-					if (collidedPositions.size() == 0){
-						context.getConnectionController().connectionAdded(connection);
-
-					} else {
-						// if the train has collided with some connections
-						Station startStation = this.connection.getStation1();
-						Station endStation = this.connection.getStation2();
-						for (int i = 0; i < collidedPositions.size(); i++) {
-							Tuple<Connection, Position> pair = collidedPositions.get(i);
-							Connection collidedConn = pair.getFirst();
-							Position position = pair.getSecond();
-							CollisionStation junction = context.getGameLogic().getMap().addJunction(ConnectionController.getNextJunctionNum(), position);
-							StationController.renderCollisionStation(junction);
-
-							context.getConnectionController().connectionRemoved(collidedConn);
-
-							Station iStation1 = collidedConn.getStation1();
-							Station iStation2 = collidedConn.getStation2();
-							if (i == 0 && collidedPositions.size() == 1) {
-								context.getConnectionController().connectionAdded(new Connection(iStation1, junction));
-								context.getConnectionController().connectionAdded(new Connection(iStation2, junction));
-								context.getConnectionController().connectionAdded(new Connection(startStation, junction));
-								context.getConnectionController().connectionAdded(new Connection(endStation, junction));
-
-							} else if (i == 0) {
-								context.getConnectionController().connectionAdded(new Connection(iStation1, junction));
-								context.getConnectionController().connectionAdded(new Connection(iStation2, junction));
-								context.getConnectionController().connectionAdded(new Connection(startStation, junction));
-								prevJunction = junction;
-
-							} else if (i == collidedPositions.size() -1) {
-								context.getConnectionController().connectionAdded(new Connection(iStation1, junction));
-								context.getConnectionController().connectionAdded(new Connection(iStation2, junction));
-								context.getConnectionController().connectionAdded(new Connection(prevJunction, junction));
-								context.getConnectionController().connectionAdded(new Connection(junction, endStation));
-
-							} else {
-								context.getConnectionController().connectionAdded(new Connection(iStation1, junction));
-								context.getConnectionController().connectionAdded(new Connection(iStation2, junction));
-								context.getConnectionController().connectionAdded(new Connection(prevJunction, junction));
-								prevJunction = junction;
-							} 
-						}
-					}
-					train.creationCompleted();
+					context.getConnectionController().pioneerTrainComplete(this);
 				}
 			}
+			
 			ShapeRenderer shapeRenderer = context.getTaxeGame().shapeRenderer;
 			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 			if (PlayerManager.isNight()) {
@@ -111,15 +68,17 @@ public class PioneerTrainActor extends TrainActor {
 			} else {
 				shapeRenderer.setColor(Color.BLACK);
 			}
-			
+
 			shapeRenderer.rectLine(this.getX()+ width/2, this.getY()+ height/2, 
 					position1.getX() , position1.getY() , 5);
 			shapeRenderer.end();
 		}
 	}
 
-	private void collidedConnection() {
+	public ArrayList<Tuple<Connection, Position>> collidedConnection() {
 		// find all connections that collide with the new connection, and where
+		ArrayList<Tuple<Connection, Position>> collidedPositions = new ArrayList<Tuple<Connection, Position>>();
+		
 		List<Connection> connections = context.getGameLogic().getMap().getConnections();
 		int x1,x2,x3,x4,y1,y2,y3,y4;
 
@@ -155,13 +114,15 @@ public class PioneerTrainActor extends TrainActor {
 				}
 			}
 		}
+		return collidedPositions;
 	}
+
 	public void setStationPositions(Connection connection){
 		this.connection = connection;
 		this.position1 = connection.getStation1().getPosition();
 		this.position2 = connection.getStation2().getPosition();
 		this.angle = Position.getAngle(position1,position2);
-		
+
 		float degangle = (float) (MathUtils.radiansToDegrees*angle);
 		addAction(Actions.rotateTo((float) degangle));
 	}

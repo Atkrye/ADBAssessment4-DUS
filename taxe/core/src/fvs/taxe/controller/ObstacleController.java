@@ -1,21 +1,20 @@
 package fvs.taxe.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import Util.Tuple;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.scenes.scene2d.Group;
+
 import fvs.taxe.actor.ObstacleActor;
 import fvs.taxe.actor.ParticleEffectActor;
 import gameLogic.obstacle.Obstacle;
 import gameLogic.obstacle.ObstacleListener;
 import gameLogic.obstacle.ObstacleType;
 import gameLogic.obstacle.Rumble;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.ParticleEffect;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-
-import Util.Tuple;
 
 /**Controller for updating the game with graphics for obstacles.*/
 public class ObstacleController {

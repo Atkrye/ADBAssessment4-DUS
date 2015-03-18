@@ -3,8 +3,7 @@ package gameLogic.map;
 import fvs.taxe.controller.ConnectionController;
 import gameLogic.dijkstra.Dijkstra;
 import gameLogic.listeners.ConnectionChangedListener;
-import gameLogic.listeners.StationAddedListener;
-import gameLogic.listeners.StationRemovedListener;
+import gameLogic.listeners.StationChangedListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +16,10 @@ public class Map {
     private List<Connection> connections;
     private Random random = new Random();
     private Dijkstra dijkstra;
-    private JSONImporter jsonImporter;
 	private BlankMapActor actor;
-	private static ArrayList<StationRemovedListener> listeners = new ArrayList<StationRemovedListener>();
-
+    @SuppressWarnings("unused")
+	private JSONImporter jsonImporter;
+	
     public Map() {
     	
         stations = new ArrayList<Station>();
@@ -37,19 +36,6 @@ public class Map {
 			@Override
 			public void removed(Connection connection) {
 				connections.remove(connection);
-				if (connection.getStation1().getClass().equals(CollisionStation.class)) {
-					if (!hasConnection(connection.getStation1())) {
-						stations.remove(connection.getStation1());
-						junctionRemoved((CollisionStation) connection.getStation1());
-					}
-				}
-				
-				if (connection.getStation2().getClass().equals(CollisionStation.class)) {
-					if (!hasConnection(connection.getStation2())) {
-						stations.remove(connection.getStation2());
-						junctionRemoved((CollisionStation) connection.getStation2());
-					}
-				}
 				dijkstra = new Dijkstra(Map.this);
 			}
 			
@@ -60,22 +46,17 @@ public class Map {
 			}
 		});
         
-        ConnectionController.subscribeStationAdded(new StationAddedListener() {
+        ConnectionController.subscribeStationAdded(new StationChangedListener() {
 			@Override
 			public void stationAdded(Station station) {
 				stations.add(station);
 			}
-		});
-    }
 
-    private void junctionRemoved(CollisionStation station1) {
-		for (StationRemovedListener listener : listeners){
-			listener.stationRemoved(station1);
-		}
-	}
-    
-    public static void subscribeJunctionRemovedListener(StationRemovedListener listener) {
-    	listeners.add(listener);
+			@Override
+			public void stationRemoved(Station station) {
+				stations.remove(station); 
+			}
+		});
     }
 
 	public boolean doesConnectionExist(String stationName, String anotherStationName) {
@@ -90,7 +71,6 @@ public class Map {
                 return true;
             }
         }
-
         return false;
     }
 

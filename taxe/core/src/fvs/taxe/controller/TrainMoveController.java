@@ -64,11 +64,6 @@ public class TrainMoveController {
 				//This checks whether or not the train is at its final destination by checking whether the index is still less than the list size
 				if (nextIndex < train.getRoute().size()) {
 					Station nextStation = train.getRoute().get(nextIndex);
-
-					float angle = Position.getAngle(train.getRoute().get(stationIndex).getPosition(), nextStation.getPosition());
-					//train.getActor().setAngle(angle);
-					//train.getActor().setRotation(angle);
-					//train.getActor().addAction(Actions.rotateTo(angle));
 					
 					//Checks whether the next connection is blocked, if so the train is paused, if not the train is unpaused.
 					if (train.getActor().isPaused()) {
@@ -131,8 +126,8 @@ public class TrainMoveController {
 			//This calculates how long it will take for the train to travel to the next station on the route
 			float duration = getDistance(current, next) / train.getSpeed();
 
+			// rotate the train to face forwards
 			float angle = MathUtils.radiansToDegrees*Position.getAngle(current, next);
-			System.out.println("Angle " + angle);
 			actions.addAction(Actions.rotateTo(angle));
 			
 			//This adds the action to the actor which makes it move from point A to point B in a certain amount of time, calculated using duration and the two station positions.

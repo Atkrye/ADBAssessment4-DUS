@@ -1,9 +1,8 @@
 package gameLogic;
 
-import fvs.taxe.controller.ConnectionController;
+import gameLogic.goal.GoalManager;
 import gameLogic.listeners.GameStateListener;
 import gameLogic.listeners.TurnListener;
-import gameLogic.goal.GoalManager;
 import gameLogic.map.Map;
 import gameLogic.obstacle.Obstacle;
 import gameLogic.obstacle.ObstacleListener;
@@ -15,9 +14,9 @@ import gameLogic.resource.ResourceManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.math.MathUtils;
-
 import Util.Tuple;
+
+import com.badlogic.gdx.math.MathUtils;
 
 public class Game {
 	public static final boolean trongEnabled = false;

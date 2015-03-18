@@ -27,12 +27,10 @@ import gameLogic.GameState;
 import gameLogic.goal.Goal;
 import gameLogic.listeners.ConnectionChangedListener;
 import gameLogic.listeners.DayChangedListener;
-import gameLogic.listeners.StationAddedListener;
-import gameLogic.listeners.StationRemovedListener;
+import gameLogic.listeners.StationChangedListener;
 import gameLogic.map.CollisionStation;
 import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
-import gameLogic.map.Map;
 import gameLogic.map.Station;
 import gameLogic.player.Player;
 import gameLogic.player.PlayerManager;
@@ -74,22 +72,29 @@ public class StationController {
 			}
 		});
 
-		Map.subscribeJunctionRemovedListener(new StationRemovedListener() {
+		/*Map.subscribeJunctionRemovedListener(new StationRemovedListener() {
 			@Override
 			public void stationRemoved(Station station) {
 				if (station.getClass().equals(CollisionStation.class)) {
 					stationActors.removeActor(((CollisionStation) station).getCollisionStationActor());
 				}
 			}
-		});
+		});*/
 
-		ConnectionController.subscribeStationAdded(new StationAddedListener() {
+		ConnectionController.subscribeStationAdded(new StationChangedListener() {
 			@Override
 			public void stationAdded(Station station) {
-				// TODO Auto-generated method stub
 				stationActors.addActor(station.getActor());
 			}
+
+			@Override
+			public void stationRemoved(Station station) {
+				if (station.getClass().equals(CollisionStation.class)){
+					stationActors.removeActor(((CollisionStation) station).getCollisionStationActor());
+				}
+			}
 		});
+
 
 		context.getGameLogic().getPlayerManager().subscribeDayChanged(new DayChangedListener() {
 

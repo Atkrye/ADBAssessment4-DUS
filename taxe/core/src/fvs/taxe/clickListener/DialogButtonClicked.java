@@ -8,9 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 import fvs.taxe.Button;
-import fvs.taxe.GameScreen;
 import fvs.taxe.actor.TrainActor;
-import fvs.taxe.controller.ConnectionController;
 import fvs.taxe.controller.Context;
 import fvs.taxe.controller.StationController;
 import fvs.taxe.controller.TrainController;
