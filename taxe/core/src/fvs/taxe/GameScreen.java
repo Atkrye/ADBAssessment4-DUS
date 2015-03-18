@@ -223,6 +223,7 @@ public class GameScreen extends ScreenAdapter {
 		drawSidebar();
 		resourceController.drawPlayerResources(gameLogic.getPlayerManager().getCurrentPlayer());
 		goalController.showCurrentPlayerGoals();
+		goalController.showControls();
 	}
 
 	private void drawSidebar() {

@@ -1,11 +1,18 @@
 package fvs.taxe.controller;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import fvs.taxe.TaxeGame;
 import fvs.taxe.clickListener.GoalClickListener;
@@ -151,6 +158,68 @@ public class GoalController {
             }
         }
         context.getStage().addActor(goalButtons);
+    }
+    
+    public void showControls() {
+    	// Draw record, save and exit controls
+    	
+    	Texture recordButtonText = new Texture(Gdx.files.internal("btn_record.png"));
+        Image recordButtonImage = new Image(recordButtonText);
+        recordButtonImage.setWidth(77);
+        recordButtonImage.setHeight(31);
+        recordButtonImage.setPosition(10, 10);
+        context.getStage().addActor(recordButtonImage);
+        
+        Texture saveButtonText = new Texture(Gdx.files.internal("btn_save.png"));
+        Image saveButtonImage = new Image(saveButtonText);
+        saveButtonImage.setWidth(77);
+        saveButtonImage.setHeight(31);
+        saveButtonImage.setPosition(107, 10);
+        context.getStage().addActor(saveButtonImage);
+        
+        Texture exitButtonText = new Texture(Gdx.files.internal("btn_exit.png"));
+        Image exitButtonImage = new Image(exitButtonText);
+        exitButtonImage.setWidth(77);
+        exitButtonImage.setHeight(31);
+        exitButtonImage.setPosition(203, 10);
+        context.getStage().addActor(exitButtonImage);
+        
+        ImageButton recordButton = new ImageButton(context.getSkin());
+        recordButton.setWidth(77);
+        recordButton.setHeight(31);
+        recordButton.setPosition(10, 10);
+        recordButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("record");
+            };
+        } );
+        context.getStage().addActor(recordButton);
+        
+        ImageButton saveButton = new ImageButton(context.getSkin());
+        saveButton.setWidth(77);
+        saveButton.setHeight(31);
+        saveButton.setPosition(107, 10);
+        saveButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("save");
+            };
+        } );
+        context.getStage().addActor(saveButton);
+        
+        ImageButton exitButton = new ImageButton(context.getSkin());
+        exitButton.setWidth(77);
+        exitButton.setHeight(31);
+        exitButton.setPosition(203, 10);
+        exitButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("exit");
+            };
+        } );
+        context.getStage().addActor(exitButton);
+    	
     }
 
     private String currentPlayerName() {
