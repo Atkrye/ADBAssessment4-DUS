@@ -55,17 +55,6 @@ public class TrainActor extends Image {
         
         shapeRenderer = context.getTaxeGame().shapeRenderer;
     }
-
-    @Override
-    public void draw(Batch batch, float alpha){
-    	super.draw(batch, alpha);
-        batch.end();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-		shapeRenderer.setColor(Color.RED);
-		shapeRenderer.polygon(bounds.getTransformedVertices());
-		shapeRenderer.end();
-		batch.begin();
-    }
     
     @Override
     public void act(float delta) {
