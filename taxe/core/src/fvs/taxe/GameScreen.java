@@ -50,8 +50,7 @@ public class GameScreen extends ScreenAdapter {
 	private Rumble rumble;
 	public TrongScreen trongScreen = null;
 	private ConnectionController connectionController;
-	private Texture dayMapTexture;
-	private Texture nightMapTexture;
+	private Texture texture;
 
 	public GameScreen(TaxeGame game) {
 		instance = this;
@@ -67,8 +66,7 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.input.setInputProcessor(stage);
 
 		//Draw background
-		dayMapTexture = new Texture(Gdx.files.internal("DaytimeMap.png"));
-		nightMapTexture = new Texture(Gdx.files.internal("NightMap.png"));
+		texture = new Texture(Gdx.files.internal("DaytimeMap.png"));
 		blankMapActor = new BlankMapActor();
 		stage.addActor(blankMapActor);
 		map = gameLogic.getMap();
@@ -139,11 +137,6 @@ public class GameScreen extends ScreenAdapter {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		Texture texture = dayMapTexture;
-		if (context.getGameLogic().getPlayerManager().isNight()){
-			texture = nightMapTexture;
-		};
 		
 		if (rumble.time > 0){
 			Vector2 mapPosition = rumble.tick(delta);
@@ -240,7 +233,7 @@ public class GameScreen extends ScreenAdapter {
 
 	@Override
 	public void dispose() {
-		dayMapTexture.dispose();
+		texture.dispose();
 		stage.dispose();
 	}
 
