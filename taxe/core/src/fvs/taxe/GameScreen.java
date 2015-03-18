@@ -164,8 +164,11 @@ public class GameScreen extends ScreenAdapter {
 
 
 		if (gameLogic.getState() == GameState.PLACING_TRAIN || gameLogic.getState() == GameState.ROUTING) {
+			obstacleController.setObstacleVisibility(false);
 			stationController.renderStationGoalHighlights();
 			//This colours the start and end nodes of each goal to allow the player to easily see where they need to route
+		} else if (!obstacleController.isVisible()) {
+			obstacleController.setObstacleVisibility(true);
 		}
 
 		if (gameLogic.getState() == GameState.ANIMATING) {

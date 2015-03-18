@@ -12,6 +12,8 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import Util.Tuple;
 
@@ -26,6 +28,8 @@ public class ObstacleController {
 	
 	/**The rumble is used to vibrate the Screen when an obstacle is placed*/
 	private Rumble rumble;
+
+	private Group obstaclesActors;
 	
 	/**The Instantiation method sets up the particle effects and creates a listener for when an Obstacle is started so that it can update
 	 * the graphics accordingly.
@@ -34,6 +38,7 @@ public class ObstacleController {
 	public ObstacleController(final Context context) {
 		// take care of rendering of stations (only rendered on map creation, visibility changed when active)
 		this.context = context;
+		obstaclesActors = new Group();
 		effects = new HashMap<String, ParticleEffectActor>();
 		createParticleEffects();
 		rumble = new Rumble();
@@ -79,6 +84,7 @@ public class ObstacleController {
 		for (Tuple<Obstacle, Float> obstaclePair: obstaclePairs) {
 			renderObstacle(obstaclePair.getFirst(), false);
 		}
+		context.getStage().addActor(obstaclesActors);
 	}
 
 	/**This method renders an obstacle as an Actor.
@@ -91,7 +97,8 @@ public class ObstacleController {
 		ObstacleActor obstacleActor = new ObstacleActor(obstacle);
 		obstacleActor.setVisible(visible);
 		obstacle.setActor(obstacleActor);
-		context.getStage().addActor(obstacleActor);
+		//context.getStage().addActor(obstacleActor);
+		obstaclesActors.addActor(obstacleActor);
 		return obstacleActor;
 	}
 	
@@ -123,5 +130,13 @@ public class ObstacleController {
 	/**@returns the Rumble used in the ObstacleController to shake the screen*/
 	public Rumble getRumble() {
 		return rumble;
+	}
+	
+	public void setObstacleVisibility(boolean value){
+		obstaclesActors.setVisible(value);
+	}
+
+	public boolean isVisible() {
+		return obstaclesActors.isVisible();
 	}
 }

@@ -248,7 +248,7 @@ public class StationController {
 		return collisionStationActor;
 	}
 
-	public static Color[] colours = {Color.ORANGE, Color.PINK, Color.PURPLE};
+	public static Color[] colours = {Color.RED, Color.GREEN, Color.PINK};
 
 	public void renderStationGoalHighlights() {
 		//This method is responsible for rendering the colours around the goal nodes
