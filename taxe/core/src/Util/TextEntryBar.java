@@ -15,19 +15,19 @@ import fvs.taxe.TaxeGame;
 
 
 public class TextEntryBar {
-	    int x;
-	    int y;
-	    boolean lastClicked;
-	    boolean clicked;
-	    String label;
-	    String startLabel;
-		TaxeGame game;
-		OrthographicCamera camera;
-		Rectangle textFieldBounds;
-		BitmapFont font;
-		Vector3 touchPoint;
-		static int active;
-		int activeVal;
+	   private int x;
+	   private int y;
+	   protected boolean lastClicked;
+	   protected boolean clicked;
+	   protected String label;
+	   protected String startLabel;
+	   private TaxeGame game;
+	   private OrthographicCamera camera;
+	   private	Rectangle textFieldBounds;
+	   private	BitmapFont font;
+	   //Vector3 touchPoint;
+	   private static int active;
+	   private	int activeVal;
 		
 		
 	   

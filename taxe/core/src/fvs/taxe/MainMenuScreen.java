@@ -14,15 +14,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 
 public class MainMenuScreen extends ScreenAdapter {
-    TaxeGame game;
-    OrthographicCamera camera;
-    Rectangle playBounds;
-    Rectangle exitBounds;
-    Rectangle loadBounds;
-    Vector3 touchPoint;
-    Texture mapTexture;
-    Image mapImage;
-    Sound buttonSound;
+    private TaxeGame game;
+    private OrthographicCamera camera;
+    private Rectangle playBounds;
+    private Rectangle exitBounds;
+    private Rectangle loadBounds;
+    private Vector3 touchPoint;
+    private Texture mapTexture;
+    private Sound buttonSound;
     
 
     
@@ -39,11 +38,11 @@ public class MainMenuScreen extends ScreenAdapter {
         touchPoint = new Vector3();
         
         mapTexture = new Texture(Gdx.files.internal("launch_screen.png"));
-        mapImage = new Image(mapTexture);
+        
     }
 
     
-    public void update() {
+    private void update() {
     	
     	
         if (Gdx.input.justTouched()) {
@@ -62,7 +61,7 @@ public class MainMenuScreen extends ScreenAdapter {
             //buttonSound.dispose();}
     }
 
-    public void draw() {
+    private void draw() {
    
     	
         

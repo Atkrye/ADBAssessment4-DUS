@@ -16,18 +16,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class GameSetupScreen extends ScreenAdapter {
-    TaxeGame game;
-    OrthographicCamera camera;
-    Rectangle playBounds;
-    Rectangle pointsTabBounds;
-    Rectangle turnsTabBounds;
-    Vector3 touchPoint;
-    Texture mapTexture;
-    Image mapImage;
-    Sound buttonSound;
-    TextEntryBar p1NameEntry;
-    TextEntryBar p2NameEntry;
-    IntegerEntryBar pointsTurnsBar;
+    private TaxeGame game;
+    private OrthographicCamera camera;
+    private Rectangle playBounds;
+    private Rectangle pointsTabBounds;
+    private Rectangle turnsTabBounds;
+    private Vector3 touchPoint;
+    private Texture mapTexture;
+    
+    
+    private TextEntryBar p1NameEntry;
+    private TextEntryBar p2NameEntry;
+    private IntegerEntryBar pointsTurnsBar;
 
     public GameSetupScreen(TaxeGame game) {
         //This sets all the relevant variables for the menu screen
@@ -78,7 +78,7 @@ public class GameSetupScreen extends ScreenAdapter {
         
     }
 
-    public void update() {
+    private void update() {
     	
         //Begins the game or exits the application based on where the user presses
         if (Gdx.input.justTouched()) {
@@ -107,7 +107,7 @@ public class GameSetupScreen extends ScreenAdapter {
             //buttonSound.dispose();}
     }
 
-    public void draw() {
+    private void draw() {
       
     	//Draw transparent map in the background
         camera.update();
