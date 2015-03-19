@@ -41,10 +41,10 @@ public class GameSetupScreen extends ScreenAdapter {
         touchPoint = new Vector3();
         p1NameEntry = new TextEntryBar(555, 490, true, 0, game);
         p2NameEntry = new TextEntryBar(555, 400, false, 1, game);
-        pointsTurnsBar = new IntegerEntryBar(702, 165, false, 2, game);
+        pointsTurnsBar = new IntegerEntryBar(702, 175, false, 2, game);
         //Loads the gameMap in
         mapTexture = new Texture(Gdx.files.internal("setup_max_points1.png"));
-        mapImage = new Image(mapTexture);
+        
         
         Gdx.input.setInputProcessor(new InputAdapter () {
         	
@@ -119,13 +119,6 @@ public class GameSetupScreen extends ScreenAdapter {
         p1NameEntry.draw();
         pointsTurnsBar.draw();
         
-//        game.shapeRenderer.setProjectionMatrix(camera.combined);
-//        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-//        game.shapeRenderer.setColor(Color.GREEN);
-//        game.shapeRenderer.rect(turnsTabBounds.getX(), turnsTabBounds.getY(), turnsTabBounds.getWidth(), turnsTabBounds.getHeight());
-//        game.shapeRenderer.setColor(Color.RED);
-//        //game.shapeRenderer.rect(pointsTabBounds.getX(), pointsTabBounds.getY(), pointsTabBounds.getWidth(), pointsTabBounds.getHeight());
-//        game.shapeRenderer.end();
   
     }
 

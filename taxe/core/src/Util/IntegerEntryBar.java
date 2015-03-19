@@ -14,14 +14,13 @@ public class IntegerEntryBar extends TextEntryBar {
 		
 		if (lastClicked == true && label.length() < 5){
 			if(Character.isDigit(character)){
+			   clicked = true;	
 			   label = label + character;
 			   
 		   }   }
 	}
 	public void clearLabel(){
 		label = "";
-		clicked = true;
 		lastClicked = true;
 	}
-
 }

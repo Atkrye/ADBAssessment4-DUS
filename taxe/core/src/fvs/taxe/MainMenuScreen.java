@@ -38,11 +38,6 @@ public class MainMenuScreen extends ScreenAdapter {
         exitBounds = new Rectangle(TaxeGame.WIDTH / 2 - 305, 95, 650, 125);
         touchPoint = new Vector3();
         
-        
-        
-
-
-        //Loads the gameMap in
         mapTexture = new Texture(Gdx.files.internal("launch_screen.png"));
         mapImage = new Image(mapTexture);
     }
@@ -51,10 +46,7 @@ public class MainMenuScreen extends ScreenAdapter {
     public void update() {
     	
     	
-        //Begins the game or exits the application based on where the user presses
-        
-    	
-    	if (Gdx.input.justTouched()) {
+        if (Gdx.input.justTouched()) {
         	
             camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
             if (playBounds.contains(touchPoint.x, touchPoint.y)) {
@@ -74,23 +66,14 @@ public class MainMenuScreen extends ScreenAdapter {
    
     	
         
-        //Draw transparent map in the background
+        
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-        
-        //Color c = game.batch.getColor();
-        //game.batch.setColor(c.r, c.g, c.b, (float) 0.3);
         game.batch.draw(mapTexture, 0, 0);
-        //game.batch.setColor(c);
         game.batch.end();
         
-        
-  
-
-        
-        
-    }
+        }
 
     @Override
     public void render(float delta) {

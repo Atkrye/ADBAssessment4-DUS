@@ -21,8 +21,6 @@ public class TextEntryBar {
 	    boolean clicked;
 	    String label;
 	    String startLabel;
-		Texture textField;
-		
 		TaxeGame game;
 		OrthographicCamera camera;
 		Rectangle textFieldBounds;
@@ -33,10 +31,7 @@ public class TextEntryBar {
 		
 		
 	   
-		
-	
-	
-	public TextEntryBar(int x, int y, boolean lastClicked, int activeVal, TaxeGame game) {
+		public TextEntryBar(int x, int y, boolean lastClicked, int activeVal, TaxeGame game) {
 			this.x = x;
 			this.y = y;
 			this.label = "";
@@ -51,14 +46,15 @@ public class TextEntryBar {
 			camera = new OrthographicCamera(TaxeGame.WIDTH, TaxeGame.HEIGHT);
 	        camera.setToOrtho(false);
 	        
-			
-	      
-	        textFieldBounds = new Rectangle(x, y, 300, 80 );
+			textFieldBounds = new Rectangle(x, y, 300, 80 );
 	        
-	       
-	        
-	} 
+	       } 
 	
+		
+   public String getLabelValue(){
+			return label;
+	}
+   
    public static void changeActive(){
 	if(active < 2 ){
 		active = active + 1;
@@ -68,19 +64,9 @@ public class TextEntryBar {
 		}	
 		
 	}	
-	public void update(Vector3 touchPoint){
-		
-				lastClicked = false;
-            
-            if (textFieldBounds.contains(touchPoint.x, touchPoint.y)) {
-            	active = activeVal;
-            	clicked = true;
-            	lastClicked = true;
-            	return ;
-            	}
-            }
+	
     public void checkActive(){
-    	System.out.print(activeVal);
+    	
     	lastClicked = false;
     	if (activeVal == active){
     		clicked = true;
@@ -107,16 +93,25 @@ public class TextEntryBar {
 		}
 	}
 	
+	public void update(Vector3 touchPoint){
+		
+		lastClicked = false;
+    
+    if (textFieldBounds.contains(touchPoint.x, touchPoint.y)) {
+    	active = activeVal;
+    	clicked = true;
+    	lastClicked = true;
+    	return ;
+    	}
+    }
 	
 	public void draw() {
 		
-		//Draws arrows, label and displays toggle value
 			camera.update();
 			game.batch.setProjectionMatrix(camera.combined);
 			game.batch.begin();
         
-        
-			//game.batch.draw(textField, x, y + 20);
+            
 			if (clicked == true){
 				font.draw(game.batch, label, x, y + 20 );
 			} else{
@@ -125,7 +120,5 @@ public class TextEntryBar {
 			game.batch.end();
 		}
 	
-	public String fieldValue(){
-		return label;
-		}
+	
 }
