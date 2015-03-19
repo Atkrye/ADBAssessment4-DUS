@@ -39,10 +39,10 @@ public class TextEntryBar {
 			this.lastClicked = lastClicked;
 			this.clicked = false;
 			this.activeVal = activeVal;
-			this.startLabel = "Enter Name...";
+			this.startLabel = "Enter Name";
 			active = 0;
 			//font = new BitmapFont(Gdx.files.internal("open_sans1.fnt"),Gdx.files.internal("open_sans1.png"),false);
-			font = new BitmapFont();
+			font = game.fontMediumLight;
 			camera = new OrthographicCamera(TaxeGame.WIDTH, TaxeGame.HEIGHT);
 	        camera.setToOrtho(false);
 	        
@@ -52,7 +52,9 @@ public class TextEntryBar {
 	
 		
    public String getLabelValue(){
-			return label;
+	   if (label.isEmpty()){
+			return startLabel;
+	   } return label;
 	}
    
    public static void changeActive(){
@@ -110,12 +112,13 @@ public class TextEntryBar {
 			camera.update();
 			game.batch.setProjectionMatrix(camera.combined);
 			game.batch.begin();
-        
+			font.setColor(Color.GRAY);
             
 			if (clicked == true){
-				font.draw(game.batch, label, x, y + 20 );
+				
+				font.draw(game.batch, label, x, y + 45 );
 			} else{
-			font.draw(game.batch, startLabel, x, y + 20 );
+			font.draw(game.batch, startLabel, x, y + 45 );
 			}
 			game.batch.end();
 		}

@@ -6,7 +6,8 @@ public class IntegerEntryBar extends TextEntryBar {
 
 	public IntegerEntryBar(int x, int y,  boolean lastClicked, int activeVal, TaxeGame game) {
 		super(x, y, lastClicked, activeVal, game);
-		this.startLabel = "Enter Number...";
+		this.startLabel = "3000";
+		
 	}
 	
 	@Override
