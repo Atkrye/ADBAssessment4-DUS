@@ -4,13 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -29,6 +27,9 @@ public class GoalController {
     private Context context;
     private Group goalButtons = new Group();
     private Color[] colours = new Color[3];
+    
+    public boolean exitPressed;
+    private Group exitMenu = new Group();
 
     public GoalController(Context context) {
         this.context = context;
@@ -215,11 +216,71 @@ public class GoalController {
         exitButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("exit");
+                exitPressed();
             };
         } );
         context.getStage().addActor(exitButton);
     	
+    }
+    
+    private void exitPressed() {
+    	System.out.println("exit");
+    	
+    	exitPressed = true;
+    	
+    	exitMenu.remove();
+        exitMenu.clear();
+    	
+    	Texture exitTexture = new Texture(Gdx.files.internal("exitgame.png"));
+    	Image exitImage = new Image(exitTexture);
+    	exitImage.setPosition(0, 0);
+    	exitMenu.addActor(exitImage);
+    	
+    	ImageButton resumeButton = new ImageButton(context.getSkin());
+    	resumeButton.setWidth(183);
+    	resumeButton.setHeight(54);
+    	resumeButton.setPosition(350, 292);
+    	resumeButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+        		resumePressed();
+            };
+        } );
+        exitMenu.addActor(resumeButton);
+        
+        ImageButton saveButton = new ImageButton(context.getSkin());
+        saveButton.setWidth(183);
+        saveButton.setHeight(54);
+        saveButton.setPosition(552, 292);
+        saveButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+        		System.out.println("save");
+            };
+        } );
+        exitMenu.addActor(saveButton);
+        
+        ImageButton exitButton = new ImageButton(context.getSkin());
+        exitButton.setWidth(183);
+        exitButton.setHeight(54);
+        exitButton.setPosition(754, 292);
+        exitButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+        		System.out.println("exit");
+        		Gdx.app.exit();
+            };
+        } );
+        exitMenu.addActor(exitButton);
+        
+    	context.getStage().addActor(exitMenu);
+    }
+    
+    public void resumePressed() {
+    	System.out.println("resume");
+    	
+    	exitMenu.remove();
+        exitMenu.clear();
     }
 
     private String currentPlayerName() {

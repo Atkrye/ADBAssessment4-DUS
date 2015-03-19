@@ -187,24 +187,27 @@ public class GameScreen extends ScreenAdapter {
 			stationController.displayNumberOfTrainsAtStations();
 		}
 
+		
+		if (goalController.exitPressed == false) {
+			
+			// Bounds for turn text 'Turn'
+			TextBounds lightBounds = game.fontTinyLight.getBounds("Turn");
+			// Bounds for turn text '1/30'
+			TextBounds boldBounds = game.fontTinyBold.getBounds(((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS);
 
-		// Bounds for turn text 'Turn'
-		TextBounds lightBounds = game.fontTinyLight.getBounds("Turn");
-		// Bounds for turn text '1/30'
-		TextBounds boldBounds = game.fontTinyBold.getBounds(((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS);
+			game.batch.begin();
 
-		game.batch.begin();
+			// Draw 'Turn'
+			game.fontTinyLight.setColor(Color.WHITE);
+			game.fontTinyLight.draw(game.batch, "Turn", 290/2 - (lightBounds.width/2), 112);
 
-		// Draw 'Turn'
-		game.fontTinyLight.setColor(Color.WHITE);
-		game.fontTinyLight.draw(game.batch, "Turn", 290/2 - (lightBounds.width/2), 112);
-
-		// Draw turn number i.e '1/30'
-		game.fontTinyBold.setColor(Color.WHITE);
-		game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 290/2 - (boldBounds.width/2), 85.0f);
-		game.batch.end();
-
-		goalController.drawHeaderText();
+			// Draw turn number i.e '1/30'
+			game.fontTinyBold.setColor(Color.WHITE);
+			game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 290/2 - (boldBounds.width/2), 85.0f);
+			game.batch.end();
+			
+			goalController.drawHeaderText();
+		}
 	}
 
 	@Override
