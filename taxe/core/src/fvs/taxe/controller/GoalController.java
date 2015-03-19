@@ -268,6 +268,7 @@ public class GoalController {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
         		System.out.println("exit");
+        		exitPressed = false;
         		Gdx.app.exit();
             };
         } );
@@ -281,6 +282,8 @@ public class GoalController {
     	
     	exitMenu.remove();
         exitMenu.clear();
+        
+        exitPressed = false;
     }
 
     private String currentPlayerName() {
