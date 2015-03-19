@@ -1,25 +1,31 @@
 package fvs.taxe;
 
+
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+
+
 
 public class MainMenuScreen extends ScreenAdapter {
     TaxeGame game;
     OrthographicCamera camera;
     Rectangle playBounds;
     Rectangle exitBounds;
+    Rectangle loadBounds;
     Vector3 touchPoint;
     Texture mapTexture;
     Image mapImage;
+    Sound buttonSound;
+    
 
+    
     public MainMenuScreen(TaxeGame game) {
         //This sets all the relevant variables for the menu screen
         //Did not understand this fully so did not change anything
@@ -27,70 +33,69 @@ public class MainMenuScreen extends ScreenAdapter {
         camera = new OrthographicCamera(TaxeGame.WIDTH, TaxeGame.HEIGHT);
         camera.setToOrtho(false);
 
-        playBounds = new Rectangle(TaxeGame.WIDTH / 2 - 200, 350, 400, 100);
-        exitBounds = new Rectangle(TaxeGame.WIDTH / 2 - 200, 200, 400, 100);
+        playBounds = new Rectangle(TaxeGame.WIDTH / 2 - 305, 485, 650, 125);
+        loadBounds = new Rectangle(TaxeGame.WIDTH / 2 - 305, 290, 650, 125);
+        exitBounds = new Rectangle(TaxeGame.WIDTH / 2 - 305, 95, 650, 125);
         touchPoint = new Vector3();
+        
+        
+        
+
 
         //Loads the gameMap in
-        mapTexture = new Texture(Gdx.files.internal("gamemap.png"));
+        mapTexture = new Texture(Gdx.files.internal("launch_screen.png"));
         mapImage = new Image(mapTexture);
     }
 
+    
     public void update() {
+    	
+    	
         //Begins the game or exits the application based on where the user presses
-        if (Gdx.input.justTouched()) {
+        
+    	
+    	if (Gdx.input.justTouched()) {
+        	
             camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
             if (playBounds.contains(touchPoint.x, touchPoint.y)) {
-                game.setScreen(new GameScreen(game));
+            	Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal("buttonSound3.mp3"));	
+            	buttonSound.play();
+            	game.setScreen(new GameSetupScreen(game));
                 return;
             }
             if (exitBounds.contains(touchPoint.x, touchPoint.y)) {
+            	buttonSound.play();
                 Gdx.app.exit();
-            }
-        }
+            }}
+            //buttonSound.dispose();}
     }
 
     public void draw() {
-        //This method draws the menu
-
-        GL20 gl = Gdx.gl;
-        gl.glClearColor(1, 1, 1, 1);
-        gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+   
+    	
+        
         //Draw transparent map in the background
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-        Color c = game.batch.getColor();
-        game.batch.setColor(c.r, c.g, c.b, (float) 0.3);
+        
+        //Color c = game.batch.getColor();
+        //game.batch.setColor(c.r, c.g, c.b, (float) 0.3);
         game.batch.draw(mapTexture, 0, 0);
-        game.batch.setColor(c);
+        //game.batch.setColor(c);
         game.batch.end();
+        
+        
+  
 
-        //Draw rectangles, did not use TextButtons because it was easier not to
-        game.shapeRenderer.setProjectionMatrix(camera.combined);
-        game.shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        game.shapeRenderer.setColor(Color.GREEN);
-        game.shapeRenderer.rect(playBounds.getX(), playBounds.getY(), playBounds.getWidth(), playBounds.getHeight());
-        game.shapeRenderer.setColor(Color.RED);
-        game.shapeRenderer.rect(exitBounds.getX(), exitBounds.getY(), exitBounds.getWidth(), exitBounds.getHeight());
-        game.shapeRenderer.end();
-
-        //Draw text into rectangles
-        game.batch.begin();
-        String startGameString = "Start Game";
-        game.fontRegular.draw(game.batch, startGameString, playBounds.getX() + playBounds.getWidth() / 2 - game.fontRegular.getBounds(startGameString).width / 2,
-                playBounds.getY() + playBounds.getHeight() / 2 + game.fontRegular.getBounds(startGameString).height / 2); // center the text
-        String exitGameString = "Exit";
-        game.fontRegular.draw(game.batch, exitGameString, exitBounds.getX() + exitBounds.getWidth() / 2 - game.fontRegular.getBounds(exitGameString).width / 2,
-                exitBounds.getY() + exitBounds.getHeight() / 2 + game.fontRegular.getBounds(exitGameString).height / 2); // center the text
-
-        game.batch.end();
+        
+        
     }
 
     @Override
     public void render(float delta) {
         update();
+        
         draw();
     }
 }
