@@ -15,8 +15,12 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -29,8 +33,10 @@ public class RouteController {
 	private boolean editingRoute = false;
 	private double distance = 0;
 	private ArrayList<Connection> connections;
-	private TextButton doneRouting;
-	private TextButton cancel;
+	private ImageButton doneRouting;
+	private ImageButton cancel;
+	private Image downRoutingImage;
+	private Image cancelImage;
 	private int indexPartial = -1;
 
 	public RouteController(Context context) {
@@ -149,11 +155,29 @@ public class RouteController {
 
 	private void addRoutingButtons() {
 		if (doneRouting == null){
-			doneRouting = new TextButton("Route Complete", context.getSkin());
-			cancel = new TextButton("Cancel", context.getSkin());
+			
+			Texture doneRoutingText = new Texture(Gdx.files.internal("btn_routecomplete.png"));
+			downRoutingImage = new Image(doneRoutingText);
+			downRoutingImage.setWidth(150);
+			downRoutingImage.setHeight(37);
+			downRoutingImage.setPosition(TaxeGame.WIDTH - 285, TaxeGame.HEIGHT - 56);
+			
+			Texture cancelText = new Texture(Gdx.files.internal("btn_cancel.png"));
+			cancelImage = new Image(cancelText);
+			cancelImage.setWidth(106);
+			cancelImage.setHeight(37);
+			cancelImage.setPosition(TaxeGame.WIDTH - 120, TaxeGame.HEIGHT - 56);
+            
+			doneRouting = new ImageButton(context.getSkin());
+			cancel = new ImageButton(context.getSkin());
 
-			doneRouting.setPosition(TaxeGame.WIDTH - 250, TaxeGame.HEIGHT - 33);
-			cancel.setPosition(TaxeGame.WIDTH - 100, TaxeGame.HEIGHT - 33);
+			doneRouting.setPosition(TaxeGame.WIDTH - 285, TaxeGame.HEIGHT - 56);
+			doneRouting.setWidth(150);
+			doneRouting.setHeight(37);
+			
+			cancel.setPosition(TaxeGame.WIDTH - 120, TaxeGame.HEIGHT - 56);
+			cancel.setWidth(106);
+			cancel.setHeight(37);
 
 			//If the cancel button is clicked then the routing is ended but none of the positions are saved as a route in the backend
 			cancel.addListener(new ClickListener() {
@@ -178,13 +202,23 @@ public class RouteController {
 					}
 				}
 			});
+			
+			//Adds the images to the screen
+			context.getStage().addActor(cancelImage);
+			context.getStage().addActor(downRoutingImage);
+			
 			//Adds the buttons to the screen
 			context.getStage().addActor(cancel);
 			context.getStage().addActor(doneRouting);
 		} else {
 			//routingButtons.setVisible(true);
+			
+			cancelImage.setVisible(true);
+			downRoutingImage.setVisible(true);
+			
 			cancel.setVisible(true);
 			doneRouting.setVisible(true);
+			
 		}
 	}
 
@@ -201,6 +235,8 @@ public class RouteController {
 		//This routine sets the gamescreen back to how it should be for normal operation
 		context.getGameLogic().setState(GameState.NORMAL);
 		//All buttons are removed and flags set to the relevant values.
+		cancelImage.setVisible(false);
+		downRoutingImage.setVisible(false);
 		cancel.setVisible(false);
 		doneRouting.setVisible(false);
 		isRouting = false;
