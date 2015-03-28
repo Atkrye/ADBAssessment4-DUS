@@ -2,6 +2,8 @@ package fvs.taxe;
 
 
 
+import gameLogic.Game;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Sound;
@@ -31,7 +33,6 @@ public class MainMenuScreen extends ScreenAdapter {
         this.game = game;
         camera = new OrthographicCamera(TaxeGame.WIDTH, TaxeGame.HEIGHT);
         camera.setToOrtho(false);
-
         playBounds = new Rectangle(TaxeGame.WIDTH / 2 - 305, 485, 650, 125);
         loadBounds = new Rectangle(TaxeGame.WIDTH / 2 - 305, 290, 650, 125);
         exitBounds = new Rectangle(TaxeGame.WIDTH / 2 - 305, 95, 650, 125);

@@ -95,12 +95,12 @@ public class GameSetupScreen extends ScreenAdapter {
             }
             if(pointsTabBounds.contains(touchPoint.x, touchPoint.y)){ 
             	mapTexture = new Texture(Gdx.files.internal("setup_max_points1.png"));
-               pointsTurnsBar.clearLabel();
+               pointsTurnsBar.setLastClicked();
                }
             if(turnsTabBounds.contains(touchPoint.x, touchPoint.y))
             {
             	mapTexture = new Texture(Gdx.files.internal("setup_max_turns2.png"));
-             pointsTurnsBar.clearLabel();
+             pointsTurnsBar.setLastClicked();
              }
             }
            

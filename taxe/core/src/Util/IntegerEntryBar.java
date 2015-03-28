@@ -20,8 +20,7 @@ public class IntegerEntryBar extends TextEntryBar {
 			   
 		   }   }
 	}
-	public void clearLabel(){
-		label = "";
+	public void setLastClicked(){
 		lastClicked = true;
 	}
 }
