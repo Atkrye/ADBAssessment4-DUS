@@ -2,16 +2,15 @@ package fvs.taxe;
 
 
 
-import gameLogic.Game;
+
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
+
 
 
 
@@ -20,10 +19,10 @@ public class MainMenuScreen extends ScreenAdapter {
     private OrthographicCamera camera;
     private Rectangle playBounds;
     private Rectangle exitBounds;
-    private Rectangle loadBounds;
+    //private Rectangle loadBounds;
     private Vector3 touchPoint;
-    private Texture mapTexture;
-    private Sound buttonSound;
+    private Texture mainScreenTexture;
+    
     
 
     
@@ -33,12 +32,15 @@ public class MainMenuScreen extends ScreenAdapter {
         this.game = game;
         camera = new OrthographicCamera(TaxeGame.WIDTH, TaxeGame.HEIGHT);
         camera.setToOrtho(false);
+        
+        //Creates three rectangles which act as buttons in the screen
         playBounds = new Rectangle(TaxeGame.WIDTH / 2 - 305, 485, 650, 125);
-        loadBounds = new Rectangle(TaxeGame.WIDTH / 2 - 305, 290, 650, 125);
+        //loadBounds = new Rectangle(TaxeGame.WIDTH / 2 - 305, 290, 650, 125);
         exitBounds = new Rectangle(TaxeGame.WIDTH / 2 - 305, 95, 650, 125);
         touchPoint = new Vector3();
         
-        mapTexture = new Texture(Gdx.files.internal("launch_screen.png"));
+        //loads in the background image for the screen
+        mainScreenTexture = new Texture(Gdx.files.internal("launch_screen.png"));
         
     }
 
@@ -47,30 +49,30 @@ public class MainMenuScreen extends ScreenAdapter {
     	
     	
         if (Gdx.input.justTouched()) {
-        	
+        	//detects which area of the screen is touched
+        	//If rectangles are touch then relevant action is taken
             camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
             if (playBounds.contains(touchPoint.x, touchPoint.y)) {
-            	Sound buttonSound = Gdx.audio.newSound(Gdx.files.internal("buttonSound3.mp3"));	
-            	buttonSound.play();
+            	
+            	//If the touch is within the boundaries of the rectangle playBounds the GameSetupScreen is set
+            	
             	game.setScreen(new GameSetupScreen(game));
                 return;
             }
             if (exitBounds.contains(touchPoint.x, touchPoint.y)) {
-            	buttonSound.play();
+            	//If the touch is within the boundaries of the rectangle exitBounds the game exits
+            	
                 Gdx.app.exit();
-            }}
-            //buttonSound.dispose();}
-    }
+            }
+       }
+  }
 
     private void draw() {
-   
-    	
-        
-        
-        camera.update();
+    	//This method draws the mainScreen Texture 
+    	camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-        game.batch.draw(mapTexture, 0, 0);
+        game.batch.draw(mainScreenTexture, 0, 0);
         game.batch.end();
         
         }
@@ -78,7 +80,6 @@ public class MainMenuScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         update();
-        
         draw();
     }
 }
