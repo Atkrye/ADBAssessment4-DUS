@@ -50,7 +50,6 @@ public class ResourceController {
             
         	//This if statement is used to determine what type of resource is being drawn. This is necessary as each resource needs to have a different click listener assigned to its button.
             // draw train boxes first, then skip box after
-        	// ************* NEED to draw texture of image of resource over button *************
         	if (resource instanceof Train) {
                 Train train = (Train) resource;
 

@@ -52,47 +52,60 @@ public class GoalController {
         // Draw score labels
         game.batch.begin();
         
-        TextBounds currentPlayerNameBounds = game.fontTinyBold.getBounds(currentPlayerName());
-        TextBounds currentPlayerScoreBounds = game.fontLight.getBounds(currentPlayerScore());
-        TextBounds otherPlayerNameBounds = game.fontTinyBold.getBounds(otherPlayerName());
-        TextBounds otherPlayerScoreBounds = game.fontLight.getBounds(otherPlayerScore());
-        
         // If player 1 is current player
         if (context.getGameLogic().getPlayerManager().getOtherPlayer().getPlayerNumber() == 2) {
+        	
+        	TextBounds currentPlayerNameBounds = game.fontTinyBold.getBounds(currentPlayerName());
             
         	// Draw left player score labels
             game.fontTinyBold.setColor(Color.WHITE);
             game.fontTinyBold.draw(game.batch, currentPlayerName(), 60 - currentPlayerNameBounds.width/2, y);
             
+            TextBounds currentPlayerScoreBounds = game.fontLight.getBounds(currentPlayerScore());
+            
             game.fontLight.setColor(Color.WHITE);
             game.fontLight.draw(game.batch, currentPlayerScore(), 60 - currentPlayerScoreBounds.width/2, y+50);
             //----------------
+            
+            TextBounds otherPlayerNameBounds = game.fontTinyBold.getBounds(otherPlayerName());
             
             // Draw right player score labels
             game.fontTinyBold.setColor(Color.WHITE);
             game.fontTinyBold.draw(game.batch, otherPlayerName(), 228 - otherPlayerNameBounds.width/2, y);
             
+            TextBounds otherPlayerScoreBounds = game.fontLight.getBounds(otherPlayerScore());
+            
             game.fontLight.setColor(Color.WHITE);
             game.fontLight.draw(game.batch, otherPlayerScore(), 228 - otherPlayerScoreBounds.width/2, y+50);
             //----------------
+
         }
         else {
+        	
+        	TextBounds otherPlayerNameBounds = game.fontTinyBold.getBounds(otherPlayerName());
             
         	// Draw left player score labels
             game.fontTinyBold.setColor(Color.WHITE);
             game.fontTinyBold.draw(game.batch, otherPlayerName(), 60 - otherPlayerNameBounds.width/2, y);
             
+            TextBounds otherPlayerScoreBounds = game.fontLight.getBounds(otherPlayerScore());
+            
             game.fontLight.setColor(Color.WHITE);
             game.fontLight.draw(game.batch, otherPlayerScore(), 60 - otherPlayerScoreBounds.width/2, y+50);
             //----------------
+            
+            TextBounds currentPlayerNameBounds = game.fontTinyBold.getBounds(currentPlayerName());
             
             // Draw right player score labels
             game.fontTinyBold.setColor(Color.WHITE);
             game.fontTinyBold.draw(game.batch, currentPlayerName(), 228 - currentPlayerNameBounds.width/2, y);
             
+            TextBounds currentPlayerScoreBounds = game.fontLight.getBounds(currentPlayerScore());
+            
             game.fontLight.setColor(Color.WHITE);
             game.fontLight.draw(game.batch, currentPlayerScore(), 228 - currentPlayerScoreBounds.width/2, y+50);
             //----------------
+
         }
         
         // Draw player turn label at top
