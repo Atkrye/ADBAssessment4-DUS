@@ -301,8 +301,7 @@ public class GoalController {
 
     private String currentPlayerName() {
         //This method is used to draw the current player's name
-        return "PLAYER " +
-                context.getGameLogic().getPlayerManager().getCurrentPlayer().getPlayerNumber();
+        return context.getGameLogic().getPlayerManager().getCurrentPlayer().getName();
     }
     
     private String currentPlayerScore() {
@@ -315,8 +314,7 @@ public class GoalController {
     
     private String otherPlayerName() {
         //This method is used to draw the current player's name
-        return "PLAYER " +
-                context.getGameLogic().getPlayerManager().getOtherPlayer().getPlayerNumber();
+        return context.getGameLogic().getPlayerManager().getOtherPlayer().getName();
     }
     
     private String otherPlayerScore() {

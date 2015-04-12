@@ -55,7 +55,7 @@ public class GameScreen extends ScreenAdapter {
 	private Texture nightMapTexture;
 	private Texture mapTexture;
 
-	public GameScreen(TaxeGame game) {
+	public GameScreen(TaxeGame game, String p1, String p2, String MODE, int val) {
 		instance = this;
 		GameScreen.game = game;
 		stage = new Stage();
@@ -64,7 +64,7 @@ public class GameScreen extends ScreenAdapter {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		//Initialises the game
-		gameLogic = Game.getInstance();
+		gameLogic = Game.getInstance(p1, p2, MODE, val);
 		context = new Context(stage, skin, game, gameLogic);
 		Gdx.input.setInputProcessor(stage);
 		
@@ -112,7 +112,7 @@ public class GameScreen extends ScreenAdapter {
 		gameLogic.subscribeStateChanged(new GameStateListener() {
 			@Override
 			public void changed(GameState state) {
-				if ((gameLogic.getPlayerManager().getTurnNumber() == gameLogic.TOTAL_TURNS || gameLogic.getPlayerManager().getCurrentPlayer().getScore() >= gameLogic.MAX_POINTS) && state == GameState.NORMAL) {
+				if ((gameLogic.getPlayerManager().getTurnNumber() == gameLogic.TOTAL_TURNS || (gameLogic.getPlayerManager().getCurrentPlayer().getScore() >= gameLogic.MAX_POINTS && gameLogic.MAX_POINTS != -1))  && state == GameState.NORMAL) {
 					//If the game should end due to the turn number or points total then the appropriate dialog is displayed
 					DialogEndGame dia = new DialogEndGame(context, GameScreen.game, gameLogic.getPlayerManager(), skin);
 					dia.show(stage);
@@ -200,22 +200,39 @@ public class GameScreen extends ScreenAdapter {
 
 		
 		if (goalController.exitPressed == false) {
-			
-			// Bounds for turn text 'Turn'
-			TextBounds lightBounds = game.fontTinyLight.getBounds("Turn");
-			// Bounds for turn text '1/30'
-			TextBounds boldBounds = game.fontTinyBold.getBounds(((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS);
 
 			game.batch.begin();
 
-			// Draw 'Turn'
-			game.fontTinyLight.setColor(Color.WHITE);
-			game.fontTinyLight.draw(game.batch, "Turn", 290/2 - (lightBounds.width/2), 112);
+			if(Game.getInstance().getMode().equals(GameSetupScreen.MODETURNS))
+			{
+				//Bounds for text
+				TextBounds lightBounds = game.fontTinyLight.getBounds("Turn");
+				TextBounds boldBounds = game.fontTinyBold.getBounds(((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS);
+				
+				// Draw 'Turn'
+				game.fontTinyLight.setColor(Color.WHITE);
+				game.fontTinyLight.draw(game.batch, "Turn", 290/2 - (lightBounds.width/2), 112);
+				
 
-			// Draw turn number i.e '1/30'
-			game.fontTinyBold.setColor(Color.WHITE);
-			game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 290/2 - (boldBounds.width/2), 85.0f);
-			game.batch.end();
+				// Draw turn number i.e '1/30'
+				game.fontTinyBold.setColor(Color.WHITE);
+				game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 290/2 - (boldBounds.width/2), 85.0f);
+				game.batch.end();
+			}
+			else if(Game.getInstance().getMode().equals(GameSetupScreen.MODEPOINTS))
+			{
+				//Bounds for text
+				TextBounds lightBounds = game.fontTinyLight.getBounds("Target");
+				TextBounds boldBounds = game.fontTinyBold.getBounds(String.valueOf(Game.getInstance().MAX_POINTS));
+				// Draw 'Turn'
+				game.fontTinyLight.setColor(Color.WHITE);
+				game.fontTinyLight.draw(game.batch, "Target", 145 - (lightBounds.width/2), 112);
+				
+				// Draw turn number i.e '1/30'
+				game.fontTinyBold.setColor(Color.WHITE);
+				game.fontTinyBold.draw(game.batch, String.valueOf(Game.getInstance().MAX_POINTS), 290/2 - (boldBounds.width/2), 85.0f);
+				game.batch.end();
+			}
 			
 			goalController.drawHeaderText();
 		}

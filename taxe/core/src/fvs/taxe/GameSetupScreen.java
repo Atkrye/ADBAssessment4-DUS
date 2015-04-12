@@ -13,6 +13,9 @@ import com.badlogic.gdx.math.Vector3;
 
 
 public class GameSetupScreen extends ScreenAdapter {
+
+    public static final String MODEPOINTS = "POINTS";
+    public static final String MODETURNS = "TURNS";
     private TaxeGame game;
     private OrthographicCamera camera;
     private Rectangle playBounds;
@@ -23,10 +26,10 @@ public class GameSetupScreen extends ScreenAdapter {
     private TextEntryBar p1NameEntry;
     private TextEntryBar p2NameEntry;
     private IntegerEntryBar pointsTurnsBar;
+    private String MODE = MODEPOINTS;
 
     public GameSetupScreen(TaxeGame game) {
         //This sets all the relevant variables for the menu screen
-       
         this.game = game;
         camera = new OrthographicCamera(TaxeGame.WIDTH, TaxeGame.HEIGHT);
         camera.setToOrtho(false);
@@ -85,19 +88,23 @@ public class GameSetupScreen extends ScreenAdapter {
             p1NameEntry.update(touchPoint);
             p2NameEntry.update(touchPoint);
             pointsTurnsBar.update(touchPoint);
-            
             if (playBounds.contains(touchPoint.x, touchPoint.y)) {
-            	game.setScreen(new GameScreen(game));
+            	game.setScreen(new GameScreen(game, p1NameEntry.getLabelValue(), p2NameEntry.getLabelValue(), MODE, Integer.valueOf(pointsTurnsBar.getLabelValue())));
                 return;
             }
-            if(pointsTabBounds.contains(touchPoint.x, touchPoint.y)){ 
+            if(pointsTabBounds.contains(touchPoint.x, touchPoint.y) && !MODE.equals(MODEPOINTS)){ 
+               MODE = MODEPOINTS;
+               pointsTurnsBar.setLabel("3000");
                setupScreenTexture = new Texture(Gdx.files.internal("setup_max_points1.png"));
+               
                pointsTurnsBar.setLastClicked();
                }
-            if(turnsTabBounds.contains(touchPoint.x, touchPoint.y))
+            if(turnsTabBounds.contains(touchPoint.x, touchPoint.y) && !MODE.equals(MODETURNS))
             {
+                MODE = MODETURNS;
             	setupScreenTexture = new Texture(Gdx.files.internal("setup_max_turns2.png"));
              pointsTurnsBar.setLastClicked();
+             pointsTurnsBar.setLabel("30");
              }
             }
            

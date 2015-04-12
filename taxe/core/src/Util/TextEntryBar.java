@@ -47,6 +47,13 @@ public class TextEntryBar {
 	   } return label;
 	}
    
+   public void setLabel(String label)
+   {
+
+	   this.startLabel = label;
+	   this.label = label;
+   }
+   
    public static void changeActive(){
 	//changes the active TextEntryBar   
 	if(active < 2 ){

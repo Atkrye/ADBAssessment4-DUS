@@ -23,8 +23,13 @@ public class PlayerManager {
     public void createPlayers(int count) {
         //Initialises all players (set by count)
         for (int i = 0; i < count; i++) {
-            players.add(new Player(this, i + 1));
+            players.add(new Player(this, i + 1, ""));
         }
+    }
+    
+    public void createPlayers(String p1Name, String p2Name) {
+        players.add(new Player(this, 1, p1Name));
+        players.add(new Player(this, 2, p2Name));
     }
 
     public Player getCurrentPlayer() {

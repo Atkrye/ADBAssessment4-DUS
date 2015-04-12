@@ -1,5 +1,6 @@
 package gameLogic;
 
+import fvs.taxe.GameSetupScreen;
 import gameLogic.goal.GoalManager;
 import gameLogic.listeners.GameStateListener;
 import gameLogic.listeners.TurnListener;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Util.Tuple;
+import adb.taxe.record.SaveManager;
 
 import com.badlogic.gdx.math.MathUtils;
 
@@ -27,6 +29,7 @@ public class Game {
 	private GoalManager goalManager;
 	private ResourceManager resourceManager;
 	private ObstacleManager obstacleManager;
+	private SaveManager saveManager;
 	private Map map;
 	private GameState state;
 	private List<GameStateListener> gameStateListeners = new ArrayList<GameStateListener>();
@@ -34,13 +37,25 @@ public class Game {
 
 	//Number of players, not sure how much impact this has on the game at the moment but if you wanted to add more players you would use this attributes
 	private final int CONFIG_PLAYERS = 2;
-	public final int TOTAL_TURNS = 30;
-	public final int MAX_POINTS = 10000;
+	private String MODE;
+	public int TOTAL_TURNS = 30;
+	public int MAX_POINTS = 10000;
 
-	private Game() {
+	private Game(String p1Name, String p2Name, String MODE, int count) {
+		this.MODE = MODE;
+		if(MODE.equals(GameSetupScreen.MODETURNS))
+		{
+			TOTAL_TURNS = count;
+			MAX_POINTS = -1;
+		}
+		if(MODE.equals(GameSetupScreen.MODEPOINTS))
+		{
+			MAX_POINTS = count;
+			TOTAL_TURNS = -1;
+		}
 		//Creates players
 		playerManager = new PlayerManager();
-		playerManager.createPlayers(CONFIG_PLAYERS);
+		playerManager.createPlayers(p1Name, p2Name);
 
 		//Give them starting resources and goals
 		resourceManager = new ResourceManager();
@@ -48,6 +63,8 @@ public class Game {
 
 		map = new Map();
 		obstacleManager = new ObstacleManager(map);
+		
+		saveManager = new SaveManager(playerManager, goalManager, resourceManager, obstacleManager);
 
 		state = GameState.NORMAL;
 
@@ -70,9 +87,9 @@ public class Game {
 		});
 	}
 
-	public static Game getInstance() {
+	public static Game getInstance(String p1Name, String p2Name, String MODE, int count) {
 		if (instance == null) {
-			instance = new Game();
+			instance = new Game(p1Name, p2Name, MODE, count);
 			// initialisePlayers gives them a goal, and the GoalManager requires an instance of game to exist so this
 			// method can't be called in the constructor
 			instance.initialisePlayers();
@@ -88,6 +105,11 @@ public class Game {
 		goalManager.addRandomGoalToPlayer(player);
 		resourceManager.addRandomResourceToPlayer(player);
 		resourceManager.addRandomResourceToPlayer(player);
+	}
+	
+	public String getMode()
+	{
+		return MODE;
 	}
 
 	public PlayerManager getPlayerManager() {
@@ -173,5 +195,9 @@ public class Game {
 				}
 			}
 		}
+	}
+
+	public static Game getInstance() {
+		return instance;
 	}
 }
