@@ -1,17 +1,17 @@
 package fvs.taxe.clickListener;
 
+import fvs.taxe.controller.Context;
+import gameLogic.Game;
+import gameLogic.GameState;
+import gameLogic.obstacle.Obstacle;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import fvs.taxe.controller.Context;
-import fvs.taxe.dialog.DialogResourceObstacle;
-import gameLogic.Game;
-import gameLogic.GameState;
-import gameLogic.player.Player;
-import gameLogic.resource.Obstacle;
 
-//Responsible for checking whether the Obstacle is clicked.
+//Responsible for checking whether the Obstacle is clicked 
+// DOESNT WORK YET, MAY BE HELPFUL
 public class ObstacleClicked extends ClickListener {
     private Obstacle obstacle;
     private Context context;
@@ -25,17 +25,17 @@ public class ObstacleClicked extends ClickListener {
 
     @Override
     public void clicked(InputEvent event, float x, float y) {
-        if (Game.getInstance().getState() == GameState.NORMAL) {
+       /* if (Game.getInstance().getState() == GameState.NORMAL) {
 
             // current player can't be passed in as it changes so find out current player at this instant
             Player currentPlayer = Game.getInstance().getPlayerManager().getCurrentPlayer();
 
             //Creates a dialog and a listener for the result of it
             DialogButtonClicked listener = new DialogButtonClicked(context, currentPlayer, obstacle);
-            DialogResourceObstacle dia = new DialogResourceObstacle(obstacle, context.getSkin());
+            DialogResourceObstacle dia = new DialogResourceObstacle(context, obstacle, context.getSkin());
             dia.show(context.getStage());
             dia.subscribeClick(listener);
-        }
+        }*/
     }
 
     @Override
@@ -46,8 +46,6 @@ public class ObstacleClicked extends ClickListener {
             displayingMessage = true;
             if (Game.getInstance().getState() == GameState.NORMAL) {
                 context.getTopBarController().displayMessage("Place an obstacle on a connection on the map", Color.BLACK);
-
-
             }
         }
     }

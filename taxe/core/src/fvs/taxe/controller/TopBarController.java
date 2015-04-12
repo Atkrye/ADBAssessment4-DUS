@@ -1,17 +1,22 @@
 package fvs.taxe.controller;
 
-import com.badlogic.gdx.Gdx;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.run;
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
+import fvs.taxe.TaxeGame;
+import gameLogic.GameState;
+import gameLogic.listeners.GameStateListener;
+import gameLogic.obstacle.Obstacle;
+import gameLogic.obstacle.ObstacleListener;
+import gameLogic.obstacle.ObstacleType;
+
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
-import fvs.taxe.TaxeGame;
-import gameLogic.GameState;
-import gameLogic.listeners.GameStateListener;
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
 public class TopBarController {
     //This class controls what is displayed in the topBar, the primary method of informing the players of events that occur in game
@@ -19,50 +24,109 @@ public class TopBarController {
     public final static int CONTROLS_HEIGHT = 75;
 
     private Context context;
-    private Color controlsColor = Color.LIGHT_GRAY;
     private TextButton endTurnButton;
     private Label flashMessage;
+	private Label obstacleLabel;
+
+	private TopBarActor topBarBackground;
 
     public TopBarController(Context context) {
         this.context = context;
         //This creates a listener that changes the bar colour based on the state that the game is in
-        context.getGameLogic().subscribeStateChanged(new GameStateListener() {
-            @Override
-            public void changed(GameState state) {
-                switch (state) {
-                    case ANIMATING:
-                        controlsColor = Color.GREEN;
-                        break;
+        context.getGameLogic().subscribeObstacleChanged(new ObstacleListener(){
 
-                    default:
-                        controlsColor = Color.LIGHT_GRAY;
-                        break;
-                }
-            }
-        });
+			@Override
+			public void started(Obstacle obstacle) {
+				ObstacleType type = obstacle.getType();						     
+				Color color = null;
+				switch(type){
+				case BLIZZARD:
+					color = Color.WHITE;
+					break;
+				case FLOOD:
+					color = Color.valueOf("1079c1");
+					break;
+				case VOLCANO:
+					color = Color.valueOf("ec182c");
+					break;
+				case EARTHQUAKE:
+					color = Color.valueOf("7a370a");
+					break;
+				}				
+				displayObstacleMessage(obstacle.getType().toString() + " in " + obstacle.getStation().getName(), color);
+			}
 
-        createFlashActor();
+			@Override
+			public void ended(Obstacle obstacle) {
+			}		        	
+		});
+
+        drawFlashLabel();
     }
 
-    private void createFlashActor() {
-        flashMessage = new Label("", context.getSkin());
-        flashMessage.setPosition(690, TaxeGame.HEIGHT - 44);
-        context.getStage().addActor(flashMessage);
-    }
+    public void drawLabels() {
+		drawFlashLabel();
+		drawObstacleLabel();
+	}
+    
+	public void drawFlashLabel() {
+		flashMessage = new Label("", context.getSkin());
+		flashMessage.setPosition(690, TaxeGame.HEIGHT - 44);
+		flashMessage.setAlignment(0);
+		context.getStage().addActor(flashMessage);
+	}
 
-
+	public void drawObstacleLabel() {
+		obstacleLabel = new Label("", context.getSkin());
+		obstacleLabel.setColor(Color.BLACK);
+		obstacleLabel.setPosition(300,TaxeGame.HEIGHT - 44);
+		context.getStage().addActor(obstacleLabel);
+	}
+    
+    public void displayObstacleMessage(String message, Color color) {
+		// display a message to the obstacle topBar label, with topBarBackground color color and given message
+		// wraps automatically to correct size
+		obstacleLabel.clearActions();
+		obstacleLabel.setText(message);
+		obstacleLabel.setColor(Color.BLACK);
+		obstacleLabel.pack();
+		topBarBackground.setObstacleColor(color);
+		topBarBackground.setObstacleWidth(obstacleLabel.getWidth()+20);
+		obstacleLabel.addAction(sequence(delay(2f),fadeOut(0.25f), run(new Runnable() {
+			public void run() {
+				// run action to reset obstacle label after it has finished displaying information
+				obstacleLabel.setText("");
+				topBarBackground.setObstacleColor(Color.LIGHT_GRAY);
+			}
+		})));
+	}
+    
     public void displayFlashMessage(String message, Color color) {
-        //This method displays a message in the topBar for the default 1.75 seconds
-        displayFlashMessage(message, color, 1.75f);
-    }
+		displayFlashMessage(message, color, 2f);
+	}
 
-    public void displayFlashMessage(String message, Color color, float time) {
-        //This method also displays a message in the topBar, but for the amount of time specified in the parameters
-        flashMessage.setText(message);
-        flashMessage.setColor(color);
-        flashMessage.addAction(sequence(delay(time), fadeOut(0.25f)));
-    }
+	public void displayFlashMessage(String message, Color color, float time) {
+		flashMessage.setText(message);
+		flashMessage.setColor(color);
+		flashMessage.addAction(sequence(delay(time), fadeOut(0.25f)));
+	}
 
+	public void displayFlashMessage(String message, Color backgroundColor, Color textColor, float time) {
+		topBarBackground.setObstacleColor(backgroundColor);
+		topBarBackground.setControlsColor(backgroundColor);
+		flashMessage.clearActions();
+		flashMessage.setText(message);
+		flashMessage.setColor(textColor);
+		flashMessage.addAction(sequence(delay(time), fadeOut(0.25f), run(new Runnable() {
+			public void run() {
+				topBarBackground.setControlsColor(Color.LIGHT_GRAY);
+				if (obstacleLabel.getActions().size == 0){
+					topBarBackground.setObstacleColor(Color.LIGHT_GRAY);
+				}
+			}
+		})));
+	}
+	
     public void displayMessage(String message, Color color){
         //This method sets a permanent message until it is overwritten
         flashMessage.setText(message);
@@ -76,18 +140,11 @@ public class TopBarController {
     }
 
     public void drawBackground() {
-        TaxeGame game = context.getTaxeGame();
-        
-        Texture topbarTexture = new Texture(Gdx.files.internal("Topbar.png"));
-        
-        game.batch.begin();
-        game.batch.draw(topbarTexture, 290, TaxeGame.HEIGHT - CONTROLS_HEIGHT);
-        game.batch.end();
-        
-    }
+		topBarBackground = new TopBarActor();
+		context.getStage().addActor(topBarBackground);
+	}
 
     public void addEndTurnButton() {
-
         //This method adds an endTurn button to the topBar which allows the user to end their turn
         endTurnButton = new TextButton("End Turn", context.getSkin());
         endTurnButton.setPosition(TaxeGame.WIDTH - 120.0f, TaxeGame.HEIGHT - 56.0f);

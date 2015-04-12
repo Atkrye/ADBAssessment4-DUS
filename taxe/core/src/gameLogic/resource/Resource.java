@@ -5,7 +5,7 @@ import gameLogic.player.Player;
 
 public abstract class Resource implements Disposable {
     protected String name;
-    private Player player;
+    protected Player player;
 
     public void setPlayer(Player player) {
         this.player = player;

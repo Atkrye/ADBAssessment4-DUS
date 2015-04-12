@@ -28,7 +28,7 @@ public class PaddleActor extends Image{
         {
         	setPosition(TrongScreen.gameRight * TaxeGame.WIDTH - (getWidth() / 2), y);
         }
-        trainIcon = new Image(new Texture(Gdx.files.internal(train.getLeftImage())));
+        trainIcon = new Image(new Texture(Gdx.files.internal(train.getImage())));
         float ratio = (trainIcon.getHeight() / trainIcon.getWidth());
         trainIcon.setSize(iconWidth, ratio * iconWidth);
         //Determine the x position of the train Icon and position it

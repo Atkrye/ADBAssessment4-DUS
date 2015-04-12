@@ -25,12 +25,6 @@
       "y": 334
     },
     {
-      "name": "Brussels",
-      "junction": false,
-      "x": "679",
-      "y": 336
-    },
-    {
       "name": "Amsterdam",
       "junction": false,
       "x": "701",
@@ -47,12 +41,6 @@
       "junction": false,
       "x": "838",
       "y": 65
-    },
-    {
-      "name": "Geneva",
-      "junction": false,
-      "x": "703",
-      "y": 190
     },
     {
       "name": "Lisbon",
@@ -91,12 +79,6 @@
       "y": 216
     },
     {
-      "name": "Frankfurt",
-      "junction": false,
-      "x": "751",
-      "y": 313
-    },
-    {
       "name": "Copenhagen",
       "junction": false,
       "x": "798",
@@ -133,40 +115,16 @@
       "y": 379
     },
     {
-      "name": "Tirana",
-      "junction": false,
-      "x": "1025",
-      "y": 40
-    },
-    {
       "name": "Sarajevo",
       "junction": false,
       "x": "975",
       "y": 128
     },
     {
-      "name": "Zagreb",
-      "junction": false,
-      "x": "930",
-      "y": 179
-    },
-    {
       "name": "Vienna",
       "junction": false,
       "x": "911",
       "y": 259
-    },
-    {
-      "name": "Graz",
-      "junction": true,
-      "x": "882",
-      "y": 220
-    },
-    {
-      "name": "Belgrade",
-      "junction": false,
-      "x": "1028",
-      "y": 148
     },
     {
       "name": "Sofia",
@@ -199,12 +157,6 @@
       "y": 376
     },
     {
-      "name": "Lviv",
-      "junction": false,
-      "x": "1091",
-      "y": 324
-    },
-    {
       "name": "Minsk",
       "junction": false,
       "x": "1121",
@@ -221,12 +173,6 @@
       "junction": true,
       "x": "1072",
       "y": 231
-    },
-    {
-      "name": "Kaunas",
-      "junction": false,
-      "x": "1037",
-      "y": 500
     },
     {
       "name": "Stockholm",
@@ -253,14 +199,10 @@
     {
       "station1": "Lille",
       "station2": "Paris"
-    },
-    {
+    }, 
+    { 
       "station1": "Lille",
-      "station2": "Brussels"
-    },
-    {
-      "station1": "Paris",
-      "station2": "Brussels"
+      "station2": "Amsterdam"
     },
     {
       "station1": "Madrid",
@@ -279,24 +221,20 @@
       "station2": "Madrid"
     },
     {
-      "station1": "Andorra",
-      "station2": "Geneva"
-    },
-    {
-      "station1": "Geneva",
+      "station1": "Milan",
       "station2": "Paris"
-    },
-    {
-      "station1": "Geneva",
-      "station2": "Monaco"
-    },
-    {
-      "station1": "Geneva",
-      "station2": "Vaduz"
     },
     {
       "station1": "Vaduz",
       "station2": "Milan"
+    },
+    {
+      "station1": "Andorra",
+      "station2": "Monaco"
+    },
+    {
+      "station1": "Vaduz",
+      "station2": "Vienna"
     },
     {
       "station1": "Milan",
@@ -304,24 +242,8 @@
     },
     {
       "station1": "Milan",
-      "station2": "Graz"
-    },
-    {
-      "station1": "Graz",
-      "station2": "Vaduz"
-    },
-    {
-      "station1": "Vaduz",
-      "station2": "Frankfurt"
-    },
-    {
-      "station1": "Frankfurt",
-      "station2": "Brussels"
-    },
-    {
-      "station1": "Brussels",
-      "station2": "Amsterdam"
-    },
+      "station2": "Monaco"
+    }, 
     {
       "station1": "Amsterdam",
       "station2": "Berlin"
@@ -347,10 +269,6 @@
       "station2": "Krakow"
     },
     {
-      "station1": "Krakow",
-      "station2": "Poznan"
-    },
-    {
       "station1": "Poznan",
       "station2": "Prague"
     },
@@ -359,40 +277,16 @@
       "station2": "Vienna"
     },
     {
-      "station1": "Vienna",
-      "station2": "Graz"
-    },
-    {
-      "station1": "Graz",
-      "station2": "Zagreb"
-    },
-    {
       "station1": "Budapest",
       "station2": "Sarajevo"
     },
     {
       "station1": "Sarajevo",
-      "station2": "Belgrade"
-    },
-    {
-      "station1": "Belgrade",
-      "station2": "Tirana"
-    },
-    {
-      "station1": "Tirana",
       "station2": "Thessaloniki"
     },
     {
       "station1": "Thessaloniki",
       "station2": "Sofia"
-    },
-    {
-      "station1": "Sofia",
-      "station2": "Belgrade"
-    },
-    {
-      "station1": "Belgrade",
-      "station2": "Cluj"
     },
     {
       "station1": "Cluj",
@@ -403,6 +297,10 @@
       "station2": "Istanbul"
     },
     {
+      "station1": "Budapest",
+      "station2": "Cluj"
+    },
+     {
       "station1": "Istanbul",
       "station2": "Sofia"
     },
@@ -416,10 +314,10 @@
     },
     {
       "station1": "Kiev",
-      "station2": "Lviv"
+      "station2": "Minsk"
     },
     {
-      "station1": "Lviv",
+      "station1": "Kiev",
       "station2": "Krakow"
     },
     {
@@ -428,31 +326,11 @@
     },
     {
       "station1": "Warsaw",
-      "station2": "Kaunas"
-    },
-    {
-      "station1": "Kaunas",
       "station2": "Riga"
     },
     {
       "station1": "Riga",
       "station2": "Minsk"
-    },
-    {
-      "station1": "Minsk",
-      "station2": "Kaunas"
-    },
-    {
-      "station1": "Kaunas",
-      "station2": "Lviv"
-    },
-    {
-      "station1": "Lviv",
-      "station2": "Minsk"
-    },
-    {
-      "station1": "Brussels",
-      "station2": "Berlin"
     },
     {
       "station1": "Vienna",
@@ -461,6 +339,14 @@
     {
       "station1": "York",
       "station2": "London"
+    },
+  {
+      "station1": "Paris",
+      "station2": "Andorra"
+    },
+  {
+      "station1": "Amsterdam",
+      "station2": "Vaduz"
     }
   ]
 }

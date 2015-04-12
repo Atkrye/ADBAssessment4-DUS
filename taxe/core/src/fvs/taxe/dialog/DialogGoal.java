@@ -3,8 +3,11 @@ package fvs.taxe.dialog;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import fvs.taxe.Button;
 import fvs.taxe.clickListener.ResourceDialogClickListener;
+import fvs.taxe.controller.Context;
+import gameLogic.GameState;
 import gameLogic.goal.Goal;
 
 import java.util.ArrayList;
@@ -12,11 +15,12 @@ import java.util.List;
 
 public class DialogGoal extends Dialog {
     private List<ResourceDialogClickListener> clickListeners = new ArrayList<ResourceDialogClickListener>();
+	private Context context;
 
-    public DialogGoal(Goal goal, Skin skin) {
+    public DialogGoal(Context context, Goal goal, Skin skin) {
         //Generates a dialog allowing the player to select what they want to do with the goal
         super(goal.toString(), skin);
-
+        this.context = context;
         text("What do you want to do with this goal?");
 
         button("Drop", "DROP");
@@ -26,6 +30,7 @@ public class DialogGoal extends Dialog {
     @Override
     public Dialog show(Stage stage) {
         //Shows the dialog in the centre of the screen
+    	context.getGameLogic().setState(GameState.WAITING);
         show(stage, null);
         setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
         return this;
@@ -35,6 +40,7 @@ public class DialogGoal extends Dialog {
     @Override
     public void hide() {
         //Hides the dialog
+    	context.getGameLogic().setState(GameState.NORMAL);
         hide(null);
     }
 

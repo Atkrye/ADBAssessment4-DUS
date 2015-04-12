@@ -88,7 +88,7 @@ public class Dijkstra {
         //Converts all connections to edges
         for (Station s2 : map.getStations()) {
             if (map.doesConnectionExist(s1.getName(), s2.getName())) {
-                Edge edge = new Edge(findVertex(s2), map.getDistance(s1, s2));
+                Edge edge = new Edge(findVertex(s2), map.getStationDistance(s1, s2));
                 findVertex(s1).addAdjacency(edge);
             }
         }

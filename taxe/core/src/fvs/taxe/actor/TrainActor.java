@@ -1,41 +1,39 @@
 package fvs.taxe.actor;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-
 import fvs.taxe.GameScreen;
 import fvs.taxe.controller.Context;
 import gameLogic.Game;
 import gameLogic.GameState;
-import gameLogic.player.Player;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Station;
+import gameLogic.player.Player;
 import gameLogic.resource.Train;
 import gameLogic.trong.TrongScreen;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class TrainActor extends Image {
     public static int width = 36;
     public static int height = 36;
     public Train train;
 
-    private Rectangle bounds;
+    private Polygon bounds;
+    private Rectangle rect;
     public boolean facingLeft;
-    private float previousX;
-    private Drawable leftDrawable;
-    private Drawable rightDrawable;
-    private Context context;
+    protected Context context;
     private boolean paused;
     private boolean recentlyPaused;
-
-    public TrainActor(Train train, Context context) {
+    
+	public TrainActor(Train train, Context context) {
         //The constructor initialises all the variables and gathers the relevant image for the actor based on the train it is acting for.
-        super(new Texture(Gdx.files.internal(train.getLeftImage())));
-        leftDrawable = getDrawable();
-        rightDrawable = new Image(new Texture(Gdx.files.internal(train.getRightImage()))).getDrawable();
+        super(new Texture(Gdx.files.internal(train.getImage())));
+       
         this.context = context;
 
         IPositionable position = train.getPosition();
@@ -43,14 +41,16 @@ public class TrainActor extends Image {
         train.setActor(this);
         this.train = train;
         setSize(width, height);
-        bounds = new Rectangle();
+        
+        bounds = new Polygon(new float[] {0,0,0, height, width, height, width, 0});
+        bounds.setOrigin(width/2, height/2);
+        
         setPosition(position.getX() - width / 2, position.getY() - height / 2);
-        previousX = getX();
-        facingLeft = true;
         paused = false;
         recentlyPaused = false;
+        setOrigin(getWidth()/2, getHeight()/2);
     }
-
+    
     @Override
     public void act(float delta) {
         if ((Game.getInstance().getState() == GameState.ANIMATING) && (!this.paused)){
@@ -58,21 +58,20 @@ public class TrainActor extends Image {
             //It renders everything every 1/delta seconds
             super.act(delta);
             updateBounds();
-            updateFacingDirection();
 
-            final Train collision = collided();
-            if (collision != null) {
+            final Train collidedTrain = collided();
+            if (collidedTrain != null) {
             	if(Game.trongEnabled)
             	{
             		//Make a new trong game and add it to the stack. Determine which player is player 1 and ensure that that train is passed as the first train
             		TrongScreen trongGame;
-            		if(this.train.getPlayer().getPlayerNumber() < collision.getPlayer().getPlayerNumber())
+            		if(this.train.getPlayer().getPlayerNumber() < collidedTrain.getPlayer().getPlayerNumber())
             		{
-            			trongGame = GameScreen.makeTrongGame(this.train, collision);
+            			trongGame = GameScreen.makeTrongGame(this.train, collidedTrain);
             		}
             		else
             		{
-            			trongGame = GameScreen.makeTrongGame(this.train, collision);
+            			trongGame = GameScreen.makeTrongGame(this.train, collidedTrain);
             		}
             		if(GameScreen.instance.trongScreen != null)
             		{
@@ -88,15 +87,15 @@ public class TrainActor extends Image {
             	{
             		//If there is a collision then the user is informed, the two trains destroyed and the connection that they collided on is blocked for 5 turns.
             		context.getTopBarController().displayFlashMessage("Two trains collided.  They were both destroyed.", Color.RED, 2);
-            		Game.getInstance().getMap().blockConnection(train.getLastStation(), train.getNextStation(), 5);
-            		collision.getActor().remove();
-            		collision.getPlayer().removeResource(collision);
+            		//Game.getInstance().getMap().blockConnection(train.getLastStation(), train.getNextStation(), 5);
+            		collidedTrain.getActor().remove();
+            		collidedTrain.getPlayer().removeResource(collidedTrain);
             		train.getPlayer().removeResource(train);
             		this.remove();
             	}
             }
 
-        } else if (this.paused) {
+        } /*else if (this.paused) {
             //Everything inside this block ensures that the train does not move if the paused variable is set to true.
             //This ensures that trains do not move through blocked connections when they are not supposed to.
 
@@ -114,30 +113,17 @@ public class TrainActor extends Image {
             if (!Game.getInstance().getMap().isConnectionBlocked(station, nextStation)) {
                 this.paused = false;
                 this.recentlyPaused = true;
-            }
-        }
+            }*/
+        //}
     }
 
     private void updateBounds() {
-        bounds.set(getX(), getY(), getWidth(), getHeight());
-    }
-
-    public void updateFacingDirection() {
-        float currentX = getX();
-        //This updates the direction that the train is facing and the image representing the train based on which direction it is travelling
-        if (facingLeft && previousX < currentX) {
-            setDrawable(rightDrawable);
-            facingLeft = false;
-        } else if (!facingLeft && previousX > currentX) {
-            setDrawable(leftDrawable);
-            facingLeft = true;
-        }
-
-        previousX = getX();
+        bounds.setPosition(getX(), getY());
+    	bounds.setRotation(getRotation());
     }
 
     public Rectangle getBounds() {
-        return bounds;
+        return rect;
     }
 
     public void setPaused(boolean paused) {
@@ -185,8 +171,9 @@ public class TrainActor extends Image {
                                     //check if trains on same connection
 
 
-                                    if ((this.bounds.overlaps(otherTrain.getActor().getBounds())) && !((this.recentlyPaused) || (otherTrain.getActor().isRecentlyPaused()))) {
-                                        //Checks whether the two trains are recently paused, if either of them are then no collision should occur
+                                    //if ((this.rect.overlaps(otherTrain.getActor().getBounds())) && !((this.recentlyPaused) || (otherTrain.getActor().isRecentlyPaused()))) {
+                                    if ((Intersector.overlapConvexPolygons(bounds, otherTrain.getActor().bounds)) && !((this.recentlyPaused) || (otherTrain.getActor().isRecentlyPaused()))){
+                                	//Checks whether the two trains are recently paused, if either of them are then no collision should occur
                                         //This prevents the issue of two paused trains crashing when they shouldn't
                                         //There is still the potential issue of two blocked trains colliding when they shouldn't, as it is impossible to know which connection a blocked train will occupy. i.e when one train is rerouted but not the other
                                         return otherTrain;
@@ -203,6 +190,4 @@ public class TrainActor extends Image {
         }
         return null;
     }
-
-
 }

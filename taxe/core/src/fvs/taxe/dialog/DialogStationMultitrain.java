@@ -3,8 +3,10 @@ package fvs.taxe.dialog;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+
 import fvs.taxe.clickListener.TrainClicked;
 import fvs.taxe.controller.Context;
+import gameLogic.GameState;
 import gameLogic.resource.Train;
 
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ public class DialogStationMultitrain extends Dialog {
     private Context context;
 
     public DialogStationMultitrain(ArrayList<Train> trains, Skin skin, Context context) {
-
+    	
         //This constructor is called when there are multiple blocked trains sitting on top of each other
         super("Select Train", skin);
         this.context = context;
@@ -26,10 +28,9 @@ public class DialogStationMultitrain extends Dialog {
             if (train.getFinalDestination() != null) {
                 destination = " to " + train.getFinalDestination().getName();
             }
-            button(train.getName() + destination + " (player " + train.getPlayer().getPlayerNumber() + ")", train);
+            button(train.getName() + destination + " (Player " + train.getPlayer().getPlayerNumber() + ")", train);
             getButtonTable().row();
         }
-
         button("Cancel", "CANCEL");
     }
 
@@ -37,6 +38,7 @@ public class DialogStationMultitrain extends Dialog {
     public Dialog show(Stage stage) {
         //Shows the dialog
         show(stage, null);
+        context.getGameLogic().setState(GameState.WAITING);
         setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
         return this;
     }
@@ -50,6 +52,7 @@ public class DialogStationMultitrain extends Dialog {
     @Override
     protected void result(Object obj) {
         if (obj == "CANCEL") {
+        	context.getGameLogic().setState(GameState.NORMAL);
             //If the user clicks cancel then it deletes the dialog
             this.remove();
         } else {

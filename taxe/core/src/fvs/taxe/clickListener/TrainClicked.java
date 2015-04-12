@@ -31,8 +31,7 @@ public class TrainClicked extends ClickListener {
 
     @Override
     public void clicked(InputEvent event, float x, float y) {
-
-        if (Game.getInstance().getState() == GameState.NORMAL) {
+        if (Game.getInstance().getState() == GameState.NORMAL || Game.getInstance().getState() == GameState.WAITING) {
 
             // current player can't be passed in as it changes so find out current player at this instant
             Player currentPlayer = Game.getInstance().getPlayerManager().getCurrentPlayer();
@@ -59,7 +58,7 @@ public class TrainClicked extends ClickListener {
                                 for (Player player : context.getGameLogic().getPlayerManager().getAllPlayers()) {
                                     for (Resource resource : player.getResources()) {
                                         if (resource instanceof Train) {
-                                            if (((Train) resource).getPosition() == StationActor.getStation().getLocation()) {
+                                            if (((Train) resource).getPosition() == ((StationActor) actor).getStation().getPosition()) {
                                                 stackedTrains.add((Train) resource);
                                             }
                                         }
@@ -71,15 +70,15 @@ public class TrainClicked extends ClickListener {
                     }
                     if (stackedTrains.size()==1) {
                         clicked(event,-1,-1);
-                    }else{
+                    } else {
                         //Creates a new multitrain dialog based on the number of trains at that location
                         DialogStationMultitrain dia = new DialogStationMultitrain(stackedTrains, context.getSkin(), context);
                         dia.show(context.getStage());
                     }
-                }else{
+                } else {
                     if (train.isOwnedBy(currentPlayer)) {
                         DialogButtonClicked listener = new DialogButtonClicked(context, currentPlayer, train);
-                        DialogResourceTrain dia = new DialogResourceTrain(train, context.getSkin(), train.getPosition() != null);
+                        DialogResourceTrain dia = new DialogResourceTrain(context, train, context.getSkin(), train.getPosition() != null);
                         dia.show(context.getStage());
                         dia.subscribeClick(listener);
                     }
@@ -91,10 +90,11 @@ public class TrainClicked extends ClickListener {
             else if (!train.isOwnedBy(currentPlayer)) {
                 //If the train is not owned by the current player then its details are displayed but nothing more
                 context.getTopBarController().displayFlashMessage("Enemy's " + train.getName() + ". Speed: " + train.getSpeed(), Color.RED);
+                context.getGameLogic().setState(GameState.NORMAL);
             } else {
                 //If the train is owned by the player and has a final destination then a dialog is displayed allowing the user to interact with the train
                 DialogButtonClicked listener = new DialogButtonClicked(context, currentPlayer, train);
-                DialogResourceTrain dia = new DialogResourceTrain(train, context.getSkin(), train.getPosition() != null);
+                DialogResourceTrain dia = new DialogResourceTrain(context, train, context.getSkin(), train.getPosition() != null);
                 dia.show(context.getStage());
                 dia.subscribeClick(listener);
             }

@@ -14,7 +14,8 @@ public class ResourceManager {
 
     public ResourceManager() {
         //This calls the JSON importer which sets the train
-        JSONImporter jsonImporter = new JSONImporter(this);
+        @SuppressWarnings("unused")
+		JSONImporter jsonImporter = new JSONImporter(this);
     }
 
     public ArrayList<Tuple<String, Integer>> getTrains() {
@@ -28,27 +29,21 @@ public class ResourceManager {
 
     private Resource getRandomResource() {
         //Returns a random resource
-
-
         int idx = random.nextInt(11);
         if (idx == 1) {
-            //1 in 10 chance to return an obstacle
-            return new Obstacle();
-        }
-
-        if (idx == 2) {
             //1 in 10 chance to return a skip
             return new Skip();
-        }
-
-        if (idx == 3) {
-            //1 in 10 chance to return an engineer
-            return new Engineer();
+        } else if (idx<6){
+        	return new KamikazeTrain();	
+        } else if (idx<11){
+        	return new PioneerTrain();
         } else {
             //Otherwise randomly selects a train to give the player.
             //We decided not to use the value of idx to choose the train as this allows us to change the number of trains in the system independently of this routine
-            //i.e we could have 30 trains, but still retain a 1 in 10 chance to get an engineer/skip/obstacle
-            return getRandomTrain();
+            //i.e we could have 30 trains, but still retain a 1 in 10 chance to get an skip
+            
+        	return getRandomTrain();
+        	
         }
     }
 
@@ -56,7 +51,7 @@ public class ResourceManager {
         //Uses a random number generator to pick a random train and return the complete train class for that train.
         int index = random.nextInt(trains.size());
         Tuple<String, Integer> train = trains.get(index);
-        return new Train(train.getFirst(), train.getFirst().replaceAll(" ", "") + ".png", train.getFirst().replaceAll(" ", "") + "Right.png", train.getSecond());
+        return new Train(train.getFirst(), train.getFirst().replaceAll(" ", "") + ".png", train.getSecond());
     }
 
 
