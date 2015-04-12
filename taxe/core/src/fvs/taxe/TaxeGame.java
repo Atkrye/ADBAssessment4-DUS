@@ -25,6 +25,7 @@ public class TaxeGame extends Game {
 	public BitmapFont fontTinyRegular;
 	
 	public BitmapFont fontLight;
+	public BitmapFont fontMediumLight;
 	public BitmapFont fontSmallLight;
 	public BitmapFont fontTinyLight;
 	
@@ -67,6 +68,10 @@ public class TaxeGame extends Game {
         // font size 50pt
         parameterLight.size = 50;
         fontLight = generatorLight.generateFont(parameterLight);
+        
+        //font size 40pt
+        parameterLight.size = 40;
+        fontMediumLight = generatorLight.generateFont(parameterLight);
 
         //font size 20pt
         parameterLight.size = 20;
