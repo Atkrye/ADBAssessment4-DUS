@@ -19,7 +19,7 @@ import Util.Tuple;
 import com.badlogic.gdx.math.MathUtils;
 
 public class Game {
-	public static final boolean trongEnabled = false;
+	public static final boolean trongEnabled = true;
 	//This is sort of a super-class that can be accessed throughout the system as many of its methods are static
 	//This is a useful tool to exploit to make implementing certain features easier
 	private static Game instance;
