@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class ResourceManager {
-    public final int CONFIG_MAX_RESOURCES = 7;
+    public final int CONFIG_MAX_RESOURCES = 6;
     private Random random = new Random();
     private ArrayList<Tuple<String, Integer>> trains;
 
@@ -33,9 +33,9 @@ public class ResourceManager {
         if (idx == 1) {
             //1 in 10 chance to return a skip
             return new Skip();
-        } else if (idx<6){
+        } else if (idx<3){
         	return new KamikazeTrain();	
-        } else if (idx<11){
+        } else if (idx<5){
         	return new PioneerTrain();
         } else {
             //Otherwise randomly selects a train to give the player.

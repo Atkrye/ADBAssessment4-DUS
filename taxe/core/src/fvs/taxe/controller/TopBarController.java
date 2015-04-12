@@ -12,10 +12,13 @@ import gameLogic.obstacle.Obstacle;
 import gameLogic.obstacle.ObstacleListener;
 import gameLogic.obstacle.ObstacleType;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class TopBarController {
@@ -24,7 +27,8 @@ public class TopBarController {
     public final static int CONTROLS_HEIGHT = 75;
 
     private Context context;
-    private TextButton endTurnButton;
+    private ImageButton endTurnButton;
+    private Image endTurnImage;
     private Label flashMessage;
 	private Label obstacleLabel;
 
@@ -146,7 +150,14 @@ public class TopBarController {
 
     public void addEndTurnButton() {
         //This method adds an endTurn button to the topBar which allows the user to end their turn
-        endTurnButton = new TextButton("End Turn", context.getSkin());
+    	
+    	Texture buttonText = new Texture(Gdx.files.internal("btn_endturn.png"));
+    	endTurnImage = new Image(buttonText);
+    	endTurnImage.setWidth(106);
+    	endTurnImage.setHeight(37);
+    	endTurnImage.setPosition(TaxeGame.WIDTH - 120.0f, TaxeGame.HEIGHT - 56.0f);
+    	
+        endTurnButton = new ImageButton(context.getSkin());
         endTurnButton.setPosition(TaxeGame.WIDTH - 120.0f, TaxeGame.HEIGHT - 56.0f);
         endTurnButton.setSize(106, 37);
         endTurnButton.addListener(new ClickListener() {
@@ -164,12 +175,15 @@ public class TopBarController {
                 //This is important as it prevents players from ending their turn mid placement or mid routing
                 if (state == GameState.NORMAL) {
                     endTurnButton.setVisible(true);
+                    endTurnImage.setVisible(true);
                 } else {
                     endTurnButton.setVisible(false);
+                    endTurnImage.setVisible(false);
                 }
             }
         });
-
+        
+        context.getStage().addActor(endTurnImage);
         context.getStage().addActor(endTurnButton);
     }
 }

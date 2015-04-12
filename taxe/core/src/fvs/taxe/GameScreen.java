@@ -53,6 +53,7 @@ public class GameScreen extends ScreenAdapter {
 	private ConnectionController connectionController;
 	private Texture dayMapTexture;
 	private Texture nightMapTexture;
+	private Texture mapTexture;
 
 	public GameScreen(TaxeGame game) {
 		instance = this;
@@ -66,10 +67,11 @@ public class GameScreen extends ScreenAdapter {
 		gameLogic = Game.getInstance();
 		context = new Context(stage, skin, game, gameLogic);
 		Gdx.input.setInputProcessor(stage);
-
+		
 		//Draw background
 		dayMapTexture = new Texture(Gdx.files.internal("DaytimeMap.png"));
 		nightMapTexture = new Texture(Gdx.files.internal("NightMap.png"));
+		mapTexture = new Texture(Gdx.files.internal("DaytimeMap.png"));
 		blankMapActor = new BlankMapActor();
 		stage.addActor(blankMapActor);
 		map = gameLogic.getMap();
@@ -99,7 +101,9 @@ public class GameScreen extends ScreenAdapter {
 				//The game will not be set into the animating state for the first turn to prevent player 1 from gaining an inherent advantage by gaining an extra turn of movement.
 				if (context.getGameLogic().getPlayerManager().getTurnNumber()!=1) {
 					gameLogic.setState(GameState.ANIMATING);
-					topBarController.displayFlashMessage("Time is passing...", Color.GREEN, Color.BLACK, 2f);
+					
+					String str = "Time is Passing";
+					topBarController.displayFlashMessage(str, Color.GREEN, Color.BLACK, 2f);
 				}
 			}
 		});
@@ -119,6 +123,7 @@ public class GameScreen extends ScreenAdapter {
 					//If the game state is normal then the goal colour are reset to grey
 					goalController.setColours(new Color[3]);
 				}
+				
 			}
 		});
 
@@ -193,24 +198,27 @@ public class GameScreen extends ScreenAdapter {
 			stationController.displayNumberOfTrainsAtStations();
 		}
 
+		
+		if (goalController.exitPressed == false) {
+			
+			// Bounds for turn text 'Turn'
+			TextBounds lightBounds = game.fontTinyLight.getBounds("Turn");
+			// Bounds for turn text '1/30'
+			TextBounds boldBounds = game.fontTinyBold.getBounds(((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS);
 
-		// Bounds for turn text 'Turn'
-		TextBounds lightBounds = game.fontTinyLight.getBounds("Turn");
-		// Bounds for turn text '1/30'
-		TextBounds boldBounds = game.fontTinyBold.getBounds(((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS);
+			game.batch.begin();
 
-		game.batch.begin();
+			// Draw 'Turn'
+			game.fontTinyLight.setColor(Color.WHITE);
+			game.fontTinyLight.draw(game.batch, "Turn", 290/2 - (lightBounds.width/2), 112);
 
-		// Draw 'Turn'
-		game.fontTinyLight.setColor(Color.WHITE);
-		game.fontTinyLight.draw(game.batch, "Turn", 290/2 - (lightBounds.width/2), 132);
-
-		// Draw turn number i.e '1/30'
-		game.fontTinyBold.setColor(Color.WHITE);
-		game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 290/2 - (boldBounds.width/2), 105.0f);
-		game.batch.end();
-
-		goalController.drawHeaderText();
+			// Draw turn number i.e '1/30'
+			game.fontTinyBold.setColor(Color.WHITE);
+			game.fontTinyBold.draw(game.batch, ((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS, 290/2 - (boldBounds.width/2), 85.0f);
+			game.batch.end();
+			
+			goalController.drawHeaderText();
+		}
 	}
 
 	@Override
@@ -229,6 +237,7 @@ public class GameScreen extends ScreenAdapter {
 		drawSidebar();
 		resourceController.drawPlayerResources(gameLogic.getPlayerManager().getCurrentPlayer());
 		goalController.showCurrentPlayerGoals();
+		goalController.showControls();
 	}
 
 	private void drawSidebar() {

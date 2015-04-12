@@ -38,7 +38,7 @@ import gameLogic.resource.Resource;
 import gameLogic.resource.Train;
 
 public class StationController {
-	public final static int CONNECTION_LINE_WIDTH = 5;
+	public final static int CONNECTION_LINE_WIDTH = 4;
 
 	private static Context context;
 	private static Tooltip tooltip;

@@ -1,10 +1,16 @@
 package fvs.taxe.controller;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import fvs.taxe.TaxeGame;
 import fvs.taxe.clickListener.GoalClickListener;
@@ -21,6 +27,9 @@ public class GoalController {
     private Context context;
     private Group goalButtons = new Group();
     private Color[] colours = new Color[3];
+    
+    public boolean exitPressed;
+    private Group exitMenu = new Group();
 
     public GoalController(Context context) {
         this.context = context;
@@ -38,52 +47,65 @@ public class GoalController {
         //This method draws the header for the goals, this is called at the beginning of every turn
         TaxeGame game = context.getTaxeGame();
         float top = (float) TaxeGame.HEIGHT;
-        float y = top - 530.0f - TopBarController.CONTROLS_HEIGHT;
+        float y = top - 550.0f - TopBarController.CONTROLS_HEIGHT;
         
         // Draw score labels
         game.batch.begin();
         
-        TextBounds currentPlayerNameBounds = game.fontTinyBold.getBounds(currentPlayerName());
-        TextBounds currentPlayerScoreBounds = game.fontLight.getBounds(currentPlayerScore());
-        TextBounds otherPlayerNameBounds = game.fontTinyBold.getBounds(otherPlayerName());
-        TextBounds otherPlayerScoreBounds = game.fontLight.getBounds(otherPlayerScore());
-        
         // If player 1 is current player
         if (context.getGameLogic().getPlayerManager().getOtherPlayer().getPlayerNumber() == 2) {
+        	
+        	TextBounds currentPlayerNameBounds = game.fontTinyBold.getBounds(currentPlayerName());
             
         	// Draw left player score labels
             game.fontTinyBold.setColor(Color.WHITE);
             game.fontTinyBold.draw(game.batch, currentPlayerName(), 60 - currentPlayerNameBounds.width/2, y);
             
+            TextBounds currentPlayerScoreBounds = game.fontLight.getBounds(currentPlayerScore());
+            
             game.fontLight.setColor(Color.WHITE);
             game.fontLight.draw(game.batch, currentPlayerScore(), 60 - currentPlayerScoreBounds.width/2, y+50);
             //----------------
+            
+            TextBounds otherPlayerNameBounds = game.fontTinyBold.getBounds(otherPlayerName());
             
             // Draw right player score labels
             game.fontTinyBold.setColor(Color.WHITE);
             game.fontTinyBold.draw(game.batch, otherPlayerName(), 228 - otherPlayerNameBounds.width/2, y);
             
+            TextBounds otherPlayerScoreBounds = game.fontLight.getBounds(otherPlayerScore());
+            
             game.fontLight.setColor(Color.WHITE);
             game.fontLight.draw(game.batch, otherPlayerScore(), 228 - otherPlayerScoreBounds.width/2, y+50);
             //----------------
+
         }
         else {
+        	
+        	TextBounds otherPlayerNameBounds = game.fontTinyBold.getBounds(otherPlayerName());
             
         	// Draw left player score labels
             game.fontTinyBold.setColor(Color.WHITE);
             game.fontTinyBold.draw(game.batch, otherPlayerName(), 60 - otherPlayerNameBounds.width/2, y);
             
+            TextBounds otherPlayerScoreBounds = game.fontLight.getBounds(otherPlayerScore());
+            
             game.fontLight.setColor(Color.WHITE);
             game.fontLight.draw(game.batch, otherPlayerScore(), 60 - otherPlayerScoreBounds.width/2, y+50);
             //----------------
+            
+            TextBounds currentPlayerNameBounds = game.fontTinyBold.getBounds(currentPlayerName());
             
             // Draw right player score labels
             game.fontTinyBold.setColor(Color.WHITE);
             game.fontTinyBold.draw(game.batch, currentPlayerName(), 228 - currentPlayerNameBounds.width/2, y);
             
+            TextBounds currentPlayerScoreBounds = game.fontLight.getBounds(currentPlayerScore());
+            
             game.fontLight.setColor(Color.WHITE);
             game.fontLight.draw(game.batch, currentPlayerScore(), 228 - currentPlayerScoreBounds.width/2, y+50);
             //----------------
+
         }
         
         // Draw player turn label at top
@@ -128,7 +150,7 @@ public class GoalController {
             if (!goal.getComplete()) {
 
                 y -= 50;
-                TextButton button = new TextButton(
+                ImageTextButton button = new ImageTextButton(
                         goal.baseGoalString() + "\n" + goal.bonusString(), context.getSkin());
                 button.getLabel().setAlignment(Align.left);
                 //The goal buttons are scaled so that they do not overlap nodes on the map, this was found to be necessary after changing the way goals were displayed
@@ -150,6 +172,131 @@ public class GoalController {
             }
         }
         context.getStage().addActor(goalButtons);
+    }
+    
+    public void showControls() {
+    	// Draw record, save and exit controls
+    	
+    	Texture recordButtonText = new Texture(Gdx.files.internal("btn_record.png"));
+        Image recordButtonImage = new Image(recordButtonText);
+        recordButtonImage.setWidth(77);
+        recordButtonImage.setHeight(31);
+        recordButtonImage.setPosition(10, 10);
+        context.getStage().addActor(recordButtonImage);
+        
+        Texture saveButtonText = new Texture(Gdx.files.internal("btn_save.png"));
+        Image saveButtonImage = new Image(saveButtonText);
+        saveButtonImage.setWidth(77);
+        saveButtonImage.setHeight(31);
+        saveButtonImage.setPosition(107, 10);
+        context.getStage().addActor(saveButtonImage);
+        
+        Texture exitButtonText = new Texture(Gdx.files.internal("btn_exit.png"));
+        Image exitButtonImage = new Image(exitButtonText);
+        exitButtonImage.setWidth(77);
+        exitButtonImage.setHeight(31);
+        exitButtonImage.setPosition(203, 10);
+        context.getStage().addActor(exitButtonImage);
+        
+        ImageButton recordButton = new ImageButton(context.getSkin());
+        recordButton.setWidth(77);
+        recordButton.setHeight(31);
+        recordButton.setPosition(10, 10);
+        recordButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("record");
+            };
+        } );
+        context.getStage().addActor(recordButton);
+        
+        ImageButton saveButton = new ImageButton(context.getSkin());
+        saveButton.setWidth(77);
+        saveButton.setHeight(31);
+        saveButton.setPosition(107, 10);
+        saveButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("save");
+            };
+        } );
+        context.getStage().addActor(saveButton);
+        
+        ImageButton exitButton = new ImageButton(context.getSkin());
+        exitButton.setWidth(77);
+        exitButton.setHeight(31);
+        exitButton.setPosition(203, 10);
+        exitButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+                exitPressed();
+            };
+        } );
+        context.getStage().addActor(exitButton);
+    	
+    }
+    
+    private void exitPressed() {
+    	System.out.println("exit");
+    	
+    	exitPressed = true;
+    	
+    	exitMenu.remove();
+        exitMenu.clear();
+    	
+    	Texture exitTexture = new Texture(Gdx.files.internal("exitgame.png"));
+    	Image exitImage = new Image(exitTexture);
+    	exitImage.setPosition(0, 0);
+    	exitMenu.addActor(exitImage);
+    	
+    	ImageButton resumeButton = new ImageButton(context.getSkin());
+    	resumeButton.setWidth(183);
+    	resumeButton.setHeight(54);
+    	resumeButton.setPosition(350, 292);
+    	resumeButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+        		resumePressed();
+            };
+        } );
+        exitMenu.addActor(resumeButton);
+        
+        ImageButton saveButton = new ImageButton(context.getSkin());
+        saveButton.setWidth(183);
+        saveButton.setHeight(54);
+        saveButton.setPosition(552, 292);
+        saveButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+        		System.out.println("save");
+            };
+        } );
+        exitMenu.addActor(saveButton);
+        
+        ImageButton exitButton = new ImageButton(context.getSkin());
+        exitButton.setWidth(183);
+        exitButton.setHeight(54);
+        exitButton.setPosition(754, 292);
+        exitButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+        		System.out.println("exit");
+        		exitPressed = false;
+        		Gdx.app.exit();
+            };
+        } );
+        exitMenu.addActor(exitButton);
+        
+    	context.getStage().addActor(exitMenu);
+    }
+    
+    public void resumePressed() {
+    	System.out.println("resume");
+    	
+    	exitMenu.remove();
+        exitMenu.clear();
+        
+        exitPressed = false;
     }
 
     private String currentPlayerName() {
