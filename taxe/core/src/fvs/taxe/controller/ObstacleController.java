@@ -6,8 +6,11 @@ import java.util.HashMap;
 import Util.Tuple;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import fvs.taxe.actor.ObstacleActor;
 import fvs.taxe.actor.ParticleEffectActor;
@@ -91,12 +94,17 @@ public class ObstacleController {
 	 * @param visible The visibility of the obstacle.
 	 * @return The actor produced from rendering the obstacle.
 	 */
-	private ObstacleActor renderObstacle(Obstacle obstacle, boolean visible) {
+	private ObstacleActor renderObstacle(final Obstacle obstacle, boolean visible) {
 		// render the obstacle's actor with the visibility given
 		ObstacleActor obstacleActor = new ObstacleActor(obstacle);
 		obstacleActor.setVisible(visible);
+		obstacleActor.addListener(new ClickListener(){
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				context.getTopBarController().displayFlashMessage(obstacle.getType() + " has " + obstacle.getTimeLeft() + " turns left", Color.NAVY);
+			}
+		});
 		obstacle.setActor(obstacleActor);
-		//context.getStage().addActor(obstacleActor);
 		obstaclesActors.addActor(obstacleActor);
 		return obstacleActor;
 	}
