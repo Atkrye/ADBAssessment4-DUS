@@ -23,6 +23,7 @@ import Util.TextEntryBar;
 import Util.Tuple;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.TextInputListener;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
@@ -207,6 +208,7 @@ public class ConnectionController {
 		nameBackground.setVisible(true);
 
 		final InputProcessor ip = Gdx.input.getInputProcessor();
+		
 		nameip = new InputAdapter () {
 			//The input processor which acts upon a user pressing keys
 			public boolean keyDown(int keycode) {
@@ -225,6 +227,12 @@ public class ConnectionController {
 					} else {
 						context.getTopBarController().displayFlashMessage("Please enter a unique station name", Color.RED);
 					}
+				}
+				if (keycode == Input.Keys.ESCAPE) {
+					context.getGameLogic().setState(GameState.CREATING_CONNECTION);
+					stationName.clear();
+					nameBackground.setVisible(false);
+					Gdx.input.setInputProcessor(ip);
 				}
 				return true;
 			}
