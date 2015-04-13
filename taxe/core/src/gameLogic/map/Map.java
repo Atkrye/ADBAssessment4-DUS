@@ -1,5 +1,6 @@
 package gameLogic.map;
 
+import fvs.taxe.actor.StationActor;
 import fvs.taxe.controller.ConnectionController;
 import gameLogic.dijkstra.Dijkstra;
 import gameLogic.listeners.ConnectionChangedListener;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 
 public class Map {
@@ -191,6 +193,77 @@ public class Map {
     	}
     	return false;
     }
+    
+    public boolean nearStation(Position location) {
+		// test if a location is near another station
+		for (Station station : stations) {
+			if (Position.getDistance(location, station.getPosition()) <= StationActor.height + 20) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean nearConnection(Position location) {
+		// test if a location is near a connection
+		for (Connection connection : connections) {
+			IPositionable p1 = connection.getStation1().getPosition();
+			Vector2 v1 = new Vector2(p1.getX(), p1.getY());
+			IPositionable p2 = connection.getStation2().getPosition();
+			Vector2 v2 = new Vector2(p2.getX(), p2.getY());
+
+			Vector2 v3 = new Vector2(location.getX(), location.getY());
+			boolean intersect = Intersector.intersectSegmentCircle(v1, v2, v3, 1000);
+			if (intersect){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean connectionOverlaps(Station firstStation, Station station) {
+		// check if a connection overlaps with a station
+		IPositionable position1 = firstStation.getPosition();
+		IPositionable position2 = station.getPosition();
+		int x1,x2,x3,x4,y1,y2,y3,y4;
+
+		x3 = position1.getX();
+		y3 = position1.getY();
+		x4 = position2.getX();
+		y4 = position2.getY();
+
+		for (Station s: stations){
+			if (s == firstStation || s == station){
+				continue;
+			}
+
+			x1 = s.getPosition().getX() - StationActor.width/2 - 10;
+			y1 = s.getPosition().getY() - StationActor.height/2 - 10;
+			x2 = s.getPosition().getX() + StationActor.width/2 + 10;
+			y2 = s.getPosition().getY() + StationActor.height/2 + 10;
+
+			Position value = Position.getLineIntersect(x1, y1, x1, y2, x3, y3, x4, y4);
+			if (value != null){
+				return true;
+			}
+
+			value = Position.getLineIntersect(x1, y1, x2, y1, x3, y3, x4, y4);
+			if (value != null){
+				return true;
+			}
+
+			value = Position.getLineIntersect(x1, y2, x2, y2, x3, y3, x4, y4);
+			if (value != null){
+				return true;
+			}
+
+			value = Position.getLineIntersect(x2, y1, x2, y2, x3, y3, x4, y4);
+			if (value != null){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public BlankMapActor getMapActor() {
 		return this.actor;

@@ -67,8 +67,6 @@ public class ResourceController {
                     button.setPosition(x, y);
                     xCounter += 1;
                     
-                    System.out.println(resource.toString());
-                    
                     Texture buttonText = null;
                     Image buttonImage;
                     

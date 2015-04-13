@@ -75,7 +75,7 @@ public class TextEntryBar {
 		//If this TextEntryBar is active and the label length is less than ten
 		//Takes a character, if the character is a letter, the character is appended to label
 
-		if (activeVal == active && label.length() < 10){	
+		if (activeVal == active && label.length() < 10){
 			if(Character.isLetter(character)){
 				clicked = true;
 				label = label + character;
@@ -126,6 +126,7 @@ public class TextEntryBar {
 	
 	public void clear(){
 		label = "";
+		this.clicked = false;
 	}
 
 }
