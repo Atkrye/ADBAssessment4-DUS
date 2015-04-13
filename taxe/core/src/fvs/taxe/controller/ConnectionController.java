@@ -106,14 +106,14 @@ public class ConnectionController {
 	}
 
 	public void drawStationNameBackground() {
-		nameBackground = new Image(new Texture(Gdx.files.internal("TopBar.png")));
-		int midx = Math.round(context.getStage().getWidth() / 2); 
-		int midy = Math.round(context.getStage().getHeight() / 2);
-		stationName = new TextEntryBar(midx, midy, 0, context.getTaxeGame());
-		nameBackground.setPosition(midx, midy);
-		nameBackground.setSize(300, 80);
+		nameBackground = new Image(new Texture(Gdx.files.internal("NewStationDialog.png")));
+		int midx = Math.round(context.getStage().getWidth() / 2 - nameBackground.getWidth()/2); 
+		int midy = Math.round(context.getStage().getHeight() / 2- nameBackground.getHeight()/2);
+		nameBackground.setPosition(midx , midy);
 		context.getStage().addActor(nameBackground);
 		nameBackground.setVisible(false);
+		
+		stationName = new TextEntryBar(midx + 80, midy + 30, 0, context.getTaxeGame());
 	}
 
 	private void getNewStationName(final Position location) {

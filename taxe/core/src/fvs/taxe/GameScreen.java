@@ -54,6 +54,7 @@ public class GameScreen extends ScreenAdapter {
 	private Texture dayMapTexture;
 	private Texture nightMapTexture;
 	private int i;
+	private TrainController trainController;
 
 	public GameScreen(TaxeGame game, String p1, String p2, String MODE, int val) {
 		instance = this;
@@ -87,6 +88,7 @@ public class GameScreen extends ScreenAdapter {
 		routeController = new RouteController(context);
 		obstacleController = new ObstacleController(context);
 		connectionController = new ConnectionController(context);
+		trainController = new TrainController(context);
 		context.setRouteController(routeController);
 		context.setTopBarController(topBarController);
 		context.setConnectionController(connectionController);
@@ -253,6 +255,7 @@ public class GameScreen extends ScreenAdapter {
 			stationController.addConnections(map.getConnections(), Color.GRAY);
 			stationController.renderStations();
 			obstacleController.drawObstacleEffects();
+			trainController.drawTrains();
 			topBarController.drawBackground();
 			topBarController.drawLabels();
 			topBarController.addEndTurnButton();
