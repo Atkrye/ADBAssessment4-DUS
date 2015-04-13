@@ -1,6 +1,7 @@
 package fvs.taxe.controller;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import fvs.taxe.TaxeGame;
 import fvs.taxe.clickListener.GoalClickListener;
+import gameLogic.Game;
 import gameLogic.player.Player;
 import gameLogic.listeners.PlayerChangedListener;
 import gameLogic.player.PlayerManager;
@@ -268,7 +270,7 @@ public class GoalController {
         saveButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
-        		System.out.println("save");
+        		Game.getInstance().save(new FileHandle("SaveTest"));
             };
         } );
         exitMenu.addActor(saveButton);

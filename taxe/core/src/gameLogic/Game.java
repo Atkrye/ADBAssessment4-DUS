@@ -12,12 +12,15 @@ import gameLogic.player.Player;
 import gameLogic.player.PlayerManager;
 import gameLogic.resource.ResourceManager;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.FileHandler;
 
 import Util.Tuple;
 import adb.taxe.record.SaveManager;
 
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 
 public class Game {
@@ -86,6 +89,11 @@ public class Game {
 			}
 		});
 	}
+	
+	public void save(FileHandle fileHandler)
+	{
+		saveManager.save(fileHandler);
+	}
 
 	public static Game getInstance(String p1Name, String p2Name, String MODE, int count) {
 		if (instance == null) {
@@ -94,7 +102,12 @@ public class Game {
 			// method can't be called in the constructor
 			instance.initialisePlayers();
 		}
-
+		try {
+			instance.save(new FileHandle("Recording"));
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return instance;
 	}
 

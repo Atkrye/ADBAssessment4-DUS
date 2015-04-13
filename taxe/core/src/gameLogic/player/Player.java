@@ -18,21 +18,29 @@ public class Player {
     private boolean skip;
     private String name;
 
+    public Player(PlayerManager pm, int playerNumber) {
+        goals = new ArrayList<Goal>();
+        resources = new ArrayList<Resource>();
+        this.pm = pm;
+        number = playerNumber;
+        score = 0;
+    }
+
     public Player(PlayerManager pm, int playerNumber, String name) {
         goals = new ArrayList<Goal>();
         resources = new ArrayList<Resource>();
         this.pm = pm;
         number = playerNumber;
         score = 0;
-        this.name = name;
-    }
+		this.name = name;
+	}
     
     public String getName()
     {
     	return name;
     }
 
-    public void setSkip(boolean skip) {
+	public void setSkip(boolean skip) {
         this.skip = skip;
     }
 
