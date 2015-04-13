@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
-// blank actor of size of map, used to allow clicklisteners.
+// blank actor of size of map, used to allow clicklisteners (specifically for creating new cities)
 // simpler then implementing inputprocessor on connectionController
 public class BlankMapActor extends Image {
 

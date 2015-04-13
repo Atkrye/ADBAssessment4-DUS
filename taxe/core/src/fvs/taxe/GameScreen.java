@@ -53,7 +53,6 @@ public class GameScreen extends ScreenAdapter {
 	private ConnectionController connectionController;
 	private Texture dayMapTexture;
 	private Texture nightMapTexture;
-	private Texture mapTexture;
 	private int i;
 
 	public GameScreen(TaxeGame game, String p1, String p2, String MODE, int val) {
@@ -72,7 +71,6 @@ public class GameScreen extends ScreenAdapter {
 		//Draw background
 		dayMapTexture = new Texture(Gdx.files.internal("DaytimeMap.png"));
 		nightMapTexture = new Texture(Gdx.files.internal("NightMap.png"));
-		mapTexture = new Texture(Gdx.files.internal("DaytimeMap.png"));
 		blankMapActor = new BlankMapActor();
 		stage.addActor(blankMapActor);
 		map = gameLogic.getMap();
@@ -133,7 +131,7 @@ public class GameScreen extends ScreenAdapter {
 			public void clicked(Station station) {
 				// if the game is routing, set the route black when a new station is clicked
 				if(gameLogic.getState() == GameState.ROUTING) {
-					if (PlayerManager.isNight()) {
+					if (context.getGameLogic().getPlayerManager().isNight()) {
 						routeController.drawRoute(Color.WHITE);
 					} else {
 						routeController.drawRoute(Color.BLACK);
@@ -152,8 +150,8 @@ public class GameScreen extends ScreenAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		Texture texture = dayMapTexture;
-		context.getGameLogic().getPlayerManager();
-		if (PlayerManager.isNight()){
+		
+		if (context.getGameLogic().getPlayerManager().isNight()){
 			texture = nightMapTexture;
 		};
 

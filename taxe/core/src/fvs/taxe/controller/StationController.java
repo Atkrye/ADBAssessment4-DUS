@@ -197,7 +197,7 @@ public class StationController {
 		station.setActor(stationActor);
 		stationActors.addActor(stationActor);
 		context.getGameLogic().getPlayerManager();
-		stationActor.setNight(PlayerManager.isNight());
+		stationActor.setNight(context.getGameLogic().getPlayerManager().isNight());
 		return stationActor;
 	}
 
@@ -252,7 +252,7 @@ public class StationController {
 		collisionStation.setActor(collisionStationActor);
 		stationActors.addActor(collisionStationActor);
 		context.getGameLogic().getPlayerManager();
-		collisionStationActor.setNight(PlayerManager.isNight());
+		collisionStationActor.setNight(context.getGameLogic().getPlayerManager().isNight());
 		return collisionStationActor;
 	}
 
@@ -356,7 +356,7 @@ public class StationController {
 			if (Game.getInstance().getState() == GameState.ROUTING) {
 				IPositionable midpoint = connection.getMidpoint();
 				game.batch.begin();
-				if (PlayerManager.isNight()) {
+				if (context.getGameLogic().getPlayerManager().isNight()) {
 					game.fontTinyLight.setColor(Color.WHITE);
 				} else {
 					game.fontTinyLight.setColor(Color.BLACK);

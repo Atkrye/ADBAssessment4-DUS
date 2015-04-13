@@ -109,7 +109,7 @@ public class PlayerManager {
         return turnNumber;
     }
 
-	public static boolean isNight() {
+	public boolean isNight() {
 		return isNight;
 	}
 
