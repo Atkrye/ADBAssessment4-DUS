@@ -283,6 +283,7 @@ public class RouteController {
 		context.getGameLogic().setState(GameState.ROUTING);
 
 		cancel.setVisible(true);
+		cancelImage.setVisible(true);
 		drawPartialRoute();
 	}
 
