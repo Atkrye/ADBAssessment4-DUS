@@ -91,7 +91,6 @@ public class ConnectionController {
 				if (context.getGameLogic().getState() == GameState.CREATING_CONNECTION){
 					if (firstStation != null){
 						Position location = new Position((int) x,(int)y);
-						System.out.println(location);
 						if (!map.nearStation(location) ) {
 							if (!map.nearConnection(location)) {
 								context.getGameLogic().setState(GameState.WAITING);
@@ -231,8 +230,7 @@ public class ConnectionController {
 			}
 
 			public boolean keyTyped (char character) {
-				//This adds a character to the active entry bar   
-				System.out.println("Hello");
+				//This adds a character to the active entry bar  
 				stationName.makeLabel(character);
 				return true;
 			}
