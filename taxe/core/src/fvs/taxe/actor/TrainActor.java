@@ -71,7 +71,7 @@ public class TrainActor extends Image {
             		}
             		else
             		{
-            			trongGame = GameScreen.makeTrongGame(this.train, collidedTrain);
+            			trongGame = GameScreen.makeTrongGame(collidedTrain, this.train);
             		}
             		if(GameScreen.instance.trongScreen != null)
             		{
@@ -85,9 +85,8 @@ public class TrainActor extends Image {
             	}
             	else
             	{
-            		//If there is a collision then the user is informed, the two trains destroyed and the connection that they collided on is blocked for 5 turns.
+            		//If there is a collision then the user is informed, the two trains destroyed
             		context.getTopBarController().displayFlashMessage("Two trains collided.  They were both destroyed.", Color.RED, 2);
-            		//Game.getInstance().getMap().blockConnection(train.getLastStation(), train.getNextStation(), 5);
             		collidedTrain.getActor().remove();
             		collidedTrain.getPlayer().removeResource(collidedTrain);
             		train.getPlayer().removeResource(train);
@@ -95,26 +94,7 @@ public class TrainActor extends Image {
             	}
             }
 
-        } /*else if (this.paused) {
-            //Everything inside this block ensures that the train does not move if the paused variable is set to true.
-            //This ensures that trains do not move through blocked connections when they are not supposed to.
-
-            //find station train most recently passed
-            Station station = train.getHistory().get(train.getHistory().size() - 1).getFirst();
-//            Station station = Game.getInstance().getMap().getStationByName(stationName);
-
-            // find index of this within route
-            int index = train.getRoute().indexOf(station);
-
-            // find next station
-            Station nextStation = train.getRoute().get(index + 1);
-
-            // check if connection is blocked, if not, unpause
-            if (!Game.getInstance().getMap().isConnectionBlocked(station, nextStation)) {
-                this.paused = false;
-                this.recentlyPaused = true;
-            }*/
-        //}
+        } 
     }
 
     private void updateBounds() {

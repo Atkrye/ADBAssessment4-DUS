@@ -18,6 +18,9 @@ import java.util.List;
 import Util.Tuple;
 import adb.taxe.record.SaveManager;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.math.MathUtils;
 
 public class Game {
@@ -67,7 +70,7 @@ public class Game {
 		saveManager = new SaveManager(playerManager, goalManager, resourceManager, obstacleManager);
 
 		state = GameState.NORMAL;
-
+		
 		//Adds all the subscriptions to the game which gives players resources and goals at the start of each turn.
 		//Also decrements all connections and blocks a random one
 		//The checking for whether a turn is being skipped is handled inside the methods, this just always calls them
