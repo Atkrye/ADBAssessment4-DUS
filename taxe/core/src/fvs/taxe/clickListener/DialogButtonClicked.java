@@ -52,8 +52,12 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 		switch (button) {
 		case TRAIN_DROP:
 			//If a TRAIN_DROP button is pressed then the train is removed from the player's resources
+			if (train.getActor() != null){
+				// if a train has been placed (therefore has an actor) remove the actor
+				train.getActor().remove();
+			}
 			currentPlayer.removeResource(train);
-			train.getActor().remove();
+
 			break;
 
 			//The reason that all the placement case statements are in their own scope ({}) is due to the fact that switch statements do not create their own scopes between cases.
@@ -94,7 +98,7 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 						TrainActor trainActor = trainController.renderTrain(train);
 						trainController.setTrainsVisible(null, true);
 						train.setActor(trainActor);
-						
+
 						//Unsubscribes from the listener so that it does not call this code again when it is obviously not necessary, without this placing of trains would never end
 						StationController.unsubscribeStationClick(this);
 						Game.getInstance().setState(GameState.NORMAL);
@@ -145,7 +149,7 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 			//Shows the user the train's current route if they click on VIEW_ROUTE button
 			context.getRouteController().viewRoute(train);
 			break;
-			
+
 		case SKIP_RESOURCE:
 			//If SKIP_RESOURCE is pressed then this finds the other player's playerNumber and sets their skipped boolean to true
 			//If you wish to add more than 2 players then extra checking would have to be added here to ensure that the right player has their turn skipped
@@ -171,18 +175,18 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 			//Begins the change route feature when TRAIN_CHANGE_ROUTE is pressed by the player
 			context.getRouteController().begin(train);
 			break;
-			
+
 		case TRAIN_CREATE_CONNECTION:
 			// Begin creating the connection between 2 points
 			context.getConnectionController().beginCreating((PioneerTrain) train);
 			break;
-		
+
 		case TRAIN_KAMIKAZE:
 			// Kamikaze, destroy the connection
 			context.getConnectionController().destroyConnection((KamikazeTrain) train);
 			((KamikazeTrain) train).selfDestruct();
 			break;
-			
+
 		default:
 			break;
 		}

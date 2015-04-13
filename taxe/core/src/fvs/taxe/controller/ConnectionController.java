@@ -18,14 +18,22 @@ import gameLogic.resource.PioneerTrain;
 
 import java.util.ArrayList;
 
+import Util.TextEntryBar;
 import Util.Tuple;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.TextInputListener;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -39,14 +47,16 @@ public class ConnectionController {
 	private PioneerTrain train;
 	private Station firstStation;
 	private TextButton back;
+	private TextEntryBar stationName;
+	private boolean isNaming = false;
+	private Image nameBackground;
 	private static ArrayList<StationChangedListener> slisteners = new ArrayList<StationChangedListener>();
 
 	private static int junctionNumber = 0;
-
 	
 	public ConnectionController(final Context context) {
-		context.getGameLogic().getMap().getMapActor();
 		this.context = context;
+		
 		StationController.subscribeStationClick(new StationClickListener() {
 			@Override
 			public void clicked(Station station) {
@@ -79,10 +89,8 @@ public class ConnectionController {
 						Position location = new Position((int) x,(int)y);
 						if (!nearStation(location) ) {
 							if (!nearConnection(location)) {
-							Station station = new Station("1", location); 
-							StationController.renderStation(station);
-							stationAdded(station);
-							endCreating(station);
+								context.getGameLogic().setState(GameState.WAITING);
+								getNewStationName(location);
 							} else {
 								context.getTopBarController().displayFlashMessage("New city too close to connection", Color.RED);
 							}
@@ -92,10 +100,75 @@ public class ConnectionController {
 					}
 				}
 			}
+
+
 		});
 	}
 
+	public void drawStationNameBackground() {
+		nameBackground = new Image(new Texture(Gdx.files.internal("TopBar.png")));
+		int midx = Math.round(context.getStage().getWidth() / 2); 
+		int midy = Math.round(context.getStage().getHeight() / 2);
+		stationName = new TextEntryBar(midx, midy, 0, context.getTaxeGame());
+		nameBackground.setPosition(midx, midy);
+		nameBackground.setSize(300, 80);
+		context.getStage().addActor(nameBackground);
+		nameBackground.setVisible(false);
+	}
+
+	private void getNewStationName(final Position location) {
+		isNaming = true;
+		nameBackground.setVisible(true);
+
+		final InputProcessor ip = Gdx.input.getInputProcessor();
+		Gdx.input.setInputProcessor(new InputAdapter () {
+			//The input processor which acts upon a user pressing keys
+			public boolean keyDown(int keycode) {
+
+				if(keycode == Keys.BACKSPACE){
+					//backspace deletes a character from the active entry bar
+					stationName.deleteLetter();
+				}
+				if( keycode == Keys.ENTER){
+					String text = stationName.getLabelValue();
+					if (isUniqueName(text)) {
+						createNewStation(text, location);
+						stationName.clear();
+						nameBackground.setVisible(false);
+						Gdx.input.setInputProcessor(ip);
+					} else {
+						context.getTopBarController().displayFlashMessage("Please enter unique station name", Color.RED);
+					}
+				}
+				return true;
+			}
+
+			public boolean keyTyped (char character) {
+				//This adds a character to the active entry bar   
+				stationName.makeLabel(character);
+				return true;
+			}
+
+		});
+	}
+
+	public boolean isUniqueName(String text) {
+		if (context.getGameLogic().getMap().getStationByName(text) == null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private void createNewStation(String string, Position location) {
+		Station station = new Station(string, location); 
+		StationController.renderStation(station);
+		stationAdded(station);
+		endCreating(station);
+	}
+
 	protected boolean connectionBeingMade(Station station) {
+		// test if the connection is already being made
 		for (Connection connection: connections) {
 			if (connection.getStation1().equals(firstStation)){
 				if (connection.getStation2().equals(station)){
@@ -120,7 +193,7 @@ public class ConnectionController {
 		}
 		return false;
 	}
-	
+
 	protected boolean nearConnection(Position location) {
 		// test if a location is near a connection
 		ArrayList<Connection> connections = (ArrayList<Connection>) context.getGameLogic().getMap().getConnections();
@@ -129,10 +202,9 @@ public class ConnectionController {
 			Vector2 v1 = new Vector2(p1.getX(), p1.getY());
 			IPositionable p2 = connection.getStation2().getPosition();
 			Vector2 v2 = new Vector2(p2.getX(), p2.getY());
-			
+
 			Vector2 v3 = new Vector2(location.getX(), location.getY());
 			boolean intersect = Intersector.intersectSegmentCircle(v1, v2, v3, 1000);
-			System.out.println("Hello");
 			if (intersect){
 				return true;
 			}
@@ -190,22 +262,22 @@ public class ConnectionController {
 		Station l1 = train.getLastStation();
 		Station l2 = train.getNextStation();
 		Connection connection = context.getGameLogic().getMap().getConnection(l1, l2);
-		
+
 		connectionRemoved(connection);
-		
+
 		if (l1.getClass().equals(CollisionStation.class)) {
 			if (!context.getGameLogic().getMap().hasConnection(l1)) {
 				stationRemoved(l1);
 			}
 		}
-		
+
 		if (l2.getClass().equals(CollisionStation.class)) {
 			if (!context.getGameLogic().getMap().hasConnection(l2)) {
 				stationRemoved(l2);
 			}
 		}
-		
-		
+
+
 	}
 
 	public void beginCreating(PioneerTrain train) {
@@ -224,9 +296,11 @@ public class ConnectionController {
 	}
 
 	private void endCreating(Station station) {
+		isNaming = false;
+
 		Connection connection = new Connection(firstStation, station);
 		connections.add(connection);
-		
+
 		train.setPosition(new Position(-1, -1));
 		train.setCreating(connection);
 		context.getGameLogic().setState(GameState.NORMAL);
@@ -245,7 +319,7 @@ public class ConnectionController {
 		} else {
 			shapeRenderer.setColor(Color.BLACK);
 		}
-		
+
 		context.getTaxeGame();
 		shapeRenderer.rectLine(firstStation.getPosition().getX(), firstStation.getPosition().getY(), 
 				Gdx.input.getX(), TaxeGame.HEIGHT- Gdx.input.getY(), 5);
@@ -279,7 +353,7 @@ public class ConnectionController {
 		junctionNumber+=1;
 		return string;
 	}
-	
+
 	public static void subscribeConnectionChanged(ConnectionChangedListener connectionChangedListener) {
 		listeners.add(connectionChangedListener);
 	}
@@ -299,13 +373,13 @@ public class ConnectionController {
 	public static void subscribeStationAdded(StationChangedListener stationAddedListener){
 		slisteners.add(stationAddedListener);
 	}
-	
+
 	private void stationAdded(Station station) {
 		for (StationChangedListener listener : slisteners ){
 			listener.stationAdded(station);
 		}
 	}
-	
+
 	private void stationRemoved(Station station){
 		for (StationChangedListener listener : slisteners ){
 			listener.stationRemoved(station);
@@ -316,7 +390,7 @@ public class ConnectionController {
 		ArrayList<Tuple<Connection, Position>> collidedPositions = actor.collidedConnection();
 		CollisionStation prevJunction = null;
 		Connection connection = actor.getConnection();
-		
+
 		if (collidedPositions.size() == 0){
 			context.getConnectionController().connectionAdded(connection);
 
@@ -363,5 +437,12 @@ public class ConnectionController {
 		}
 		actor.getTrain().creationCompleted();
 	}
-	
+
+	public boolean isNamingStation() {
+		return isNaming;
+	}
+
+	public TextEntryBar getStationName() {
+		return stationName;
+	}
 }

@@ -185,7 +185,7 @@ public class GameScreen extends ScreenAdapter {
 		if (gameLogic.getState() == GameState.CREATING_CONNECTION){
 			connectionController.drawMouse();
 		}
-
+		
 		//Causes all the actors to perform their actions (i.e trains to move)
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
@@ -197,6 +197,11 @@ public class GameScreen extends ScreenAdapter {
 			stationController.displayNumberOfTrainsAtStations();
 		}
 
+		if (gameLogic.getState() == GameState.WAITING) {
+			if (connectionController.isNamingStation()) {
+				connectionController.getStationName().draw();
+			}
+		}
 
 		if (goalController.exitPressed == false) {
 
@@ -251,6 +256,7 @@ public class GameScreen extends ScreenAdapter {
 			topBarController.drawBackground();
 			topBarController.drawLabels();
 			topBarController.addEndTurnButton();
+			connectionController.drawStationNameBackground();
 			drawSidebar();
 			resourceController.drawPlayerResources(gameLogic.getPlayerManager().getCurrentPlayer());
 			goalController.showCurrentPlayerGoals();
