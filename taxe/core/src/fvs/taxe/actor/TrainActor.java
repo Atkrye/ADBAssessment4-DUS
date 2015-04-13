@@ -19,8 +19,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 public class TrainActor extends Image {
-    public static int width = 36;
-    public static int height = 36;
+    public static int width = 40;
+    public static int height = 20;
     public Train train;
 
     private Polygon bounds;
