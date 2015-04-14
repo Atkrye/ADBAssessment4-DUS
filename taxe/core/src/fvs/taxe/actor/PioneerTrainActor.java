@@ -1,11 +1,9 @@
 package fvs.taxe.actor;
 
 import fvs.taxe.controller.Context;
-import gameLogic.GameState;
 import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Position;
-import gameLogic.player.PlayerManager;
 import gameLogic.resource.PioneerTrain;
 
 import java.util.ArrayList;
@@ -14,23 +12,39 @@ import java.util.List;
 import Util.Tuple;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 
+/** Actor that represents the PioneerTrain */
 public class PioneerTrainActor extends TrainActor {
-	private PioneerTrain train;
-	private IPositionable position1;
-	private IPositionable position2;
-	private Connection connection;
-	private double angle;
-	//private ArrayList<Tuple<Connection, Position>> collidedPositions;
-	// orderd in order of increasing distance from 1st station in connection
+	// Creating a specific subclass for PioneerTrains allows PioneerTrains to have functionality on top of standard TrainActor
+	// Required to allow it to create connections
 
+	/** The PioneerTrain that corresponds to this actor */
+	private PioneerTrain train;
+
+	/** Start position used when a PioneerTrain has been given a NEW connection to create only.*/
+	private IPositionable startPosition;
+
+	/** End position used when a PioneerTrain has been given a NEW connection to create only.*/
+	private IPositionable endPosition;
+
+	/** Connection a PioneerTrain is creating when it has has been given a NEW connection to create only.*/
+	private Connection connection;
+
+	/** The angle (in radians) that the train will move in to create the new connection (if it has been given one to make)*/
+	private double radAngle;
+
+	private ShapeRenderer shapeRenderer;
+
+	/** Instantiantion method that creates the Actor for a given train
+	 * @param train The corresponding PioneerTrain that the actor is linked to
+	 * @param context The game's context
+	 */
 	public PioneerTrainActor(PioneerTrain train, Context context) {
 		super(train, context);
 		this.train = train;
-		//collidedPositions = new ArrayList<Tuple<Connection, Position>>();
+		this.shapeRenderer = new ShapeRenderer();
 	}
 
 	public Connection getConnection() {
@@ -40,29 +54,16 @@ public class PioneerTrainActor extends TrainActor {
 	public PioneerTrain getTrain() {
 		return train;
 	}
-	
+
+	/** Overridden draw method to display the line from the first station to the trains current position */
 	@Override
-	public void act(float delta) {
-		super.act(delta);
-
+	public void draw(Batch batch, float parentAlpha) {
 		if (train.isCreating() && isVisible()) {
-			if (context.getGameLogic().getState() == GameState.ANIMATING) {
-				moveBy((float) (train.getSpeed()*Math.cos(angle))*delta, (float) (train.getSpeed()*Math.sin(angle))*delta);
-
-				// tests if reached goal
-				float trainx = getX()+ width/2;
-				float nextx = position2.getX();
-				float trainy = getY() + height/2;
-				float nexty = position2.getY();
-
-				if (Math.abs(trainx-nextx)<=2 && Math.abs(trainy- nexty)<=2) {
-					// if the train has reached the target station
-					context.getConnectionController().pioneerTrainComplete(this);
-				}
-			}
-			
-			ShapeRenderer shapeRenderer = context.getTaxeGame().shapeRenderer;
+			//draw the line from the station to the train 
+			batch.end();
 			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+			// line color depends on whether night or day
 			if (context.getGameLogic().getPlayerManager().isNight()) {
 				shapeRenderer.setColor(Color.WHITE);
 			} else {
@@ -70,22 +71,27 @@ public class PioneerTrainActor extends TrainActor {
 			}
 
 			shapeRenderer.rectLine(this.getX()+ width/2, this.getY()+ height/2, 
-					position1.getX() , position1.getY() , 5);
+					startPosition.getX() , startPosition.getY() , 5);
 			shapeRenderer.end();
+			batch.begin();
 		}
+		super.draw(batch, parentAlpha); // ensures line is drawn below train
 	}
 
+	/** Finds all connections that will collide with the new connection, and where they will collide
+	 * Achieved by emulating movement along path and detecting collisions */
+	// emulation makes it easier to place the method here, rather than elsewhere
 	public ArrayList<Tuple<Connection, Position>> collidedConnection() {
 		// find all connections that collide with the new connection, and where
 		ArrayList<Tuple<Connection, Position>> collidedPositions = new ArrayList<Tuple<Connection, Position>>();
-		
+
 		List<Connection> connections = context.getGameLogic().getMap().getConnections();
 		int x1,x2,x3,x4,y1,y2,y3,y4;
 
-		x3 = (int) (position1.getX() + 10*Math.cos(angle));
-		y3 = (int) (position1.getY() + 10*Math.sin(angle));
-		x4 = (int) (position2.getX() - 10*Math.cos(angle));
-		y4 = (int) (position2.getY() - 10*Math.sin(angle));
+		x3 = (int) (startPosition.getX() + 10*Math.cos(radAngle));
+		y3 = (int) (startPosition.getY() + 10*Math.sin(radAngle));
+		x4 = (int) (endPosition.getX() - 10*Math.cos(radAngle));
+		y4 = (int) (endPosition.getY() - 10*Math.sin(radAngle));
 
 		for (Connection connection: connections){
 			x1 = connection.getStation1().getPosition().getX();
@@ -117,13 +123,13 @@ public class PioneerTrainActor extends TrainActor {
 		return collidedPositions;
 	}
 
+	/** Set all of the corresponding things for creating a new connection - the connection, start/end positions and angles.
+	 * @param connection The connection that the pioneer train will create
+	 */
 	public void setStationPositions(Connection connection){
 		this.connection = connection;
-		this.position1 = connection.getStation1().getPosition();
-		this.position2 = connection.getStation2().getPosition();
-		this.angle = Position.getAngle(position1,position2);
-
-		float degangle = (float) (MathUtils.radiansToDegrees*angle);
-		addAction(Actions.rotateTo((float) degangle));
+		this.startPosition = connection.getStation1().getPosition();
+		this.endPosition = connection.getStation2().getPosition();
+		this.radAngle = Position.getAngle(startPosition,endPosition);
 	}
 }

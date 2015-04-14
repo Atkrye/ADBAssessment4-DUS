@@ -27,7 +27,6 @@ public class PioneerTrain extends Train {
 	public void setCreating(Connection connection) {
 		this.connection = connection;
 		this.creating = true;
-		actor.setStationPositions(connection);
 	}
 	
 	public Connection getConnection(){ 

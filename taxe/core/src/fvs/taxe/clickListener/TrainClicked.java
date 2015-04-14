@@ -3,6 +3,7 @@ package fvs.taxe.clickListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -50,14 +51,16 @@ public class TrainClicked extends ClickListener {
 						if (actor instanceof TrainActor) {
 							TrainActor trainActor = (TrainActor) actor;
 							//If the actor's bounds (location and size) equal that of the original train's actor then the train is added to the ArrayList
-							if (trainActor.getBounds().overlaps(train.getActor().getBounds())) {
+							//if (trainActor.getBounds().overlaps(train.getActor().getBounds())) {
+							if ((Intersector.overlapConvexPolygons(trainActor.getBounds(), train.getActor().getBounds()))) {
 								stackedTrains.add(trainActor.train);
 							}
 						}//This checks all station actors and checks whether or not the trainActor overlaps with the station
 						//If it does then it is necessary to add all trains at that station to the dialog too
 						else if (actor instanceof StationActor) {
 							StationActor stationActor = (StationActor) actor;
-							if (stationActor.getBounds().overlaps(train.getActor().getBounds())) {
+							//if (stationActor.getBounds().overlaps(train.getActor().getBounds())) {
+							if ((Intersector.overlapConvexPolygons(stationActor.getBounds(), train.getActor().getBounds()))) {
 								for (Player player : context.getGameLogic().getPlayerManager().getAllPlayers()) {
 									for (Resource resource : player.getResources()) {
 										if (resource instanceof Train) {

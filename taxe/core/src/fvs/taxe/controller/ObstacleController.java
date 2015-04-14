@@ -127,7 +127,7 @@ public class ObstacleController {
 		effects.put("Volcano", volcanoActor);
 	}
 	
-	/**This method draws the obstacle effects at their locations with their visibilities*/
+	/**This method adds the obstacle effects to the stage*/
 	public void drawObstacleEffects() {
 		for (ParticleEffectActor actor : effects.values()) {
 			context.getStage().addActor(actor);

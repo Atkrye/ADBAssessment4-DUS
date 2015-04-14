@@ -1,19 +1,19 @@
 package fvs.taxe.controller;
 
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.actor.PioneerTrainActor;
-import fvs.taxe.actor.StationActor;
+import fvs.taxe.actor.TrainActor;
 import fvs.taxe.clickListener.StationClickListener;
 import gameLogic.GameState;
 import gameLogic.listeners.ConnectionChangedListener;
 import gameLogic.listeners.StationChangedListener;
 import gameLogic.map.CollisionStation;
 import gameLogic.map.Connection;
-import gameLogic.map.IPositionable;
 import gameLogic.map.Map;
 import gameLogic.map.Position;
 import gameLogic.map.Station;
-import gameLogic.player.PlayerManager;
 import gameLogic.resource.KamikazeTrain;
 import gameLogic.resource.PioneerTrain;
 
@@ -24,17 +24,17 @@ import Util.Tuple;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.TextInputListener;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -125,17 +125,47 @@ public class ConnectionController {
 
 	private void endCreating(Station station) {
 		isNaming = false;
-
 		Connection connection = new Connection(firstStation, station);
 		connections.add(connection);
 
 		train.setPosition(new Position(-1, -1));
 		train.setCreating(connection);
+
+		train.getActor().setStationPositions(connection);
+		addPioneerActions(station);
 		context.getGameLogic().setState(GameState.NORMAL);
 
 		TrainController trainController = new TrainController(context);
 		trainController.setTrainsVisible(train, true);
 		back.setVisible(false);
+	}
+
+	public void addPioneerActions(Station station) {
+		train.getActor().clearActions();
+		SequenceAction actions = Actions.sequence();
+
+		//action to rotate the train so it is facing the direction it creates track in
+		// actions require an angle in degrees for rotation 
+		float radAngle = Position.getAngle(firstStation.getPosition(),station.getPosition());
+		float degAngle = (float) (MathUtils.radiansToDegrees*radAngle);
+		actions.addAction(Actions.rotateTo((float) degAngle));
+
+		// action to move train to city
+		float duration = Position.getDistance(firstStation.getPosition(), station.getPosition()) / train.getSpeed();
+		actions.addAction(moveTo(station.getPosition().getX() - TrainActor.width / 2, station.getPosition().getY() - TrainActor.height / 2, duration));
+
+		// Action to say that train has finished moving and reached destination, call pioneerTrainComplete()
+		Action finishedCreating = new Action(){
+			@Override
+			public boolean act(float delta) {
+				pioneerTrainComplete(train.getActor());
+				System.out.println("poioneertriancomplete");
+				return true;
+			}
+		};
+		actions.addAction(finishedCreating);
+
+		train.getActor().addAction(actions);
 	}
 
 	protected boolean connectionBeingMade(Station station) {
@@ -204,11 +234,11 @@ public class ConnectionController {
 	}
 
 	private void getNewStationName(final Position location) {
-		isNaming = true;
+
 		nameBackground.setVisible(true);
 
 		final InputProcessor ip = Gdx.input.getInputProcessor();
-		
+
 		nameip = new InputAdapter () {
 			//The input processor which acts upon a user pressing keys
 			public boolean keyDown(int keycode) {
@@ -218,12 +248,12 @@ public class ConnectionController {
 				}
 				if (keycode == Keys.ENTER){
 					String text = stationName.getLabelValue();
-					if (isUniqueName(text)) {
+					if (context.getGameLogic().getMap().isUniqueName(text)) {
 						createNewStation(text, location);
 						stationName.clear();
 						nameBackground.setVisible(false);
 						Gdx.input.setInputProcessor(ip);
-					
+
 					} else {
 						context.getTopBarController().displayFlashMessage("Please enter a unique station name", Color.RED);
 					}
@@ -244,14 +274,7 @@ public class ConnectionController {
 			}
 		};
 		Gdx.input.setInputProcessor(nameip);
-	}
-
-	public boolean isUniqueName(String text) {
-		if (context.getGameLogic().getMap().getStationByName(text) == null) {
-			return true;
-		} else {
-			return false;
-		}
+		isNaming = true;
 	}
 
 	private void createNewStation(String string, Position location) {

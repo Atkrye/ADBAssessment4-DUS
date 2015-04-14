@@ -197,7 +197,7 @@ public class Map {
     public boolean nearStation(Position location) {
 		// test if a location is near another station
 		for (Station station : stations) {
-			if (Position.getDistance(location, station.getPosition()) <= StationActor.height + 20) {
+			if (Position.getDistance(location, station.getPosition()) <= StationActor.getStationHeight() + 20) {
 				return true;
 			}
 		}
@@ -237,10 +237,10 @@ public class Map {
 				continue;
 			}
 
-			x1 = s.getPosition().getX() - StationActor.width/2 - 10;
-			y1 = s.getPosition().getY() - StationActor.height/2 - 10;
-			x2 = s.getPosition().getX() + StationActor.width/2 + 10;
-			y2 = s.getPosition().getY() + StationActor.height/2 + 10;
+			x1 = s.getPosition().getX() - StationActor.getStationWidth()/2 - 10;
+			y1 = s.getPosition().getY() - StationActor.getStationHeight()/2 - 10;
+			x2 = s.getPosition().getX() + StationActor.getStationWidth()/2 + 10;
+			y2 = s.getPosition().getY() + StationActor.getStationHeight()/2 + 10;
 
 			Position value = Position.getLineIntersect(x1, y1, x1, y2, x3, y3, x4, y4);
 			if (value != null){
@@ -265,6 +265,14 @@ public class Map {
 		return false;
 	}
 
+	public boolean isUniqueName(String text) {
+		if (getStationByName(text) == null) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
 	public BlankMapActor getMapActor() {
 		return this.actor;
 	}
