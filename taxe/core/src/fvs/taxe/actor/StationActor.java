@@ -33,9 +33,9 @@ public class StationActor extends Image {
 	 * @param location the location of the station actor
 	 */
     public StationActor(IPositionable location, Station station) {
-    	super(new Texture(Gdx.files.internal("DayStation.png"))); // assume start at daytime- will be changed if created at night
+    	super(new Texture(Gdx.files.internal("stations/DayStation.png"))); // assume start at daytime- will be changed if created at night
         dayTexture = getDrawable();
-        nightTexture = new Image(new Texture(Gdx.files.internal("NightStation.png"))).getDrawable();
+        nightTexture = new Image(new Texture(Gdx.files.internal("stations/NightStation.png"))).getDrawable();
         
         setSize(width, height);
         setPosition(location.getX() - width / 2, location.getY() - height / 2);

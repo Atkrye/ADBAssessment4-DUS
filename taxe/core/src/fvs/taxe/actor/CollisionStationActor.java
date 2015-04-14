@@ -31,9 +31,9 @@ public class CollisionStationActor extends Image {
 	 * @param station The collisionStation that the actor is linked to
 	 */
 	public CollisionStationActor(IPositionable location, CollisionStation station) {
-		super(new Texture(Gdx.files.internal("DayJunction.png"))); // assume start at daytime- will be changed if created at night
+		super(new Texture(Gdx.files.internal("stations/DayJunction.png"))); // assume start at daytime- will be changed if created at night
 		dayTexture = getDrawable();
-		nightTexture = new Image(new Texture(Gdx.files.internal("NightJunction.png"))).getDrawable();
+		nightTexture = new Image(new Texture(Gdx.files.internal("stations/NightJunction.png"))).getDrawable();
 
 		setSize(width, height);
 		setPosition(location.getX() - width / 2, location.getY() - height / 2);

@@ -322,10 +322,10 @@ public class ConnectionController {
 				Tuple<Connection, Position> pair = collidedPositions.get(i);
 				Connection collidedConn = pair.getFirst();
 				Position position = pair.getSecond();
-				CollisionStation junction = context.getGameLogic().getMap().addJunction(ConnectionController.getNextJunctionNum(), position);
+				CollisionStation junction = context.getGameLogic().getMap().addJunction(getNextJunctionNum(), position);
 				StationController.renderCollisionStation(junction);
 
-				context.getConnectionController().connectionRemoved(collidedConn);
+				connectionRemoved(collidedConn);
 
 				Station iStation1 = collidedConn.getStation1();
 				Station iStation2 = collidedConn.getStation2();
