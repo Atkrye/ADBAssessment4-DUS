@@ -124,7 +124,7 @@ public class TrainMoveController {
 		for (final Station station : train.getRoute()) {
 			IPositionable next = station.getPosition();
 			//This calculates how long it will take for the train to travel to the next station on the route
-			float duration = getDistance(current, next) / train.getSpeed();
+			float duration = Position.getDistance(current, next) / train.getSpeed();
 
 			// rotate the train to face forwards
 			float angle = MathUtils.radiansToDegrees*Position.getAngle(current, next);
@@ -148,10 +148,7 @@ public class TrainMoveController {
 		train.getActor().addAction(actions);
 	}
 
-	private float getDistance(IPositionable a, IPositionable b) {
-		//This method returns the absolute distance from point A to point B in pixels
-		return Vector2.dst(a.getX(), a.getY(), b.getX(), b.getY());
-	}
+	
 
 	//We removed collisions from here as it was more appropriate for how we wanted collisions to work to test it every time the trains were rendered
 }

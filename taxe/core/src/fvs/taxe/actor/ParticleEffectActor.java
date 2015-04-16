@@ -5,9 +5,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
-/**This class is a type of actor specifically for creating Particles e.g. for obstacles.*/
+/**Class used to display the particle effects onscreen when an obstacle occurs*/
 public class ParticleEffectActor extends Actor {
-
+	// simply a container class that contains the particle effect. Wrapped up as actor to ensure it is displayed in a correct z-order
+	
 	/**The particle effect to be used in this actor*/
 	private ParticleEffect particleEffect;
 
@@ -21,7 +22,7 @@ public class ParticleEffectActor extends Actor {
 
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
-		//Draw the particleEffect in real time
+		//Draw the particleEffect in real time (will stop being visible onscreen based on particle effect parameters)
 		particleEffect.draw(batch, Gdx.graphics.getDeltaTime());
 	}
 	

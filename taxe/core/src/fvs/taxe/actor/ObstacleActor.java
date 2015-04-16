@@ -7,7 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
-/**This class is a type of image specifically for creating Obstacles.*/
+/**Class used to display the obstacle icons onscreen, extends Image.*/
 public class ObstacleActor extends Image {
 
 	/**The width of an obstacle in pixels.*/
@@ -27,7 +27,7 @@ public class ObstacleActor extends Image {
 		setPosition(position.getX() - (width/2), position.getY() - (height/2));
 	}
 
-	/**Static method for getting a texture depending on the type of obstacle passed.
+	/**Static method for returning a texture depending on the type of obstacle passed.
 	 * @param obstacle the obstacle to base the return texture of.
 	 * @return A texture for the parameter obstacle's type.
 	 */

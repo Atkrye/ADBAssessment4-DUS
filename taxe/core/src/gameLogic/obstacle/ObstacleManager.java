@@ -93,8 +93,6 @@ public class ObstacleManager {
 			type = ObstacleType.EARTHQUAKE;
 		} 
 		
-		System.out.println(type + " , " + typeName);
-		
 		station = map.getStationByName(stationName);
 		
 		if (type != null && station != null){

@@ -54,6 +54,7 @@ public class GameScreen extends ScreenAdapter {
 	private Texture dayMapTexture;
 	private Texture nightMapTexture;
 	private int i;
+	private TrainController trainController;
 
 	public GameScreen(TaxeGame game, String p1, String p2, String MODE, int val)
 	{
@@ -93,6 +94,7 @@ public class GameScreen extends ScreenAdapter {
 		routeController = new RouteController(context);
 		obstacleController = new ObstacleController(context);
 		connectionController = new ConnectionController(context);
+		trainController = new TrainController(context);
 		context.setRouteController(routeController);
 		context.setTopBarController(topBarController);
 		context.setConnectionController(connectionController);
@@ -201,7 +203,7 @@ public class GameScreen extends ScreenAdapter {
 		if (gameLogic.getState() == GameState.CREATING_CONNECTION){
 			connectionController.drawMouse();
 		}
-
+		
 		//Causes all the actors to perform their actions (i.e trains to move)
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
@@ -213,6 +215,11 @@ public class GameScreen extends ScreenAdapter {
 			stationController.displayNumberOfTrainsAtStations();
 		}
 
+		if (gameLogic.getState() == GameState.WAITING) {
+			if (connectionController.isNamingStation()) {
+				connectionController.getStationName().draw();
+			}
+		}
 
 		if (goalController.exitPressed == false) {
 
@@ -264,9 +271,11 @@ public class GameScreen extends ScreenAdapter {
 			stationController.addConnections(map.getConnections(), Color.GRAY);
 			stationController.renderStations();
 			obstacleController.drawObstacleEffects();
+			trainController.drawTrains();
 			topBarController.drawBackground();
 			topBarController.drawLabels();
 			topBarController.addEndTurnButton();
+			connectionController.drawStationNameBackground();
 			drawSidebar();
 			resourceController.drawPlayerResources(gameLogic.getPlayerManager().getCurrentPlayer());
 			goalController.showCurrentPlayerGoals();

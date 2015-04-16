@@ -22,12 +22,11 @@ import gameLogic.resource.Train;
 public class TrainController {
 	//This class controls all the train actors
 	private Context context;
-	private Group TrainActors;
+	private static Group TrainActors;
 
 	public TrainController(final Context context) {
 		this.context = context;
-		TrainActors = new Group();
-		context.getStage().addActor(TrainActors);
+		
 		ConnectionController.subscribeConnectionChanged(new ConnectionChangedListener() {
 			@Override
 			public void removed(Connection connection) {
@@ -63,6 +62,11 @@ public class TrainController {
 		});
 	}
 
+	public void drawTrains() {
+		TrainActors = new Group();
+		context.getStage().addActor(TrainActors);
+	}
+	
 	public TrainActor renderTrain(Train train) {
 		//This renders the actor of the train which is passed to it
 		TrainActor trainActor;

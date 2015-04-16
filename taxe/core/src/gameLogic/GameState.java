@@ -10,4 +10,5 @@ public enum GameState {
     WAITING, 
     CREATING_CONNECTION, 
     REMOVING_CONNECTION
+    
 }
