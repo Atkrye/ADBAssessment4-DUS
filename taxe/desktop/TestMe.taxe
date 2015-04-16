@@ -3,7 +3,8 @@ DataType: GameData,
 Mode: POINTS,
 "Max Turns": -1,
 "Max Points": 3000,
-Turn: 0,
+Nighttime: false,
+Turn: 2,
 stations: [
 	{
 		name: Madrid,
@@ -353,6 +354,16 @@ connections: [
 		station1: Amsterdam,
 		station2: Vaduz
 	}
+],
+obstacles: [
+	{
+		"Obstacle Type": VOLCANO,
+		"Time left": 7,
+		x: 838,
+		y: 65,
+		Station: Rome,
+		Active: true
+	}
 ]
 }{
 DataType: Player1,
@@ -363,11 +374,101 @@ Active: true,
 Resources: [
 	{
 		DataType: Train,
-		Name: "Electric Train",
-		Speed: 60,
-		Image: ElectricTrain.png,
+		Name: "Bullet Train",
+		Speed: 90,
+		Image: BulletTrain.png,
+		Destination: Amsterdam,
+		x: -1,
+		y: -1,
+		Route: [
+			{
+				DataType: Station,
+				Name: York
+			},
+			{
+				DataType: Station,
+				Name: London
+			},
+			{
+				DataType: Station,
+				Name: Lille
+			},
+			{
+				DataType: Station,
+				Name: Amsterdam
+			}
+		],
+		History: [
+			{
+				DataType: Station,
+				Name: York,
+				Turn: 0
+			},
+			{
+				DataType: Station,
+				Name: York,
+				Turn: 2
+			},
+			{
+				DataType: Station,
+				Name: London,
+				Turn: 2
+			},
+			{
+				DataType: Station,
+				Name: Lille,
+				Turn: 2
+			}
+		]
+	},
+	{
+		DataType: Train,
+		Name: Pioneer,
+		Speed: 50,
+		Image: PioneerTrain.png,
+		Special: Pioneer,
+		Creating: false,
 		Destination: Empty,
-		Position: Empty,
+		x: Empty,
+		y: Empty,
+		Route: [
+			{
+				DataType: Empty
+			}
+		],
+		History: [
+			{
+				DataType: Empty
+			}
+		]
+	},
+	{
+		DataType: Train,
+		Name: "Bullet Train",
+		Speed: 90,
+		Image: BulletTrain.png,
+		Destination: Empty,
+		x: Empty,
+		y: Empty,
+		Route: [
+			{
+				DataType: Empty
+			}
+		],
+		History: [
+			{
+				DataType: Empty
+			}
+		]
+	},
+	{
+		DataType: Train,
+		Name: "Steam Train",
+		Speed: 20,
+		Image: SteamTrain.png,
+		Destination: Empty,
+		x: Empty,
+		y: Empty,
 		Route: [
 			{
 				DataType: Empty
@@ -386,5 +487,30 @@ Name: "Enter Name",
 Score: 0,
 Skip: false,
 Active: false,
-Resources: []
+Resources: [
+	{
+		DataType: Skip
+	},
+	{
+		DataType: Train,
+		Name: Pioneer,
+		Speed: 50,
+		Image: PioneerTrain.png,
+		Special: Pioneer,
+		Creating: false,
+		Destination: Empty,
+		x: Empty,
+		y: Empty,
+		Route: [
+			{
+				DataType: Empty
+			}
+		],
+		History: [
+			{
+				DataType: Empty
+			}
+		]
+	}
+]
 }

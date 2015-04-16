@@ -1,5 +1,6 @@
 package gameLogic;
 
+import fvs.taxe.GameScreen;
 import fvs.taxe.GameSetupScreen;
 import gameLogic.goal.GoalManager;
 import gameLogic.listeners.GameStateListener;
@@ -12,18 +13,20 @@ import gameLogic.player.Player;
 import gameLogic.player.PlayerManager;
 import gameLogic.resource.ResourceManager;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.FileHandler;
 
 import Util.Tuple;
 import adb.taxe.record.SaveManager;
 
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.MathUtils;
 
-public class Game {
+public class Game{
 	public static final boolean trongEnabled = true;
 	//This is sort of a super-class that can be accessed throughout the system as many of its methods are static
 	//This is a useful tool to exploit to make implementing certain features easier
@@ -32,17 +35,15 @@ public class Game {
 	private GoalManager goalManager;
 	private ResourceManager resourceManager;
 	private ObstacleManager obstacleManager;
-	private SaveManager saveManager;
 	private Map map;
 	private GameState state;
 	private List<GameStateListener> gameStateListeners = new ArrayList<GameStateListener>();
 	private List<ObstacleListener> obstacleListeners = new ArrayList<ObstacleListener>();
-
-	//Number of players, not sure how much impact this has on the game at the moment but if you wanted to add more players you would use this attributes
-	private final int CONFIG_PLAYERS = 2;
 	private String MODE;
+	private static Game previousTurn;
+	//Default values
 	public int TOTAL_TURNS = 30;
-	public int MAX_POINTS = 10000;
+	public int MAX_POINTS = 3000;
 
 	private Game(String p1Name, String p2Name, String MODE, int count) {
 		this.MODE = MODE;
@@ -64,13 +65,47 @@ public class Game {
 		resourceManager = new ResourceManager();
 		goalManager = new GoalManager(resourceManager);
 
-		map = new Map();
+		map = new Map(false, null);
 		obstacleManager = new ObstacleManager(map);
 		
-		saveManager = new SaveManager(playerManager, goalManager, resourceManager, obstacleManager);
 
 		state = GameState.NORMAL;
+		
+		//Adds all the subscriptions to the game which gives players resources and goals at the start of each turn.
+		//Also decrements all connections and blocks a random one
+		//The checking for whether a turn is being skipped is handled inside the methods, this just always calls them
+		playerManager.subscribeTurnChanged(new TurnListener() {
+			@Override
+			public void changed() {
+				Player currentPlayer = playerManager.getCurrentPlayer();
+				goalManager.addRandomGoalToPlayer(currentPlayer);
+				resourceManager.addRandomResourceToPlayer(currentPlayer);
+				resourceManager.addRandomResourceToPlayer(currentPlayer);
+				if (playerManager.getTurnNumber() != 1) {
+					// obstacles only occur from first turn onwards
+					calculateObstacles();
+					decreaseObstacleTime();
+				}
+			}
+		});
+	}
 
+	//Constructor to be used when loading a game from a file
+	public Game(String MODE, int totalTurns, int maxPoints, PlayerManager pm, Map m, ObstacleManager om, boolean isRecording) {
+		this.MODE = MODE;
+		TOTAL_TURNS = totalTurns;
+		MAX_POINTS = maxPoints;
+		//Creates players
+		playerManager = pm;
+		resourceManager = new ResourceManager();
+		goalManager = new GoalManager(resourceManager);
+
+		map = m;
+		obstacleManager = om;
+		
+
+		state = GameState.NORMAL;
+		
 		//Adds all the subscriptions to the game which gives players resources and goals at the start of each turn.
 		//Also decrements all connections and blocks a random one
 		//The checking for whether a turn is being skipped is handled inside the methods, this just always calls them
@@ -90,9 +125,9 @@ public class Game {
 		});
 	}
 	
-	public void save(FileHandle fileHandler)
+	public void save()
 	{
-		saveManager.save(fileHandler);
+		SaveManager.save();
 	}
 
 	public static Game getInstance(String p1Name, String p2Name, String MODE, int count) {
@@ -101,12 +136,6 @@ public class Game {
 			// initialisePlayers gives them a goal, and the GoalManager requires an instance of game to exist so this
 			// method can't be called in the constructor
 			instance.initialisePlayers();
-		}
-		try {
-			instance.save(new FileHandle("Recording"));
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return instance;
 	}
@@ -213,4 +242,32 @@ public class Game {
 	public static Game getInstance() {
 		return instance;
 	}
+
+	public static void setInstance(Game setupGame, boolean newGameScreen) {
+		instance = setupGame;
+		if(newGameScreen)
+		{
+			GameScreen.getInstance().getSecond().dispose();
+			GameScreen.getInstance().getFirst().setScreen(new GameScreen(GameScreen.getInstance().getFirst(), getInstance()));
+		}
+	}
+	 
+	 //This method clones the current instance and stores it
+	 public static void storeLastTurn()
+	 {
+		 System.out.println("Stored");
+		 previousTurn = new Game("FUCK", "YEAH", GameSetupScreen.MODETURNS, 30);
+	 }
+	 
+	 //If we can, we step the game back a turn using this method
+	 public static void undoTurn()
+	 {
+		 if(previousTurn != null)
+		 {
+			 setInstance(previousTurn, true);
+			 previousTurn = null;
+		 }
+	 }
+	 
+	 
 }

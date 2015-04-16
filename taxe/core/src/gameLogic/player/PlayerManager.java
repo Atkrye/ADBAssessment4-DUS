@@ -2,6 +2,7 @@ package gameLogic.player;
 
 import fvs.taxe.controller.Context;
 import fvs.taxe.dialog.DialogTurnSkipped;
+import gameLogic.Game;
 import gameLogic.listeners.DayChangedListener;
 import gameLogic.listeners.TurnListener;
 import gameLogic.listeners.PlayerChangedListener;
@@ -12,7 +13,7 @@ import java.util.List;
 
 
 public class PlayerManager {
-    private ArrayList<Player> players = new ArrayList<Player>();
+	private ArrayList<Player> players = new ArrayList<Player>();
     private int currentTurn = 0;
     private int turnNumber = 0;
     private List<TurnListener> turnListeners = new ArrayList<TurnListener>();
@@ -72,6 +73,7 @@ public class PlayerManager {
     }
 
     private void turnChanged() {
+    	Game.storeLastTurn();
         turnNumber++;
         if (turnNumber%4 == 0){
         	isNight = !isNight;
@@ -109,7 +111,7 @@ public class PlayerManager {
         return turnNumber;
     }
 
-	public static boolean isNight() {
+	public boolean isNight() {
 		return isNight;
 	}
 

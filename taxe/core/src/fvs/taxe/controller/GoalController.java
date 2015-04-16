@@ -1,7 +1,6 @@
 package fvs.taxe.controller;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
@@ -270,7 +269,7 @@ public class GoalController {
         saveButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
-        		Game.getInstance().save(new FileHandle("SaveTest"));
+        		Game.getInstance().save();
             };
         } );
         exitMenu.addActor(saveButton);

@@ -3,6 +3,7 @@ package fvs.taxe.controller;
 
 import fvs.taxe.clickListener.SkipClicked;
 import fvs.taxe.clickListener.TrainClicked;
+import gameLogic.Game;
 import gameLogic.listeners.PlayerChangedListener;
 import gameLogic.player.Player;
 import gameLogic.resource.Resource;
@@ -26,7 +27,7 @@ public class ResourceController {
         context.getGameLogic().getPlayerManager().subscribePlayerChanged(new PlayerChangedListener() {
             @Override
             public void changed() {
-                drawPlayerResources(context.getGameLogic().getPlayerManager().getCurrentPlayer());
+                drawPlayerResources(Game.getInstance().getPlayerManager().getCurrentPlayer());
             }
         });
     }

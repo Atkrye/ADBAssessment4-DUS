@@ -240,7 +240,7 @@ public class ConnectionController {
 		ShapeRenderer shapeRenderer = context.getTaxeGame().shapeRenderer;
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 		context.getGameLogic().getPlayerManager();
-		if (PlayerManager.isNight()){
+		if (context.getGameLogic().getPlayerManager().isNight()){
 			shapeRenderer.setColor(Color.WHITE);
 		} else {
 			shapeRenderer.setColor(Color.BLACK);

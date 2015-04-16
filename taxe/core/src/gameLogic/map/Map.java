@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.JsonValue;
 
 public class Map {
     private List<Station> stations;
@@ -20,13 +21,21 @@ public class Map {
     @SuppressWarnings("unused")
 	private JSONImporter jsonImporter;
 	
-    public Map() {
+    public Map(boolean importedData, JsonValue data) {
     	
         stations = new ArrayList<Station>();
         connections = new ArrayList<Connection>();
 
         //Imports all values from the JSON file using the JSONImporter
-        jsonImporter = new JSONImporter(this);
+        //If we're using loaded game data, send the data to the JSONImporter, otherwise load from hard data as normal
+        if(importedData)
+        {
+        	jsonImporter = new JSONImporter(this, data);
+        }
+        else
+        {
+        	jsonImporter = new JSONImporter(this);
+        }
 
         //Analyses the graph using Dijkstra's algorithm
         dijkstra = new Dijkstra(this);

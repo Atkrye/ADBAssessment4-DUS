@@ -5,10 +5,11 @@ import gameLogic.goal.GoalManager;
 import gameLogic.resource.Resource;
 import gameLogic.resource.Train;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public class Player{
     private PlayerManager pm;
     private List<Resource> resources;
     private List<Goal> goals;

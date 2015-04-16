@@ -29,6 +29,16 @@ public class ObstacleManager {
 		this.map = map;
 		initialise();
 	}
+	
+	/** Set the map accordingly, populate the list of obstacles from the JsonData
+	 * @param map The map that the Game's stations are associated with
+	 * @param jsonData The loaded json data that will be used to populate the obstacles
+	 */
+	public ObstacleManager(Map map, JsonValue jsonData)
+	{
+		this.map = map;
+		initialise(jsonData);
+	}
 
 	/** Get all of the obstacles, their types, stations and the probabilities of them occurring from Obstacles.json*/
 	private void initialise() {
@@ -55,6 +65,14 @@ public class ObstacleManager {
 				obstacles.add(new Tuple<Obstacle, Float>(obstacle, probability));
 			}
 		}
+	}
+
+	/** Get all of the obstacles, their types, stations and the probabilities of them occurring, alongside their position and time remaining from loaded json data
+	 * @param jsonData the loaded data from a save game
+	 * */
+	private void initialise(JsonValue jsonData)
+	{
+		
 	}
 
 	/** Create the obstacle that has given type, and is located at the station assoicated with the given string

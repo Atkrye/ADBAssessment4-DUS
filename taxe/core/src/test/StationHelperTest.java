@@ -9,7 +9,7 @@ import static org.junit.Assert.assertTrue;
 public class StationHelperTest extends LibGdxTest {
     @Test
     public void testDoesConnectionExist() throws Exception {
-        Map map = new Map();
+        Map map = new Map(false, null);
 
         assertTrue(map.doesConnectionExist("Madrid", "Paris"));
         assertFalse(map.doesConnectionExist("London", "Paris"));

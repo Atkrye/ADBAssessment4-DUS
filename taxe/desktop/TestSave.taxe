@@ -3,6 +3,7 @@ DataType: GameData,
 Mode: POINTS,
 "Max Turns": -1,
 "Max Points": 3000,
+Nighttime: false,
 Turn: 0,
 stations: [
 	{
@@ -353,38 +354,166 @@ connections: [
 		station1: Amsterdam,
 		station2: Vaduz
 	}
-]
-}{
-DataType: Player1,
-Name: "Enter Name",
-Score: 0,
-Skip: false,
-Active: true,
-Resources: [
+],
+obstacles: [
 	{
-		DataType: Train,
-		Name: "Electric Train",
-		Speed: 60,
-		Image: ElectricTrain.png,
-		Destination: Empty,
-		Position: Empty,
-		Route: [
-			{
-				DataType: Empty
-			}
-		],
-		History: [
-			{
-				DataType: Empty
-			}
-		]
+		"Obstacle Type": BLIZZARD,
+		"Time left": 0,
+		Probability: 0.4,
+		x: 904,
+		y: 610,
+		Station: Stockholm,
+		Active: false
+	},
+	{
+		"Obstacle Type": BLIZZARD,
+		"Time left": 0,
+		Probability: 0.1,
+		x: 798,
+		y: 473,
+		Station: Copenhagen,
+		Active: false
+	},
+	{
+		"Obstacle Type": BLIZZARD,
+		"Time left": 0,
+		Probability: 0.6,
+		x: 1121,
+		y: 474,
+		Station: Minsk,
+		Active: false
+	},
+	{
+		"Obstacle Type": FLOOD,
+		"Time left": 0,
+		Probability: 0.4,
+		x: 328,
+		y: 22,
+		Station: Lisbon,
+		Active: false
+	},
+	{
+		"Obstacle Type": FLOOD,
+		"Time left": 0,
+		Probability: 0.7,
+		x: 590,
+		y: 373,
+		Station: London,
+		Active: false
+	},
+	{
+		"Obstacle Type": FLOOD,
+		"Time left": 0,
+		Probability: 0.2,
+		x: 701,
+		y: 384,
+		Station: Amsterdam,
+		Active: false
+	},
+	{
+		"Obstacle Type": VOLCANO,
+		"Time left": 0,
+		Probability: 0.2,
+		x: 838,
+		y: 65,
+		Station: Rome,
+		Active: false
+	},
+	{
+		"Obstacle Type": VOLCANO,
+		"Time left": 0,
+		Probability: 1.0E-8,
+		x: 590,
+		y: 373,
+		Station: London,
+		Active: false
+	},
+	{
+		"Obstacle Type": EARTHQUAKE,
+		"Time left": 0,
+		Probability: 0.3,
+		x: 1106,
+		y: 97,
+		Station: Sofia,
+		Active: false
+	},
+	{
+		"Obstacle Type": EARTHQUAKE,
+		"Time left": 0,
+		Probability: 0.5,
+		x: 1072,
+		y: 231,
+		Station: Cluj,
+		Active: false
 	}
-]
-}{
-DataType: Player2,
-Name: "Enter Name",
-Score: 0,
-Skip: false,
-Active: false,
-Resources: []
+],
+Player1: {
+	DataType: Player1,
+	Name: "Enter Name",
+	Score: 0,
+	Skip: false,
+	Active: true,
+	Resources: [
+		{
+			DataType: Train,
+			Name: "Nuclear Train",
+			Speed: 70,
+			Image: NuclearTrain.png,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Empty
+				}
+			]
+		},
+		{
+			DataType: Train,
+			Name: Kamikaze,
+			Speed: 10,
+			Image: KamikazeTrain.png,
+			Special: Kamikaze,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Empty
+				}
+			]
+		}
+	],
+	Goals: [
+		{
+			Origin: Minsk,
+			Destination: Lisbon,
+			Intermediate: Minsk,
+			Train: None,
+			Turn: 0,
+			TurnCount: 11,
+			ScoreValue: 1281,
+			BonusValue: 2028
+		}
+	]
+},
+Player2: {
+	DataType: Player2,
+	Name: "Enter Name",
+	Score: 0,
+	Skip: false,
+	Active: false,
+	Resources: [],
+	Goals: []
+}
 }

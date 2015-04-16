@@ -89,20 +89,10 @@ public class TopBarController {
     
     public void displayObstacleMessage(String message, Color color) {
 		// display a message to the obstacle topBar label, with topBarBackground color color and given message
-		// wraps automatically to correct size
 		obstacleLabel.clearActions();
 		obstacleLabel.setText(message);
-		obstacleLabel.setColor(Color.BLACK);
-		obstacleLabel.pack();
-		topBarBackground.setObstacleColor(color);
-		topBarBackground.setObstacleWidth(obstacleLabel.getWidth()+20);
-		obstacleLabel.addAction(sequence(delay(2f),fadeOut(0.25f), run(new Runnable() {
-			public void run() {
-				// run action to reset obstacle label after it has finished displaying information
-				obstacleLabel.setText("");
-				topBarBackground.setObstacleColor(Color.LIGHT_GRAY);
-			}
-		})));
+		obstacleLabel.setColor(color);
+		obstacleLabel.addAction(sequence(delay(2f),fadeOut(0.25f)));
 	}
     
     public void displayFlashMessage(String message, Color color) {
@@ -116,19 +106,11 @@ public class TopBarController {
 	}
 
 	public void displayFlashMessage(String message, Color backgroundColor, Color textColor, float time) {
-		topBarBackground.setObstacleColor(backgroundColor);
-		topBarBackground.setControlsColor(backgroundColor);
+		// currently doesnt change background colour
 		flashMessage.clearActions();
 		flashMessage.setText(message);
 		flashMessage.setColor(textColor);
-		flashMessage.addAction(sequence(delay(time), fadeOut(0.25f), run(new Runnable() {
-			public void run() {
-				topBarBackground.setControlsColor(Color.LIGHT_GRAY);
-				if (obstacleLabel.getActions().size == 0){
-					topBarBackground.setObstacleColor(Color.LIGHT_GRAY);
-				}
-			}
-		})));
+		flashMessage.addAction(sequence(delay(time), fadeOut(0.25f)));
 	}
 	
     public void displayMessage(String message, Color color){

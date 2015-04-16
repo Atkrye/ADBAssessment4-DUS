@@ -3,6 +3,7 @@ package fvs.taxe;
 import Util.Tuple;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -24,7 +25,6 @@ import gameLogic.map.Map;
 import gameLogic.map.BlankMapActor;
 import gameLogic.map.Station;
 import gameLogic.obstacle.Rumble;
-import gameLogic.player.PlayerManager;
 import gameLogic.resource.Train;
 import gameLogic.trong.TrongScreen;
 
@@ -53,9 +53,14 @@ public class GameScreen extends ScreenAdapter {
 	private ConnectionController connectionController;
 	private Texture dayMapTexture;
 	private Texture nightMapTexture;
-	private Texture mapTexture;
+	private int i;
 
-	public GameScreen(TaxeGame game, String p1, String p2, String MODE, int val) {
+	public GameScreen(TaxeGame game, String p1, String p2, String MODE, int val)
+	{
+		this(game, Game.getInstance(p1, p2, MODE, val));
+	}
+
+	public GameScreen(final TaxeGame game, Game loadedGame) {
 		instance = this;
 		GameScreen.game = game;
 		stage = new Stage();
@@ -64,14 +69,14 @@ public class GameScreen extends ScreenAdapter {
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 
 		//Initialises the game
-		gameLogic = Game.getInstance(p1, p2, MODE, val);
-		context = new Context(stage, skin, game, gameLogic);
+		Game.setInstance(loadedGame, false);
+		gameLogic = loadedGame;
+		context = new Context(stage, skin, game);
 		Gdx.input.setInputProcessor(stage);
-		
+
 		//Draw background
 		dayMapTexture = new Texture(Gdx.files.internal("DaytimeMap.png"));
 		nightMapTexture = new Texture(Gdx.files.internal("NightMap.png"));
-		mapTexture = new Texture(Gdx.files.internal("DaytimeMap.png"));
 		blankMapActor = new BlankMapActor();
 		stage.addActor(blankMapActor);
 		map = gameLogic.getMap();
@@ -101,13 +106,12 @@ public class GameScreen extends ScreenAdapter {
 				//The game will not be set into the animating state for the first turn to prevent player 1 from gaining an inherent advantage by gaining an extra turn of movement.
 				if (context.getGameLogic().getPlayerManager().getTurnNumber()!=1) {
 					gameLogic.setState(GameState.ANIMATING);
-					
+
 					String str = "Time is Passing";
 					topBarController.displayFlashMessage(str, Color.GREEN, Color.BLACK, 2f);
 				}
 			}
 		});
-
 		//Adds a listener that checks certain conditions at the end of every turn
 		gameLogic.subscribeStateChanged(new GameStateListener() {
 			@Override
@@ -123,7 +127,7 @@ public class GameScreen extends ScreenAdapter {
 					//If the game state is normal then the goal colour are reset to grey
 					goalController.setColours(new Color[3]);
 				}
-				
+
 			}
 		});
 
@@ -132,7 +136,7 @@ public class GameScreen extends ScreenAdapter {
 			public void clicked(Station station) {
 				// if the game is routing, set the route black when a new station is clicked
 				if(gameLogic.getState() == GameState.ROUTING) {
-					if (PlayerManager.isNight()) {
+					if (context.getGameLogic().getPlayerManager().isNight()) {
 						routeController.drawRoute(Color.WHITE);
 					} else {
 						routeController.drawRoute(Color.BLACK);
@@ -149,10 +153,21 @@ public class GameScreen extends ScreenAdapter {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		if(!Game.getInstance().equals(gameLogic))
+		{
+			gameLogic = Game.getInstance();
+			show();
+		}
+		//Hard coded back button
+		if(Gdx.input.isKeyJustPressed(Keys.BACKSPACE))
+		{
+			Game.undoTurn();
+			System.out.println("UNDO!");
+		}
 
 		Texture texture = dayMapTexture;
-		context.getGameLogic().getPlayerManager();
-		if (PlayerManager.isNight()){
+		
+		if (context.getGameLogic().getPlayerManager().isNight()){
 			texture = nightMapTexture;
 		};
 
@@ -198,7 +213,7 @@ public class GameScreen extends ScreenAdapter {
 			stationController.displayNumberOfTrainsAtStations();
 		}
 
-		
+
 		if (goalController.exitPressed == false) {
 
 			game.batch.begin();
@@ -208,11 +223,11 @@ public class GameScreen extends ScreenAdapter {
 				//Bounds for text
 				TextBounds lightBounds = game.fontTinyLight.getBounds("Turn");
 				TextBounds boldBounds = game.fontTinyBold.getBounds(((gameLogic.getPlayerManager().getTurnNumber() + 1 < gameLogic.TOTAL_TURNS) ? gameLogic.getPlayerManager().getTurnNumber() + 1 : gameLogic.TOTAL_TURNS) + " / " + gameLogic.TOTAL_TURNS);
-				
+
 				// Draw 'Turn'
 				game.fontTinyLight.setColor(Color.WHITE);
 				game.fontTinyLight.draw(game.batch, "Turn", 290/2 - (lightBounds.width/2), 112);
-				
+
 
 				// Draw turn number i.e '1/30'
 				game.fontTinyBold.setColor(Color.WHITE);
@@ -227,13 +242,13 @@ public class GameScreen extends ScreenAdapter {
 				// Draw 'Turn'
 				game.fontTinyLight.setColor(Color.WHITE);
 				game.fontTinyLight.draw(game.batch, "Target", 145 - (lightBounds.width/2), 112);
-				
+
 				// Draw turn number i.e '1/30'
 				game.fontTinyBold.setColor(Color.WHITE);
 				game.fontTinyBold.draw(game.batch, String.valueOf(Game.getInstance().MAX_POINTS), 290/2 - (boldBounds.width/2), 85.0f);
 				game.batch.end();
 			}
-			
+
 			goalController.drawHeaderText();
 		}
 	}
@@ -241,20 +256,23 @@ public class GameScreen extends ScreenAdapter {
 	@Override
 	// Called when GameScreen becomes current screen of the game
 	public void show() {
-		//We only render this once a turn, this allows the buttons generated to be clickable.
-		//Initially some of this functionality was in the draw() routine, but it was found that when the player clicked on a button a new one was rendered before the input could be handled
-		//This is why the header texts and the buttons are rendered separately, to prevent these issues from occuring
-		obstacleController.drawObstacles();
-		stationController.addConnections(map.getConnections(), Color.GRAY);
-		stationController.renderStations();
-		obstacleController.drawObstacleEffects();
-		topBarController.drawBackground();
-		topBarController.drawLabels();
-		topBarController.addEndTurnButton();
-		drawSidebar();
-		resourceController.drawPlayerResources(gameLogic.getPlayerManager().getCurrentPlayer());
-		goalController.showCurrentPlayerGoals();
-		goalController.showControls();
+		if (i == 0) {
+			//We only render this once a turn, this allows the buttons generated to be clickable.
+			//Initially some of this functionality was in the draw() routine, but it was found that when the player clicked on a button a new one was rendered before the input could be handled
+			//This is why the header texts and the buttons are rendered separately, to prevent these issues from occurring
+			obstacleController.drawObstacles();
+			stationController.addConnections(map.getConnections(), Color.GRAY);
+			stationController.renderStations();
+			obstacleController.drawObstacleEffects();
+			topBarController.drawBackground();
+			topBarController.drawLabels();
+			topBarController.addEndTurnButton();
+			drawSidebar();
+			resourceController.drawPlayerResources(gameLogic.getPlayerManager().getCurrentPlayer());
+			goalController.showCurrentPlayerGoals();
+			goalController.showControls();
+			i+=1;
+		}
 	}
 
 	private void drawSidebar() {
@@ -278,7 +296,10 @@ public class GameScreen extends ScreenAdapter {
 
 	@Override
 	public void resume() {
+		//if (trongScreen == null) {
+		//context.getGameLogic().setState(GameState.NORMAL);
 		trongScreen = null;
+		//}
 		super.resume();
 	}
 

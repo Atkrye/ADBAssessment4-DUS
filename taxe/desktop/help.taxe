@@ -363,9 +363,9 @@ Active: true,
 Resources: [
 	{
 		DataType: Train,
-		Name: "Electric Train",
-		Speed: 60,
-		Image: ElectricTrain.png,
+		Name: "Steam Train",
+		Speed: 20,
+		Image: SteamTrain.png,
 		Destination: Empty,
 		Position: Empty,
 		Route: [

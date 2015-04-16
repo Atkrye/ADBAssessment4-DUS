@@ -4,6 +4,9 @@ package fvs.taxe;
 
 
 
+import gameLogic.Game;
+import adb.taxe.record.SaveManager;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -26,6 +29,7 @@ public class MainMenuScreen extends ScreenAdapter {
     private Texture mapTexture;
     private Image mapImage;
     private Texture mainScreenTexture;
+    private boolean disabled = false;
 
     
     public MainMenuScreen(TaxeGame game) {
@@ -58,7 +62,7 @@ public class MainMenuScreen extends ScreenAdapter {
     private void update() {
     	
     	
-        if (Gdx.input.justTouched()) {
+        if (Gdx.input.justTouched() && !disabled) {
         	//detects which area of the screen is touched
         	//If rectangles are touch then relevant action is taken
             camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
@@ -69,8 +73,22 @@ public class MainMenuScreen extends ScreenAdapter {
             	game.setScreen(new GameSetupScreen(game));
                 return;
             }
+            //Load a game
             if (loadBounds.contains(touchPoint.x, touchPoint.y)) {
-                System.out.println("Load Pressed");
+            	//Disabled all click ability
+            	disabled = true;
+            	//Load a game using the SaveManager
+                Game loadedGame = SaveManager.load();
+                //If the loadedGame is null, the load was cancelled or failed
+                if(loadedGame == null)
+                {
+                	disabled = false;
+                }
+                else
+                {
+                	//If the loadedGame is not null, we set the game to a new GameScreen
+                	game.setScreen(new GameScreen(game, loadedGame));
+                }
             }
             if (exitBounds.contains(touchPoint.x, touchPoint.y)) {
             	//If the touch is within the boundaries of the rectangle exitBounds the game exits

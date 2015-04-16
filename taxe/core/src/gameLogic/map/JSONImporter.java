@@ -1,9 +1,11 @@
 package gameLogic.map;
 
 import Util.Tuple;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+
 import gameLogic.resource.ResourceManager;
 
 import java.util.ArrayList;
@@ -17,6 +19,16 @@ public class JSONImporter {
 		//Defines the file to parse
 		JsonValue jsonVal = jsonReader.parse(Gdx.files.local("stations.json"));
 
+		//Parses the stations and adds them to the map
+		parseStations(jsonVal, map);
+
+		//Parses the connections and adds them to the map
+		parseConnections(jsonVal, map);
+	}
+	
+
+
+	public JSONImporter(Map map, JsonValue jsonVal) {
 		//Parses the stations and adds them to the map
 		parseStations(jsonVal, map);
 
@@ -53,7 +65,7 @@ public class JSONImporter {
 		resourceManager.setTrains(trains);
 	}
 
-	public void parseConnections(JsonValue jsonVal, Map map) {
+	public static void parseConnections(JsonValue jsonVal, Map map) {
 		//Iterates through all the connections stored in the JSON array associated with the connections attribute
 		for (JsonValue connection = jsonVal.getChild("connections"); connection != null; connection = connection.next) {
 			String station1 = "";
@@ -73,7 +85,7 @@ public class JSONImporter {
 		}
 	}
 
-	private void parseStations(JsonValue jsonVal, Map map) {
+	public static void parseStations(JsonValue jsonVal, Map map) {
 		//Iterates through all the stations stored in the JSON array associated with the stations attribute
 		for (JsonValue station = jsonVal.getChild("stations"); station != null; station = station.next) {
 			String name = "";

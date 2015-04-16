@@ -12,7 +12,7 @@ public class MapTest extends LibGdxTest {
 
     @Before
     public void mapSetup() throws Exception {
-        map = new Map();
+        map = new Map(false, null);
     }
 
     @Test

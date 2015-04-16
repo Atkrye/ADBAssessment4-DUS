@@ -8,6 +8,7 @@ public class Station {
     private IPositionable position;
     private StationActor actor;
 	private Obstacle obstacle;
+	public boolean isJunction = false;
 
     public Station(String name, IPositionable location) {
         this.name = name;

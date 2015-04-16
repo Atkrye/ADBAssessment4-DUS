@@ -33,6 +33,8 @@ public class TaxeGame extends Game {
 	public BitmapFont fontSmallBold;
 	public BitmapFont fontTinyBold;
 	
+	public static TaxeGame context;
+	
     public ShapeRenderer shapeRenderer;
 
     @Override
@@ -109,6 +111,7 @@ public class TaxeGame extends Game {
 
         //Sets the main screen to be the menu
         setScreen(new MainMenuScreen(this));
+        context = this;
     }
 
     public void render() {

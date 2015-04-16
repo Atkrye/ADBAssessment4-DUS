@@ -27,6 +27,23 @@ public class Goal {
     public int getBonus() {
         return this.bonus;
     }
+    
+    public int getTurnsTime()
+    {
+    	return turnsTime;
+    }
+    
+    public Train getTrain()
+    {
+    	if(train == null)
+    	{
+    		return null;
+    	}
+    	else
+    	{
+    		return train;
+    	}
+    }
 
     public Goal(Station origin, Station destination, Station intermediary, int turn, int turnsTime, int score, int bonus, Train train) {
         //If a train is passed to the constructor then the appropriate flag is set as well as the train variable.
@@ -55,9 +72,9 @@ public class Goal {
         this.turnIssued = turn;
 
         //If turnsTime is greater than 0 then the bonus is to complete a goal in a certain number of turns, sets the relevant variables for this
+        this.turnsTime = turnsTime;
         if (turnsTime != 0) {
             this.inTurns = true;
-            this.turnsTime = turnsTime;
         }
         System.out.println(this.toString() + " for " + this.score + "/" + this.bonus + " points");
 
@@ -204,7 +221,7 @@ public class Goal {
         return this.intermediary;
     }
 
-    public Train getTrain() {
-        return train;
-    }
+	public int getTurn() {
+		return this.turnIssued;
+	}
 }

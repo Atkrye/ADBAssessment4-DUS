@@ -3,7 +3,7 @@ DataType: GameData,
 Mode: POINTS,
 "Max Turns": -1,
 "Max Points": 3000,
-Turn: 0,
+Turn: 3,
 stations: [
 	{
 		name: Madrid,
@@ -190,6 +190,12 @@ stations: [
 		junction: false,
 		x: 580,
 		y: 452
+	},
+	{
+		name: 1,
+		junction: false,
+		x: 750,
+		y: 556
 	}
 ],
 connections: [
@@ -352,6 +358,54 @@ connections: [
 	{
 		station1: Amsterdam,
 		station2: Vaduz
+	},
+	{
+		station1: York,
+		station2: 1
+	}
+]
+}{
+DataType: Player2,
+Name: "Enter Name",
+Score: 0,
+Skip: false,
+Active: true,
+Resources: [
+	{
+		DataType: Train,
+		Name: "Petrol Train",
+		Speed: 50,
+		Image: PetrolTrain.png,
+		Destination: Empty,
+		Position: Empty,
+		Route: [
+			{
+				DataType: Empty
+			}
+		],
+		History: [
+			{
+				DataType: Empty
+			}
+		]
+	},
+	{
+		DataType: Train,
+		Name: "Diesel Train",
+		Speed: 40,
+		Image: DieselTrain.png,
+		Destination: Empty,
+		Position: Empty,
+		Route: [
+			{
+				DataType: Empty
+			}
+		],
+		History: [
+			{
+				DataType: Empty
+			}
+		]
 	}
 ]
 }{
@@ -359,8 +413,26 @@ DataType: Player1,
 Name: "Enter Name",
 Score: 0,
 Skip: false,
-Active: true,
+Active: false,
 Resources: [
+	{
+		DataType: Train,
+		Name: "Petrol Train",
+		Speed: 50,
+		Image: PetrolTrain.png,
+		Destination: Empty,
+		Position: Empty,
+		Route: [
+			{
+				DataType: Empty
+			}
+		],
+		History: [
+			{
+				DataType: Empty
+			}
+		]
+	},
 	{
 		DataType: Train,
 		Name: "Electric Train",
@@ -378,13 +450,42 @@ Resources: [
 				DataType: Empty
 			}
 		]
+	},
+	{
+		DataType: Train,
+		Name: "Bullet Train",
+		Speed: 90,
+		Image: BulletTrain.png,
+		Destination: Empty,
+		Position: Empty,
+		Route: [
+			{
+				DataType: Empty
+			}
+		],
+		History: [
+			{
+				DataType: Empty
+			}
+		]
+	},
+	{
+		DataType: Train,
+		Name: "Diesel Train",
+		Speed: 40,
+		Image: DieselTrain.png,
+		Destination: Empty,
+		Position: Empty,
+		Route: [
+			{
+				DataType: Empty
+			}
+		],
+		History: [
+			{
+				DataType: Empty
+			}
+		]
 	}
 ]
-}{
-DataType: Player2,
-Name: "Enter Name",
-Score: 0,
-Skip: false,
-Active: false,
-Resources: []
 }

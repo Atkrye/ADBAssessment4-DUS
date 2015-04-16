@@ -63,7 +63,7 @@ public class PioneerTrainActor extends TrainActor {
 			
 			ShapeRenderer shapeRenderer = context.getTaxeGame().shapeRenderer;
 			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-			if (PlayerManager.isNight()) {
+			if (context.getGameLogic().getPlayerManager().isNight()) {
 				shapeRenderer.setColor(Color.WHITE);
 			} else {
 				shapeRenderer.setColor(Color.BLACK);

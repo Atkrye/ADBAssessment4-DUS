@@ -11,16 +11,14 @@ public class Context {
     private TaxeGame taxeGame;
     private Stage stage;
     private Skin skin;
-    private Game gameLogic;
     private RouteController routeController;
     private TopBarController topBarController;
 	private ConnectionController connectionController;
 
-    public Context(Stage stage, Skin skin, TaxeGame taxeGame, Game gameLogic) {
+    public Context(Stage stage, Skin skin, TaxeGame taxeGame) {
         this.stage = stage;
         this.skin = skin;
         this.taxeGame = taxeGame;
-        this.gameLogic = gameLogic;
     }
 
     //Getters and setters: pretty self-explanatory
@@ -37,7 +35,7 @@ public class Context {
     }
 
     public Game getGameLogic() {
-        return gameLogic;
+        return Game.getInstance();
     }
 
     public RouteController getRouteController() {
