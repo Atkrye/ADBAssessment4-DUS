@@ -84,6 +84,13 @@ public class PioneerTrainController {
 		});
 	}
 	
+	public void beginCreating() {
+		context.getGameLogic().setState(GameState.CREATING_CONNECTION);
+		firstStation = train.getLastStation();
+		train.getActor().setVisible(true);
+		active = false;
+	}
+	
 	protected void endCreating(Station station) {
 		Connection connection = new Connection(firstStation, station);
 		train.setPosition(new Position(-1, -1));
@@ -94,15 +101,6 @@ public class PioneerTrainController {
 		connectionController.endCreating(connection);
 		
 		active = true;
-	}
-
-	public void beginCreating() {
-		context.getGameLogic().setState(GameState.CREATING_CONNECTION);
-		firstStation = train.getLastStation();
-		//this.train = train;
-		train.getActor().setVisible(true);
-		//connectionController.beginCreating();
-		this.active = false;
 	}
 	
 	public void addPioneerActions(Station station) {
@@ -124,7 +122,6 @@ public class PioneerTrainController {
 			@Override
 			public boolean act(float delta) {
 				pioneerTrainComplete(train.getActor());
-				System.out.println("poioneertriancomplete");
 				return true;
 			}
 		};
@@ -146,5 +143,9 @@ public class PioneerTrainController {
 			connectionController.addNewConnections(collidedPositions, connection);
 		}
 		actor.getTrain().creationCompleted();
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }

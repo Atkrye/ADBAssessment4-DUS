@@ -57,12 +57,10 @@ public class PioneerTrainActor extends TrainActor {
 	
 	@Override
 	public void act(float delta) {
-		// TODO Auto-generated method stub
 		super.act(delta);
 		
 		if (train.isCreating() && isVisible()) {
 			//draw the line from the station to the train 
-			//batch.end();
 			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
 			// line color depends on whether night or day
@@ -75,7 +73,6 @@ public class PioneerTrainActor extends TrainActor {
 			shapeRenderer.rectLine(this.getX()+ width/2, this.getY()+ height/2, 
 					startPosition.getX() , startPosition.getY() , 5);
 			shapeRenderer.end();
-			//batch.begin();
 		}
 	}
 

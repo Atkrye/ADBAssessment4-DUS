@@ -20,37 +20,39 @@ import Util.Tuple;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class ConnectionController {
 	private Context context;
-	
+
 	private static ArrayList<ConnectionChangedListener> listeners = new ArrayList<ConnectionChangedListener>();
 	private static ArrayList<StationChangedListener> slisteners = new ArrayList<StationChangedListener>();
-	
+
 	private static ArrayList<Connection> connections = new ArrayList<Connection>();
 
 	// when currently selecting a connection
 	private PioneerTrain train;
 	private Station firstStation;
-	
-	private boolean isNaming = false;
-	
+
 	private InputAdapter nameip;
-	
-	private TextButton back;
+
+	private ImageButton cancel;
+	private Image cancelImage;
+
 	private static int junctionNumber = 0;
-	
+
 	private PioneerTrainController controller;
+
+
 
 	public ConnectionController(final Context context) {
 		this.context = context;
@@ -62,7 +64,6 @@ public class ConnectionController {
 					//This makes the screen less cluttered while routing and prevents overlapping trainActors from stopping the user being able to click stations.
 					TrainController trainController = new TrainController(context);
 					trainController.setTrainsVisible(train, false);
-					//train.getActor().setVisible(true);
 
 					context.getTopBarController().displayMessage("Select the destination station", Color.BLACK);
 					drawCancelButton();
@@ -70,7 +71,7 @@ public class ConnectionController {
 			}
 		});
 	}
-	
+
 	public void beginCreating(PioneerTrain train) {
 		this.train = train;
 		this.firstStation = train.getLastStation();
@@ -80,15 +81,22 @@ public class ConnectionController {
 	}
 
 	public void endCreating(Connection connection) {
-		isNaming = false;
-		connections.add(connection);
+		if (connection != null){
+			connections.add(connection);
+		} else {
+			train.getActor().setVisible(false);
+		}
+		this.train = null;
+		this.firstStation = null;
 
 		TrainController trainController = new TrainController(context);
 		trainController.setTrainsVisible(train, true);
-		back.setVisible(false);
+		cancel.setVisible(false);
+		cancelImage.setVisible(false);
+
 		context.getGameLogic().setState(GameState.NORMAL);
 	}
-	
+
 	private Station createNewStation(String string, Position location) {
 		Station station = new Station(string, location); 
 		StationController.renderStation(station);
@@ -115,7 +123,7 @@ public class ConnectionController {
 			}
 		}
 	}
-	
+
 	protected boolean connectionBeingMade(Station station) {
 		// test if the connection is already being made
 		for (Connection connection: connections) {
@@ -147,26 +155,34 @@ public class ConnectionController {
 				Gdx.input.getX(), TaxeGame.HEIGHT- Gdx.input.getY(), 5);
 		shapeRenderer.end();
 	}
-	
+
 	private void drawCancelButton() {
 		//Adds a button to leave the screen
-		if (back == null) {
-			back = new TextButton("Return", context.getSkin());
-			back.setPosition(TaxeGame.WIDTH - 100, TaxeGame.HEIGHT - 33);
-			back.addListener(new ClickListener() {
+		if (cancel == null) {
+			Texture cancelText = new Texture(Gdx.files.internal("btn_cancel.png"));
+			cancelImage = new Image(cancelText);
+			cancelImage.setWidth(106);
+			cancelImage.setHeight(37);
+			cancelImage.setPosition(TaxeGame.WIDTH - 120, TaxeGame.HEIGHT - 56);
+
+			cancel = new ImageButton(context.getSkin());
+			cancel.setPosition(TaxeGame.WIDTH - 120, TaxeGame.HEIGHT - 56);
+			cancel.setWidth(106);
+			cancel.setHeight(37);
+			cancel.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					context.getTopBarController().clearMessage();
-					back.setVisible(false);
-					train.getActor().setVisible(false);
-					firstStation = null;
-					train = null;
-					context.getGameLogic().setState(GameState.NORMAL);
+					endCreating(null);
+					controller.setActive(true);
+					
 				}
 			});
-			context.getStage().addActor(back);
+
+			context.getStage().addActor(cancelImage);
+			context.getStage().addActor(cancel);
 		} else {
-			back.setVisible(true);
+			cancel.setVisible(true);
+			cancelImage.setVisible(true);
 		}
 	}
 
@@ -185,23 +201,20 @@ public class ConnectionController {
 						textEntryBar.clear();
 						setVisible(false);
 						Gdx.input.setInputProcessor(ip);
-						
+
 					} else {
 						context.getTopBarController().displayFlashMessage("Please enter a unique station name", Color.RED);
 					}
 				}
 				if (keycode == Input.Keys.ESCAPE) {
 					context.getGameLogic().setState(GameState.CREATING_CONNECTION);
-					textEntryBar.clear();
-					nameBackground.setVisible(false);
+					setVisible(false);
 					Gdx.input.setInputProcessor(ip);
 				}
 				return true;
 			}
 		};
-		
 		Gdx.input.setInputProcessor(nameip);
-		isNaming = true;
 	}
 
 	public void addNewConnections(ArrayList<Tuple<Connection, Position>> collidedPositions, Connection connection) {
@@ -245,15 +258,11 @@ public class ConnectionController {
 			} 
 		}
 	}
-	
+
 	public static String getNextJunctionNum() {
 		String string = Integer.toString(junctionNumber);
 		junctionNumber+=1;
 		return string;
-	}
-
-	public boolean isNamingStation() {
-		return isNaming;
 	}
 
 	public static void subscribeConnectionChanged(ConnectionChangedListener connectionChangedListener) {
