@@ -54,13 +54,15 @@ public class PioneerTrainActor extends TrainActor {
 	public PioneerTrain getTrain() {
 		return train;
 	}
-
-	/** Overridden draw method to display the line from the first station to the trains current position */
+	
 	@Override
-	public void draw(Batch batch, float parentAlpha) {
+	public void act(float delta) {
+		// TODO Auto-generated method stub
+		super.act(delta);
+		
 		if (train.isCreating() && isVisible()) {
 			//draw the line from the station to the train 
-			batch.end();
+			//batch.end();
 			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
 			// line color depends on whether night or day
@@ -73,9 +75,8 @@ public class PioneerTrainActor extends TrainActor {
 			shapeRenderer.rectLine(this.getX()+ width/2, this.getY()+ height/2, 
 					startPosition.getX() , startPosition.getY() , 5);
 			shapeRenderer.end();
-			batch.begin();
+			//batch.begin();
 		}
-		super.draw(batch, parentAlpha); // ensures line is drawn below train
 	}
 
 	/** Finds all connections that will collide with the new connection, and where they will collide

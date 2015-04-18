@@ -89,11 +89,11 @@ public class ConnectionController {
 		context.getGameLogic().setState(GameState.NORMAL);
 	}
 	
-	private void createNewStation(String string, Position location) {
+	private Station createNewStation(String string, Position location) {
 		Station station = new Station(string, location); 
 		StationController.renderStation(station);
 		stationAdded(station);
-		controller.endCreating(station);
+		return station;
 	}
 
 	public void destroyConnection(KamikazeTrain train) {
@@ -180,11 +180,12 @@ public class ConnectionController {
 				if (keycode == Keys.ENTER){
 					String text = textEntryBar.getLabelValue();
 					if (context.getGameLogic().getMap().isUniqueName(text)) {
-						createNewStation(text, location);
+						Station station = createNewStation(text, location);
+						controller.endCreating(station);
 						textEntryBar.clear();
 						setVisible(false);
 						Gdx.input.setInputProcessor(ip);
-
+						
 					} else {
 						context.getTopBarController().displayFlashMessage("Please enter a unique station name", Color.RED);
 					}

@@ -24,8 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class PioneerTrainController {
-	
-
+	private boolean active = false;
 	private Context context;
 	private Station firstStation;
 	private PioneerTrain train;
@@ -39,7 +38,8 @@ public class PioneerTrainController {
 		StationController.subscribeStationClick(new StationClickListener() {
 			@Override
 			public void clicked(Station station) {
-				if (context.getGameLogic().getState() == GameState.CREATING_CONNECTION) {
+				
+				if (context.getGameLogic().getState() == GameState.CREATING_CONNECTION && !active) {
 					if (station != firstStation){
 						if (!map.connectionOverlaps(firstStation, station)){
 							if (!map.doesConnectionExist(firstStation.getName(), station.getName())) {
@@ -64,7 +64,7 @@ public class PioneerTrainController {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				x += 290; // offset for sidebar
-				if (context.getGameLogic().getState() == GameState.CREATING_CONNECTION){
+				if (context.getGameLogic().getState() == GameState.CREATING_CONNECTION && !active){
 					if (firstStation != null){
 						Position location = new Position((int) x,(int)y);
 						if (!map.nearStation(location) ) {
@@ -85,7 +85,6 @@ public class PioneerTrainController {
 	}
 	
 	protected void endCreating(Station station) {
-		// TODO Auto-generated method stub
 		Connection connection = new Connection(firstStation, station);
 		train.setPosition(new Position(-1, -1));
 		train.setCreating(connection);
@@ -93,7 +92,8 @@ public class PioneerTrainController {
 		train.getActor().setStationPositions(connection);
 		addPioneerActions(station);
 		connectionController.endCreating(connection);
-		//context.getGameLogic().setState(GameState.NORMAL);
+		
+		active = true;
 	}
 
 	public void beginCreating() {
@@ -102,6 +102,7 @@ public class PioneerTrainController {
 		//this.train = train;
 		train.getActor().setVisible(true);
 		//connectionController.beginCreating();
+		this.active = false;
 	}
 	
 	public void addPioneerActions(Station station) {
