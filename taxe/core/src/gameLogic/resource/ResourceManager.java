@@ -35,7 +35,7 @@ public class ResourceManager {
             return new Skip();
         } else if (idx<3){ 
         	return new KamikazeTrain();	
-        } else if (idx<5){
+        } else if (idx<11){//5
         	return new PioneerTrain();
         } else {
             //Otherwise randomly selects a train to give the player.
