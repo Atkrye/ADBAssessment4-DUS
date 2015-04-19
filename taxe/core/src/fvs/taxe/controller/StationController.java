@@ -33,7 +33,6 @@ import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Station;
 import gameLogic.player.Player;
-import gameLogic.player.PlayerManager;
 import gameLogic.resource.Resource;
 import gameLogic.resource.Train;
 

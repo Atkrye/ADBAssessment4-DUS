@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-/**Class that represents the CollisionStation onscreen, extends Image*/
+/**Class that represents the CollisionStation on screen, extends Image*/
 public class CollisionStationActor extends Image {
 	/** Width of collision station in pixels*/
 	private static int width = 16;
@@ -58,6 +58,4 @@ public class CollisionStationActor extends Image {
 	public Station getStation() {
 		return station;
 	}
-
-	
 }
