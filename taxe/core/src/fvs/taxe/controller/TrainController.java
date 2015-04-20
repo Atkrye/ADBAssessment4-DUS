@@ -77,6 +77,7 @@ public class TrainController {
 	public void addTrainToActors(Train t)
 	{
 		TrainActors.addActor(t.getActor());
+		t.getActor().addListener(new TrainClicked(context, t));
 	}
 	
 	public TrainActor renderTrain(Train train) {
