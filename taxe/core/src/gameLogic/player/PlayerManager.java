@@ -45,6 +45,7 @@ public class PlayerManager {
     {
     	//Use current Obstacle Controller context
     	t = new TrainController(ObstacleController.getContext());
+    	System.out.println("COntext: " + ObstacleController.getContext());
     	this.turnNumber = turn;
     	this.isNight = isNight;
     	JsonValue player1Data = jsonData.get("Player1");

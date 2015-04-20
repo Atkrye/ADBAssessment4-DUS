@@ -269,13 +269,17 @@ public class GameScreen extends ScreenAdapter {
 			stationController.addConnections(map.getConnections(), Color.GRAY);
 			stationController.renderStations();
 			obstacleController.drawObstacleEffects();
+			if (gameLogic.getPlayerManager().getTrainsToAdd().isEmpty()) {
+				trainController.setupTrainActors();
+			}
 			trainController.drawTrains(this.stage);
 			//We have to add in any necessary trains loaded to the train controller now
-			for(Train t : gameLogic.getPlayerManager().getTrainsToAdd())
+			/*for(Train t : gameLogic.getPlayerManager().getTrainsToAdd())
 			{
 				System.out.println("Train Add!");
 				trainController.addTrainToActors(t);
-			}
+			}*/
+			
 			gameLogic.getPlayerManager().finishLoad();
 			topBarController.drawBackground();
 			topBarController.drawLabels();

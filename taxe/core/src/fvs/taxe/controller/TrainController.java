@@ -65,7 +65,7 @@ public class TrainController {
 	}
 
 	public void drawTrains(Stage stage) {
-		TrainActors = new Group();
+		//TrainActors = new Group();
 		stage.addActor(TrainActors);
 	}
 	
