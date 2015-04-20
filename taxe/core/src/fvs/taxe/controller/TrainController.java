@@ -28,7 +28,7 @@ public class TrainController {
 
 	public TrainController(final Context context) {
 		this.context = context;
-		
+
 		ConnectionController.subscribeConnectionChanged(new ConnectionChangedListener() {
 			@Override
 			public void removed(Connection connection) {
@@ -68,18 +68,20 @@ public class TrainController {
 		//TrainActors = new Group();
 		stage.addActor(TrainActors);
 	}
-	
+
 	public void setupTrainActors()
 	{
-		TrainActors = new Group();
+		if (TrainActors == null){
+			TrainActors = new Group();
+		}
 	}
-	
+
 	public void addTrainToActors(Train t)
 	{
 		TrainActors.addActor(t.getActor());
 		t.getActor().addListener(new TrainClicked(context, t));
 	}
-	
+
 	public TrainActor renderTrain(Train train) {
 		//This renders the actor of the train which is passed to it
 		TrainActor trainActor;
@@ -90,10 +92,11 @@ public class TrainController {
 		} else {
 			trainActor = new TrainActor(train, context);
 		}
-		
+
 		trainActor.addListener(new TrainClicked(context, train));
 		trainActor.setVisible(false);
 		TrainActors.addActor(trainActor);
+		System.out.println(TrainActors.getChildren());
 		return trainActor;
 	}
 
