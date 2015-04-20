@@ -12,7 +12,6 @@ import java.util.List;
 import Util.Tuple;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 /** Actor that represents the PioneerTrain */
@@ -54,13 +53,13 @@ public class PioneerTrainActor extends TrainActor {
 	public PioneerTrain getTrain() {
 		return train;
 	}
-
-	/** Overridden draw method to display the line from the first station to the trains current position */
+	
 	@Override
-	public void draw(Batch batch, float parentAlpha) {
+	public void act(float delta) {
+		super.act(delta);
+		
 		if (train.isCreating() && isVisible()) {
 			//draw the line from the station to the train 
-			batch.end();
 			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
 			// line color depends on whether night or day
@@ -73,15 +72,13 @@ public class PioneerTrainActor extends TrainActor {
 			shapeRenderer.rectLine(this.getX()+ width/2, this.getY()+ height/2, 
 					startPosition.getX() , startPosition.getY() , 5);
 			shapeRenderer.end();
-			batch.begin();
 		}
-		super.draw(batch, parentAlpha); // ensures line is drawn below train
 	}
 
 	/** Finds all connections that will collide with the new connection, and where they will collide
 	 * Achieved by emulating movement along path and detecting collisions */
 	// emulation makes it easier to place the method here, rather than elsewhere
-	public ArrayList<Tuple<Connection, Position>> collidedConnection() {
+	public ArrayList<Tuple<Connection, Position>> overlappedConnection() {
 		// find all connections that collide with the new connection, and where
 		ArrayList<Tuple<Connection, Position>> collidedPositions = new ArrayList<Tuple<Connection, Position>>();
 
@@ -126,7 +123,7 @@ public class PioneerTrainActor extends TrainActor {
 	/** Set all of the corresponding things for creating a new connection - the connection, start/end positions and angles.
 	 * @param connection The connection that the pioneer train will create
 	 */
-	public void setStationPositions(Connection connection){
+	public void setupConnectionPlanting(Connection connection){
 		this.connection = connection;
 		this.startPosition = connection.getStation1().getPosition();
 		this.endPosition = connection.getStation2().getPosition();

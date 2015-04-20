@@ -219,12 +219,6 @@ public class GameScreen extends ScreenAdapter {
 			stationController.displayNumberOfTrainsAtStations();
 		}
 
-		if (gameLogic.getState() == GameState.WAITING) {
-			if (connectionController.isNamingStation()) {
-				connectionController.getStationName().draw();
-			}
-		}
-
 		if (goalController.exitPressed == false) {
 
 			game.batch.begin();
@@ -286,7 +280,7 @@ public class GameScreen extends ScreenAdapter {
 			topBarController.drawBackground();
 			topBarController.drawLabels();
 			topBarController.addEndTurnButton();
-			connectionController.drawStationNameBackground();
+			//connectionController.drawStationNamingDialog();
 			drawSidebar();
 			resourceController.drawPlayerResources(gameLogic.getPlayerManager().getCurrentPlayer());
 			goalController.showCurrentPlayerGoals();

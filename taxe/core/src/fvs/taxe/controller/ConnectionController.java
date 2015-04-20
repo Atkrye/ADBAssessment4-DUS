@@ -1,17 +1,11 @@
 package fvs.taxe.controller;
 
-
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.moveTo;
 import fvs.taxe.TaxeGame;
-import fvs.taxe.actor.PioneerTrainActor;
-import fvs.taxe.actor.TrainActor;
-import fvs.taxe.clickListener.StationClickListener;
 import gameLogic.GameState;
 import gameLogic.listeners.ConnectionChangedListener;
 import gameLogic.listeners.StationChangedListener;
 import gameLogic.map.CollisionStation;
 import gameLogic.map.Connection;
-import gameLogic.map.Map;
 import gameLogic.map.Position;
 import gameLogic.map.Station;
 import gameLogic.resource.KamikazeTrain;
@@ -19,7 +13,7 @@ import gameLogic.resource.PioneerTrain;
 
 import java.util.ArrayList;
 
-import Util.TextEntryBar;
+import Util.TextEntryDialog;
 import Util.Tuple;
 
 import com.badlogic.gdx.Gdx;
@@ -30,147 +24,141 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+/** Class that represents all of the connections been made on the map at that time*/
 public class ConnectionController {
-	// class used for creating connections when in creating_connection mode 
-	private static ArrayList<ConnectionChangedListener> listeners = new ArrayList<ConnectionChangedListener>();
+	/** Context that the connection controller acts in*/
 	private Context context;
-	private static ArrayList<Connection> connections = new ArrayList<Connection>();
 
-	// when currently selecting a connection
-	private PioneerTrain train;
-	private Station firstStation;
-	private TextButton back;
-	private TextEntryBar stationName;
-	private boolean isNaming = false;
-	private Image nameBackground;
-	private InputAdapter nameip;
+	/** Array of all listeners that are waiting to be notified of a connection change (added or removed) */
+	private static ArrayList<ConnectionChangedListener> listeners = new ArrayList<ConnectionChangedListener>();
+	
+	/** Array of all listeners that are waiting to be notified of a station change (added or removed) */
 	private static ArrayList<StationChangedListener> slisteners = new ArrayList<StationChangedListener>();
 
+	/** Array of connections currently being made in the map*/
+	private static ArrayList<Connection> connections = new ArrayList<Connection>();
+
+	/** Input adapter for taking input when giving the name of the station*/
+	private InputAdapter nameip;
+
+	/** The clickable cancel button*/
+	private ImageButton cancel;
+	
+	/** The image that represents the cancel button*/
+	private Image cancelImage;
+
+	/** The next junction number given when creating new junctions */
 	private static int junctionNumber = 0;
 
+	/** The pioneer train controller that is currently active (null if none) */
+	private PioneerTrainController controller;
+
+	/** The pioneer train that is currently active (null if none) */
+	private PioneerTrain train;
+	
+	/** The station that corresponds to the first station of the active train*/
+	private Station firstStation;
+
+	/** Constructor for COnnectionController. Has no effect until beginCreating() called */
 	public ConnectionController(final Context context) {
 		this.context = context;
-
-		final Map map = context.getGameLogic().getMap();
-		StationController.subscribeStationClick(new StationClickListener() {
-			@Override
-			public void clicked(Station station) {
-				if (context.getGameLogic().getState() == GameState.CREATING_CONNECTION) {
-					if (station != firstStation){
-						if (!map.connectionOverlaps(firstStation, station)){
-							if (!map.doesConnectionExist(firstStation.getName(), station.getName())) {
-								if (!connectionBeingMade(station)){
-									endCreating(station);
-								} else {
-									context.getTopBarController().displayFlashMessage("Connection being created", Color.RED);
-								}
-							} else {
-								context.getTopBarController().displayFlashMessage("Connection already exists", Color.RED);
-							}
-						} else {
-							context.getTopBarController().displayFlashMessage("Connection too close to a station", Color.RED);
-						}
-					}
-				} 
-			} 
-		});
-
-		// for clicking to create new cities
-		map.getMapActor().addListener(new ClickListener(){
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-				x += 290; // offset for sidebar
-				if (context.getGameLogic().getState() == GameState.CREATING_CONNECTION){
-					if (firstStation != null){
-						Position location = new Position((int) x,(int)y);
-						if (!map.nearStation(location) ) {
-							if (!map.nearConnection(location)) {
-								context.getGameLogic().setState(GameState.WAITING);
-								getNewStationName(location);
-							} else {
-								context.getTopBarController().displayFlashMessage("New city too close to connection", Color.RED);
-							}
-						} else {
-							context.getTopBarController().displayFlashMessage("New city too close to existing city", Color.RED);
-						}
-					}
-				}
-			}
-		});
 	}
 
+	/** Begin the connection creation mode 
+	 * Show only the pioneer train, cancel button
+	 * @param train Pioneer train that is creating the connection
+	 */
 	public void beginCreating(PioneerTrain train) {
-		context.getGameLogic().setState(GameState.CREATING_CONNECTION);
-		firstStation = train.getLastStation();
 		this.train = train;
-
-		//This makes all trains except the currently routed trains to be invisible.
-		//This makes the screen less cluttered while routing and prevents overlapping trainActors from stopping the user being able to click stations.
+		this.firstStation = train.getLastStation();
+		controller = new PioneerTrainController(train, context);
+		controller.beginCreating();
+		context.getGameLogic().setState(GameState.CREATING_CONNECTION);
+		
 		TrainController trainController = new TrainController(context);
 		trainController.setTrainsVisible(train, false);
-		train.getActor().setVisible(true);
 
 		context.getTopBarController().displayMessage("Select the destination station", Color.BLACK);
 		drawCancelButton();
 	}
 
-	private void endCreating(Station station) {
-		isNaming = false;
-		Connection connection = new Connection(firstStation, station);
-		connections.add(connection);
-
-		train.setPosition(new Position(-1, -1));
-		train.setCreating(connection);
-
-		train.getActor().setStationPositions(connection);
-		addPioneerActions(station);
-		context.getGameLogic().setState(GameState.NORMAL);
-
+	/** End the connection creation mode
+	 * Clear all variables, show all trains and go back to normal mode
+	 * @param connection The connection that has been created (null if none created)
+	 */
+	public void endCreating(Connection connection) {
+		// Only add the connection if it is null
+		if (connection != null){
+			connections.add(connection);
+		} else {
+			// if no connection given, hide the train (as it will be still be at station)
+			train.getActor().setVisible(false);
+		}
+		
+		// reset the variables
+		this.train = null;
+		this.firstStation = null;
+		this.controller = null;
+		
 		TrainController trainController = new TrainController(context);
 		trainController.setTrainsVisible(train, true);
-		back.setVisible(false);
+		cancel.setVisible(false);
+		cancelImage.setVisible(false);
+
+		context.getGameLogic().setState(GameState.NORMAL);
+		context.getTopBarController().clearMessage(); // prevents it showing "select destination station"
 	}
 
-	public void addPioneerActions(Station station) {
-		train.getActor().clearActions();
-		SequenceAction actions = Actions.sequence();
+	/** Create and correctly render a new station. Notify all stationChanged listeners 
+	 * @param string Name of the new station (given by user)
+	 * @param location Location of the new station
+	 * @return The stationt hat is created
+	 */
+	private Station createNewStation(String string, Position location) {
+		Station station = new Station(string, location); 
+		StationController.renderStation(station);
+		stationAdded(station);
+		return station;
+	}
 
-		//action to rotate the train so it is facing the direction it creates track in
-		// actions require an angle in degrees for rotation 
-		float radAngle = Position.getAngle(firstStation.getPosition(),station.getPosition());
-		float degAngle = (float) (MathUtils.radiansToDegrees*radAngle);
-		actions.addAction(Actions.rotateTo((float) degAngle));
+	/** Destroy the connection that the train is currently on (and the train)
+	 * @param train The kamikaze train that will destroy the connnection
+	 */
+	public void destroyConnection(KamikazeTrain train) {
+		Station l1 = train.getLastStation();
+		Station l2 = train.getNextStation();
+		Connection connection = context.getGameLogic().getMap().getConnection(l1, l2);
 
-		// action to move train to city
-		float duration = Position.getDistance(firstStation.getPosition(), station.getPosition()) / train.getSpeed();
-		actions.addAction(moveTo(station.getPosition().getX() - TrainActor.width / 2, station.getPosition().getY() - TrainActor.height / 2, duration));
+		connectionRemoved(connection); // notify all listeners that the connection has been removed
 
-		// Action to say that train has finished moving and reached destination, call pioneerTrainComplete()
-		Action finishedCreating = new Action(){
-			@Override
-			public boolean act(float delta) {
-				pioneerTrainComplete(train.getActor());
-				System.out.println("poioneertriancomplete");
-				return true;
+		removeIsolatedJunctions(l1);
+		removeIsolatedJunctions(l2);
+	}
+
+	/** If the junction is left isolated (no connections) remove it, otherwise do nothing
+	 * @param l1 CollisionStation to test if there is any connections to it
+	 */
+	public void removeIsolatedJunctions(Station l1) {
+		// test to see if any junctions are left isolated- if they are, remove them
+		if (l1.getClass().equals(CollisionStation.class)) {
+			if (!context.getGameLogic().getMap().hasConnection(l1)) {
+				stationRemoved(l1);
 			}
-		};
-		actions.addAction(finishedCreating);
-
-		train.getActor().addAction(actions);
+		}
 	}
 
+	/** Test if the connection between station and firstStation is already being made
+	 * @param station Station at the other end of the connection
+	 * @return Whether a connection is being made
+	 */
 	protected boolean connectionBeingMade(Station station) {
-		// test if the connection is already being made
 		for (Connection connection: connections) {
+			// connections saved as 1 way therefore test both cases
 			if (connection.getStation1().equals(firstStation)){
 				if (connection.getStation2().equals(station)){
 					return true;
@@ -184,6 +172,9 @@ public class ConnectionController {
 		return false;
 	}
 
+	/** draw a line from the trains first station to the current mouse position
+	 * will draw black if day, white if night
+	 * will only draw in creating_connection mode */
 	public void drawMouse() {
 		ShapeRenderer shapeRenderer = context.getTaxeGame().shapeRenderer;
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -200,176 +191,150 @@ public class ConnectionController {
 		shapeRenderer.end();
 	}
 
+	/** Add the button and image that corresponds to cancelling connection creation */
 	private void drawCancelButton() {
-		//Adds a button to leave the view route screen
-		if (back == null) {
-			back = new TextButton("Return", context.getSkin());
-			back.setPosition(TaxeGame.WIDTH - 100, TaxeGame.HEIGHT - 33);
-			back.addListener(new ClickListener() {
+		//Adds a button to leave the screen
+		if (cancel == null) {
+			Texture cancelText = new Texture(Gdx.files.internal("btn_cancel.png"));
+			// image representing button
+			cancelImage = new Image(cancelText);
+			cancelImage.setWidth(106);
+			cancelImage.setHeight(37);
+			cancelImage.setPosition(TaxeGame.WIDTH - 120, TaxeGame.HEIGHT - 56);
+
+			// actual cancel button
+			cancel = new ImageButton(context.getSkin());
+			cancel.setPosition(TaxeGame.WIDTH - 120, TaxeGame.HEIGHT - 56);
+			cancel.setWidth(106);
+			cancel.setHeight(37);
+			cancel.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					context.getTopBarController().clearMessage();
-					back.setVisible(false);
-					train.getActor().setVisible(false);
-					firstStation = null;
-					train = null;
-					context.getGameLogic().setState(GameState.NORMAL);
+					endCreating(null); // cancel creation mode
+					controller.setActive(true); // stops clicks being registered by pioneerTrainController
+					
 				}
 			});
-			context.getStage().addActor(back);
+			
+			context.getStage().addActor(cancelImage);
+			context.getStage().addActor(cancel);
 		} else {
-			back.setVisible(true);
+			// dont re-add to stage if cancelling already exists, just change visibility
+			cancel.setVisible(true);
+			cancelImage.setVisible(true);
 		}
 	}
 
-	public void drawStationNameBackground() {
-		nameBackground = new Image(new Texture(Gdx.files.internal("NewStationDialog.png")));
-		int midx = Math.round(context.getStage().getWidth() / 2 - nameBackground.getWidth()/2); 
-		int midy = Math.round(context.getStage().getHeight() / 2- nameBackground.getHeight()/2);
-		nameBackground.setPosition(midx , midy);
-		context.getStage().addActor(nameBackground);
-		nameBackground.setVisible(false);
-
-		stationName = new TextEntryBar(midx + 80, midy + 30, 0, context.getTaxeGame());
-	}
-
-	private void getNewStationName(final Position location) {
-
-		nameBackground.setVisible(true);
-
+	/** Display the station naming box and start getting input to it
+	 * @param location The location that will correspond to the new station
+	 */
+	public void showStationNameEntry(final Position location) {
 		final InputProcessor ip = Gdx.input.getInputProcessor();
-
-		nameip = new InputAdapter () {
-			//The input processor which acts upon a user pressing keys
+		Image image = new Image(new Texture(Gdx.files.internal("NewStationDialog.png")));
+		
+		// create a new text entry dialog that will take station name and name it correctly
+		nameip = new TextEntryDialog(context, image) {
+			@Override
 			public boolean keyDown(int keycode) {
-				if (keycode == Keys.BACKSPACE){
-					//backspace deletes a character from the active entry bar
-					stationName.deleteLetter();
-				}
+				super.keyDown(keycode);
 				if (keycode == Keys.ENTER){
-					String text = stationName.getLabelValue();
+					// finish naming when enter pressed
+					String text = textEntryBar.getLabelValue();
 					if (context.getGameLogic().getMap().isUniqueName(text)) {
-						createNewStation(text, location);
-						stationName.clear();
-						nameBackground.setVisible(false);
-						Gdx.input.setInputProcessor(ip);
+						// only create station if name is unique
+						Station station = createNewStation(text, location);
+						controller.endCreating(station);
+						textEntryBar.clear();
+						setVisible(false); // hide the dialog box
+						Gdx.input.setInputProcessor(ip); // change the input processor back to the old one
 
 					} else {
 						context.getTopBarController().displayFlashMessage("Please enter a unique station name", Color.RED);
 					}
 				}
 				if (keycode == Input.Keys.ESCAPE) {
+					// cancel name entry if escape pressed
 					context.getGameLogic().setState(GameState.CREATING_CONNECTION);
-					stationName.clear();
-					nameBackground.setVisible(false);
+					setVisible(false);
 					Gdx.input.setInputProcessor(ip);
 				}
 				return true;
 			}
-
-			public boolean keyTyped (char character) {
-				//This adds a character to the active entry bar  
-				stationName.makeLabel(character);
-				return true;
-			}
 		};
 		Gdx.input.setInputProcessor(nameip);
-		isNaming = true;
 	}
 
-	private void createNewStation(String string, Position location) {
-		Station station = new Station(string, location); 
-		StationController.renderStation(station);
-		stationAdded(station);
-		endCreating(station);
-	}
+	/** Reorganise connections so that any connection overlaps are changed into a junction with new connections
+	 * @param collidedPositions List of pairs of connections that will be removed, and where collision took place (ordered by distance from firstSTation
+	 * @param connection The connection that the positions collide with
+	 */
+	public void addNewConnections(ArrayList<Tuple<Connection, Position>> collidedPositions, Connection connection) {
+		// Iterates through the list of collidedPositions to progressively build up the new correct junctions and conenctions
+		CollisionStation prevJunction = null; 
+		Station startStation = connection.getStation1();
+		Station endStation = connection.getStation2();
+		for (int i = 0; i < collidedPositions.size(); i++) {
+			Tuple<Connection, Position> pair = collidedPositions.get(i);
+			
+			// create a new collision station atthe location of the collision
+			Position position = pair.getSecond();
+			CollisionStation junction = context.getGameLogic().getMap().addJunction(ConnectionController.getNextJunctionNum(), position);
+			StationController.renderCollisionStation(junction);
 
+			// Remove the connection that the given connection has collided with
+			Connection collidedConn = pair.getFirst();
+			connectionRemoved(collidedConn);
 
-	public void destroyConnection(KamikazeTrain train) {
-		Station l1 = train.getLastStation();
-		Station l2 = train.getNextStation();
-		Connection connection = context.getGameLogic().getMap().getConnection(l1, l2);
+			Station cStation1 = collidedConn.getStation1(); 
+			Station cStation2 = collidedConn.getStation2();
+			if (i == 0 && collidedPositions.size() == 1) {
+				// if there is only one connection, only one junction is required therefore only 4 connections needed
+				// one from each of the 4 stations to the newly created junction
+				connectionAdded(new Connection(cStation1, junction)); 
+				connectionAdded(new Connection(cStation2, junction));
+				connectionAdded(new Connection(startStation, junction));
+				connectionAdded(new Connection(endStation, junction));
 
-		connectionRemoved(connection);
+			} else if (i == 0) {
+				// if there is more than one connection and it is the first collided connection, create 3 connections to the new junction
+				
+				// one from each of the collidedConnections stations
+				connectionAdded(new Connection(cStation1, junction));
+				connectionAdded(new Connection(cStation2, junction));
+				connectionAdded(new Connection(startStation, junction)); // one from firstStation to the junction 
+				// leave the 4th connection, as it will connect to another junction not yet created
+				prevJunction = junction;
 
-		if (l1.getClass().equals(CollisionStation.class)) {
-			if (!context.getGameLogic().getMap().hasConnection(l1)) {
-				stationRemoved(l1);
-			}
+			} else if (i == collidedPositions.size() -1) {
+				// if there is more than one connection and it is the final connection, then 4 connections needed
+
+				// one each from the collidedCOnnections stations to the junction
+				connectionAdded(new Connection(cStation1, junction));
+				connectionAdded(new Connection(cStation2, junction));
+				connectionAdded(new Connection(prevJunction, junction)); // one from the previous junction to the new junction
+				connectionAdded(new Connection(junction, endStation)); // one from the junction to the final station
+
+			} else {
+				// if there is more than one connection, and it is an intermediate between 2 junctions (ie not first or final connection)
+				// create 3 new connections
+				
+				// one each from the collidedConnections stations to the junction
+				connectionAdded(new Connection(cStation1, junction));
+				connectionAdded(new Connection(cStation2, junction));
+				connectionAdded(new Connection(prevJunction, junction)); // one from the old junction to the new junction 
+				// leave the 4th connection, as it will connect to another junction not yet created
+				prevJunction = junction;
+			} 
 		}
-
-		if (l2.getClass().equals(CollisionStation.class)) {
-			if (!context.getGameLogic().getMap().hasConnection(l2)) {
-				stationRemoved(l2);
-			}
-		}
 	}
 
-
-	public void pioneerTrainComplete(PioneerTrainActor actor) {
-		ArrayList<Tuple<Connection, Position>> collidedPositions = actor.collidedConnection();
-		CollisionStation prevJunction = null;
-		Connection connection = actor.getConnection();
-
-		if (collidedPositions.size() == 0){
-			context.getConnectionController().connectionAdded(connection);
-
-		} else {
-			// if the train has collided with some connections
-			Station startStation = connection.getStation1();
-			Station endStation = connection.getStation2();
-			for (int i = 0; i < collidedPositions.size(); i++) {
-				Tuple<Connection, Position> pair = collidedPositions.get(i);
-				Connection collidedConn = pair.getFirst();
-				Position position = pair.getSecond();
-				CollisionStation junction = context.getGameLogic().getMap().addJunction(getNextJunctionNum(), position);
-				StationController.renderCollisionStation(junction);
-
-				connectionRemoved(collidedConn);
-
-				Station iStation1 = collidedConn.getStation1();
-				Station iStation2 = collidedConn.getStation2();
-				if (i == 0 && collidedPositions.size() == 1) {
-					connectionAdded(new Connection(iStation1, junction));
-					connectionAdded(new Connection(iStation2, junction));
-					connectionAdded(new Connection(startStation, junction));
-					connectionAdded(new Connection(endStation, junction));
-
-				} else if (i == 0) {
-					connectionAdded(new Connection(iStation1, junction));
-					connectionAdded(new Connection(iStation2, junction));
-					connectionAdded(new Connection(startStation, junction));
-					prevJunction = junction;
-
-				} else if (i == collidedPositions.size() -1) {
-					connectionAdded(new Connection(iStation1, junction));
-					connectionAdded(new Connection(iStation2, junction));
-					connectionAdded(new Connection(prevJunction, junction));
-					connectionAdded(new Connection(junction, endStation));
-
-				} else {
-					connectionAdded(new Connection(iStation1, junction));
-					connectionAdded(new Connection(iStation2, junction));
-					connectionAdded(new Connection(prevJunction, junction));
-					prevJunction = junction;
-				} 
-			}
-		}
-		actor.getTrain().creationCompleted();
-	}
-
+	/** Get the string that corresponds to the next junction number
+	 * @return String that corresponds to the next junction number
+	 */
 	public static String getNextJunctionNum() {
 		String string = Integer.toString(junctionNumber);
 		junctionNumber+=1;
 		return string;
-	}
-
-	public boolean isNamingStation() {
-		return isNaming;
-	}
-
-	public TextEntryBar getStationName() {
-		return stationName;
 	}
 
 	public static void subscribeConnectionChanged(ConnectionChangedListener connectionChangedListener) {
