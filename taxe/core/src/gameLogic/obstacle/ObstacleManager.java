@@ -1,5 +1,6 @@
 package gameLogic.obstacle;
 
+import gameLogic.Game;
 import gameLogic.map.Map;
 import gameLogic.map.Station;
 
@@ -30,7 +31,8 @@ public class ObstacleManager {
 		initialise();
 	}
 	
-	/** Set the map accordingly, populate the list of obstacles from the JsonData
+	/** Set the map accordingly, populate the list of obstacles from the JsonData.
+	 * This method is called when loading a save game.
 	 * @param map The map that the Game's stations are associated with
 	 * @param jsonData The loaded json data that will be used to populate the obstacles
 	 */
@@ -68,11 +70,30 @@ public class ObstacleManager {
 	}
 
 	/** Get all of the obstacles, their types, stations and the probabilities of them occurring, alongside their position and time remaining from loaded json data
+	 * This method is used when loading a save game
 	 * @param jsonData the loaded data from a save game
 	 * */
 	private void initialise(JsonValue jsonData)
 	{
-		
+		obstacles = new ArrayList<Tuple<Obstacle, Float>>();
+		for(JsonValue jObstacle = jsonData.getChild("obstacles"); jObstacle != null; jObstacle = jObstacle.next()) {
+			//Set up the obstacle and add it to the array
+			String typeName = jObstacle.getString("Obstacle Type");
+			String stationName = jObstacle.getString("Station");
+			System.out.println(typeName + ":" + stationName);
+			float probability = jObstacle.getFloat("Probability");
+			Obstacle o = createObstacle(typeName, stationName);
+			obstacles.add(new Tuple<Obstacle, Float>(o, probability));
+			
+			//Get the turns remaining and if the obstacle is active
+			boolean active = jObstacle.getBoolean("Active");
+			int turnsRemaining = jObstacle.getInt("Time Left");
+			if(active)
+			{
+				o.setStartFlag(true);
+				o.setTimeLeft(turnsRemaining);
+			}
+		}
 	}
 
 	/** Create the obstacle that has given type, and is located at the station assoicated with the given string
@@ -92,7 +113,6 @@ public class ObstacleManager {
 		} else if (typeName.equalsIgnoreCase("earthquake")) {
 			type = ObstacleType.EARTHQUAKE;
 		} 
-		
 		station = map.getStationByName(stationName);
 		
 		if (type != null && station != null){
@@ -107,5 +127,22 @@ public class ObstacleManager {
 	 */
 	public ArrayList<Tuple<Obstacle, Float>> getObstacles() {
 		return this.obstacles;
+	}
+
+	public void activateIdleObstacles() {
+		System.out.println("Obstacles Start");
+		for(Tuple<Obstacle, Float> obstacle : obstacles)
+		{
+			Obstacle o = obstacle.getFirst();
+			if(o.getStartFlag())
+			{
+				int turnCount = o.getTimeLeft();
+				o.start();
+				o.getStation().setObstacle(o); 
+				// set the obstacle so its visible
+				o.getActor().setVisible(true);
+				o.setTimeLeft(turnCount);
+			}
+		}
 	}
 }

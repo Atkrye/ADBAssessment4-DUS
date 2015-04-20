@@ -227,8 +227,7 @@ public class RouteController {
 		train.setRoute(context.getGameLogic().getMap().createRoute(positions));
 
 		//A move controller is created to allow the train to move along its route.
-		@SuppressWarnings("unused")
-		TrainMoveController move = new TrainMoveController(context, train);
+		new TrainMoveController(context, train);
 	}
 
 	private void endRouting() {

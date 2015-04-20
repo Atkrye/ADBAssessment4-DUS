@@ -7,6 +7,7 @@ import gameLogic.map.Connection;
 import gameLogic.map.Map;
 import gameLogic.map.Station;
 import gameLogic.obstacle.Obstacle;
+import gameLogic.obstacle.ObstacleManager;
 import gameLogic.player.Player;
 import gameLogic.player.PlayerManager;
 import gameLogic.resource.KamikazeTrain;
@@ -101,14 +102,11 @@ public class SaveManager {
 				  boolean isNight = jsonData.getBoolean("Nighttime");
 				  int turn = jsonData.getInt("Turn");
 				  Map m = new Map(true, jsonData);
-				  System.out.println("Map imported");
-				  System.out.println(maxTurns);
-				  System.out.println(maxPoints);
-				  for(JsonValue child = jsonData.child(); child != null; child = child.next())
-				  {
-				  }
-				  Game g = new Game(mode, maxTurns, maxPoints, null, m, null, false);
-			      return null;
+				  ObstacleManager om = new ObstacleManager(m, jsonData);
+				  PlayerManager pm = new PlayerManager(jsonData, isNight, turn, m);
+				  Game g = new Game(mode, maxTurns, maxPoints, pm, m, om, false);
+				  Game.setInstance(g, false);
+			      return g;
 			   }
 		});
 		
@@ -172,6 +170,12 @@ public class SaveManager {
 			    		  {
 				    		  json.writeValue("x", train.getPosition().getX());
 				    		  json.writeValue("y", train.getPosition().getY());
+				    		  if(train.getPosition().getX() == -1 && train.getPosition().getY() == -1)
+				    		  {
+				    			json.writeValue("actorX", train.getActor().getBounds().getX()); 
+				    			json.writeValue("actorY", train.getActor().getBounds().getY()); 
+				    			json.writeValue("actorRot", train.getActor().getBounds().getRotation());
+				    		  }
 			    		  }
 			    		  json.writeArrayStart("Route");
 			    		  if(train.getRoute() == null || train.getRoute().isEmpty())
@@ -247,12 +251,7 @@ public class SaveManager {
 			   }
 
 			   public Player read (Json json, JsonValue jsonData, Class type) {
-				  for(JsonValue child = jsonData.child(); child != null; child = child.next())
-				  {
-					  
-				  }
-			      Player player = new Player(new PlayerManager(), 1, jsonData.child().asString());
-			      return player;
+			      return null;
 			   }
 			});
 		return writer;
@@ -376,7 +375,7 @@ public class SaveManager {
 		JsonReader jsonReader = new JsonReader();
 		JsonValue jsonData = jsonReader.parse(file);
 		Game g = writer.readValue(Game.class, jsonData);
-		return null;
+		return g;
 	}
 
 }

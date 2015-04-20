@@ -23,7 +23,12 @@ import gameLogic.obstacle.Rumble;
 public class ObstacleController {
 
 	/**The context of the Game.*/
-	private Context context;
+    private static Context context;
+    
+    public static Context getContext()
+    {
+    	return context;
+    }
 	
 	/**Hashmap of particle effects with a corresponding string name*/
 	private HashMap<String, ParticleEffectActor> effects;
@@ -39,7 +44,7 @@ public class ObstacleController {
 	 */
 	public ObstacleController(final Context context) {
 		// take care of rendering of stations (only rendered on map creation, visibility changed when active)
-		this.context = context;
+		ObstacleController.context = context;
 		obstaclesActors = new Group();
 		effects = new HashMap<String, ParticleEffectActor>();
 		createParticleEffects();

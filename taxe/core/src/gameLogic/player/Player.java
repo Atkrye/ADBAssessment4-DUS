@@ -148,4 +148,8 @@ public class Player{
         }
         return false;
     }
+
+	public void setScore(int score) {
+		this.score = score;
+	}
 }

@@ -11,6 +11,7 @@ public class ResourceManager {
     public final int CONFIG_MAX_RESOURCES = 6;
     private Random random = new Random();
     private ArrayList<Tuple<String, Integer>> trains;
+    public static ResourceManager global = new ResourceManager();
 
     public ResourceManager() {
         //This calls the JSON importer which sets the train
@@ -51,6 +52,18 @@ public class ResourceManager {
         int index = random.nextInt(trains.size());
         Tuple<String, Integer> train = trains.get(index);
         return new Train(train.getFirst(), train.getFirst().replaceAll(" ", "") + ".png", train.getSecond());
+    }
+    
+    public Train getTrainByName(String trainName)
+    {
+    	for(Tuple<String, Integer> train : trains)
+    	{
+    		if(train.getFirst().equals(trains))
+    		{
+    	        return new Train(train.getFirst(), train.getFirst().replaceAll(" ", "") + ".png", train.getSecond());
+    		}
+    	}
+    	return null;
     }
 
 

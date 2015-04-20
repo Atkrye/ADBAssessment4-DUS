@@ -101,6 +101,9 @@ public class GameScreen extends ScreenAdapter {
 
 		rumble = obstacleController.getRumble();
 
+		show();
+		
+		Game.getInstance().getObstacleManager().activateIdleObstacles();
 		//Adds a listener that displays a flash message whenever the turn ends
 		gameLogic.getPlayerManager().subscribeTurnChanged(new TurnListener() {
 			@Override
@@ -158,7 +161,8 @@ public class GameScreen extends ScreenAdapter {
 		if(!Game.getInstance().equals(gameLogic))
 		{
 			gameLogic = Game.getInstance();
-			show();
+			
+			//Notify the Game once all controllers are set up
 		}
 		//Hard coded back button
 		if(Gdx.input.isKeyJustPressed(Keys.BACKSPACE))
@@ -271,7 +275,14 @@ public class GameScreen extends ScreenAdapter {
 			stationController.addConnections(map.getConnections(), Color.GRAY);
 			stationController.renderStations();
 			obstacleController.drawObstacleEffects();
-			trainController.drawTrains();
+			trainController.drawTrains(this.stage);
+			//We have to add in any necessary trains loaded to the train controller now
+			for(Train t : gameLogic.getPlayerManager().getTrainsToAdd())
+			{
+				System.out.println("Train Add!");
+				trainController.addTrainToActors(t);
+			}
+			gameLogic.getPlayerManager().finishLoad();
 			topBarController.drawBackground();
 			topBarController.drawLabels();
 			topBarController.addEndTurnButton();

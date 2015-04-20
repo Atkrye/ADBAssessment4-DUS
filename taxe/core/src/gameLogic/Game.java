@@ -190,7 +190,7 @@ public class Game{
 		}
 	}
 
-	private void obstacleStarted(Obstacle obstacle) {
+	public void obstacleStarted(Obstacle obstacle) {
 		// called whenever an obstacle starts, notifying all listeners that an obstacle has occured (handled by ... 
 		for (ObstacleListener listener : obstacleListeners) {
 			listener.started(obstacle);
@@ -268,6 +268,10 @@ public class Game{
 			 previousTurn = null;
 		 }
 	 }
+
+	public void notifyStarted() {
+		getObstacleManager().activateIdleObstacles();
+	}
 	 
 	 
 }

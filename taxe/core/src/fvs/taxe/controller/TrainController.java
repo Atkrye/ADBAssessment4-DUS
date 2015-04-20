@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 
 import fvs.taxe.actor.KamikazeTrainActor;
 import fvs.taxe.actor.PioneerTrainActor;
 import fvs.taxe.actor.TrainActor;
 import fvs.taxe.clickListener.TrainClicked;
+import gameLogic.Game;
 import gameLogic.player.Player;
 import gameLogic.listeners.ConnectionChangedListener;
 import gameLogic.map.Connection;
@@ -62,9 +64,19 @@ public class TrainController {
 		});
 	}
 
-	public void drawTrains() {
+	public void drawTrains(Stage stage) {
 		TrainActors = new Group();
-		context.getStage().addActor(TrainActors);
+		stage.addActor(TrainActors);
+	}
+	
+	public void setupTrainActors()
+	{
+		TrainActors = new Group();
+	}
+	
+	public void addTrainToActors(Train t)
+	{
+		TrainActors.addActor(t.getActor());
 	}
 	
 	public TrainActor renderTrain(Train train) {
@@ -87,11 +99,11 @@ public class TrainController {
 
 	// Sets all trains on the map visible or invisible except one that we are routing for
 	public void setTrainsVisible(Train train, boolean visible) {
-		for (Player player : context.getGameLogic().getPlayerManager().getAllPlayers()) {
+		for (Player player : Game.getInstance().getPlayerManager().getAllPlayers()) {
 			for (Resource resource : player.getResources()) {
 				if (resource instanceof Train) {
 					boolean trainAtStation = false;
-					for (Station station : context.getGameLogic().getMap().getStations()) {
+					for (Station station : Game.getInstance().getMap().getStations()) {
 						if (station.getPosition() == ((Train) resource).getPosition()) {
 							trainAtStation = true;
 							break;

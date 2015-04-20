@@ -57,7 +57,14 @@ public class TopBarController {
 					color = Color.valueOf("7a370a");
 					break;
 				}				
-				displayObstacleMessage(obstacle.getType().toString() + " in " + obstacle.getStation().getName(), color);
+				if(!obstacle.getStartFlag())
+				{
+					displayObstacleMessage(obstacle.getType().toString() + " in " + obstacle.getStation().getName(), color);
+				}
+				else
+				{
+					obstacle.setStartFlag(false);
+				}
 			}
 
 			@Override

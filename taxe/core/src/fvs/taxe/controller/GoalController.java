@@ -25,7 +25,7 @@ import java.text.DecimalFormat;
 public class GoalController {
 	
     //This class is in control of drawing all the goals
-    private Context context;
+    private static Context context;
     private Group goalButtons = new Group();
     private Color[] colours = new Color[3];
     
@@ -33,7 +33,7 @@ public class GoalController {
     private Group exitMenu = new Group();
 
     public GoalController(Context context) {
-        this.context = context;
+        GoalController.context = context;
         //Makes the system redraw the currentGoals whenever the player changes.
         context.getGameLogic().getPlayerManager()
                 .subscribePlayerChanged(new PlayerChangedListener() {

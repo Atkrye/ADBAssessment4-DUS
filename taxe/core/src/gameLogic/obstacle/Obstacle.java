@@ -6,6 +6,10 @@ import gameLogic.map.Station;
 
 /** Class that represents an Obstacle- defined by its type and station it is located in*/
 public class Obstacle {
+	/** Boolean relevant to the Save / Load feature. This flag indiciates to a newly created Game.java that the Obstacle 
+	 * should be started
+	 */
+	private Boolean startFlag = false;
 	
 	/** Station the obstacle is connected to */
 	private Station station;	
@@ -94,6 +98,29 @@ public class Obstacle {
 		return this.time;
 	}
 	
+	/**Used for loading the game from a save game. Sets the time the obstacle has left active
+	 *@param timeLeft The number of turns the obstacle will be active for
+	 */
+	public void setTimeLeft(int timeLeft)
+	{
+		this.time = timeLeft;
+	}
+	
+	/**Used for setting the start flag. The start flag indicates whether the Obstacle should be started when added to a game.java through
+	 * loading
+	 * @param b Whether the flag is true or false.
+	 */
+	public void setStartFlag(boolean b)
+	{
+		startFlag = true;
+	}
+	
+	/**Gets whether this obstacle is waiting to start
+	 */
+	public boolean getStartFlag()
+	{
+		return startFlag;
+	}
 	/** Decreases the number of turns the obstacle has left
 	 * @return True if the obstacle still has time left active, false otherwise
 	 */
