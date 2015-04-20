@@ -119,6 +119,8 @@ public class PlayerManager {
     					t.getActor().setVisible(true);
     					t.getActor().getBounds().setRotation(resource.getFloat("actorRot"));
     					t.getActor().getBounds().setPosition(resource.getFloat("actorX"), resource.getFloat("actorY"));
+    					t.getActor().setPosition(resource.getFloat("actorX"), resource.getFloat("actorY"));
+    					t.getActor().setRotation(resource.getFloat("actorRot"));
     				}
     			}
     		}
