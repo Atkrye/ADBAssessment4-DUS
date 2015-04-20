@@ -67,12 +67,10 @@ public class TrainController {
 	public void drawTrains(Stage stage) {
 		//TrainActors = new Group();
 		stage.addActor(TrainActors);
-		System.out.println("Actors is" + TrainActors.getChildren());
 	}
 
 	public void setupTrainActors()
 	{
-		System.out.println("Creating new trainActor");
 		if (TrainActors == null){
 			TrainActors = new Group();
 		}
