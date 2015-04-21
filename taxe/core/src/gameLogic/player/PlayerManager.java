@@ -202,7 +202,7 @@ public class PlayerManager {
         				//Iterate through train route
         				List<IPositionable> positions = new ArrayList<IPositionable>();
         				Station finalDestination = null;
-        				if(noRoute)
+        				if(!noRoute)
         				{
     						Station lastStation = t.getLastStation();
     						boolean routeFound = false;

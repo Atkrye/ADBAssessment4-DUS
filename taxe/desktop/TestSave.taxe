@@ -3,8 +3,8 @@ DataType: GameData,
 Mode: POINTS,
 "Max Turns": -1,
 "Max Points": 3000,
-Nighttime: false,
-Turn: 3,
+Nighttime: true,
+Turn: 7,
 stations: [
 	{
 		name: Madrid,
@@ -363,17 +363,21 @@ connections: [
 	{
 		station1: York,
 		station2: Hell
+	},
+	{
+		station1: London,
+		station2: Madrid
 	}
 ],
 obstacles: [
 	{
 		"Obstacle Type": BLIZZARD,
-		"Time left": 0,
+		"Time left": 4,
 		Probability: 0.4,
 		x: 904,
 		y: 610,
 		Station: Stockholm,
-		Active: false
+		Active: true
 	},
 	{
 		"Obstacle Type": BLIZZARD,
@@ -404,12 +408,12 @@ obstacles: [
 	},
 	{
 		"Obstacle Type": FLOOD,
-		"Time left": 3,
+		"Time left": 0,
 		Probability: 0.7,
 		x: 590,
 		y: 373,
 		Station: London,
-		Active: true
+		Active: false
 	},
 	{
 		"Obstacle Type": FLOOD,
@@ -469,18 +473,53 @@ Player1: {
 			Name: "Steam Train",
 			Speed: 20,
 			Image: SteamTrain.png,
-			Moving: false,
-			Destination: Empty,
-			x: Empty,
-			y: Empty,
+			Moving: true,
+			Destination: Krakow,
+			x: -1,
+			y: -1,
+			actorX: 852.5483,
+			actorY: 372.6033,
+			actorRot: -3.6044204,
 			Route: [
 				{
-					DataType: Empty
+					DataType: Station,
+					Name: Berlin
+				},
+				{
+					DataType: Station,
+					Name: Poznan
+				},
+				{
+					DataType: Station,
+					Name: Prague
+				},
+				{
+					DataType: Station,
+					Name: Vienna
+				},
+				{
+					DataType: Station,
+					Name: Budapest
+				},
+				{
+					DataType: Station,
+					Name: Cluj
+				},
+				{
+					DataType: Station,
+					Name: Krakow
 				}
 			],
 			History: [
 				{
-					DataType: Empty
+					DataType: Station,
+					Name: Berlin,
+					Turn: 6
+				},
+				{
+					DataType: Station,
+					Name: Berlin,
+					Turn: 7
 				}
 			]
 		},
@@ -526,6 +565,85 @@ Player1: {
 					DataType: Empty
 				}
 			]
+		},
+		{
+			DataType: Train,
+			Name: Kamikaze,
+			Speed: 10,
+			Image: KamikazeTrain.png,
+			Moving: false,
+			Special: Kamikaze,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Empty
+				}
+			]
+		},
+		{
+			DataType: Train,
+			Name: "Bullet Train",
+			Speed: 90,
+			Image: BulletTrain.png,
+			Moving: false,
+			Destination: Empty,
+			x: 701,
+			y: 384,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Station,
+					Name: London,
+					Turn: 4
+				},
+				{
+					DataType: Station,
+					Name: London,
+					Turn: 5
+				},
+				{
+					DataType: Station,
+					Name: Lille,
+					Turn: 5
+				},
+				{
+					DataType: Station,
+					Name: Amsterdam,
+					Turn: 5
+				}
+			]
+		},
+		{
+			DataType: Train,
+			Name: Kamikaze,
+			Speed: 10,
+			Image: KamikazeTrain.png,
+			Moving: false,
+			Special: Kamikaze,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Empty
+				}
+			]
 		}
 	],
 	Goals: [
@@ -548,6 +666,16 @@ Player1: {
 			TurnCount: 0,
 			ScoreValue: 402,
 			BonusValue: 894
+		},
+		{
+			Origin: Lisbon,
+			Destination: Stockholm,
+			Intermediate: Lisbon,
+			Train: None,
+			Turn: 4,
+			TurnCount: 0,
+			ScoreValue: 1070,
+			BonusValue: 1361
 		}
 	]
 },
@@ -602,34 +730,6 @@ Player2: {
 		},
 		{
 			DataType: Train,
-			Name: Pioneer,
-			Speed: 50,
-			Image: PioneerTrain.png,
-			Moving: false,
-			Special: Pioneer,
-			Creating: true,
-			TargetStation: Madrid,
-			Destination: Empty,
-			x: -1,
-			y: -1,
-			actorX: 0,
-			actorY: 0,
-			actorRot: 0,
-			Route: [
-				{
-					DataType: Empty
-				}
-			],
-			History: [
-				{
-					DataType: Station,
-					Name: London,
-					Turn: 3
-				}
-			]
-		},
-		{
-			DataType: Train,
 			Name: "Bullet Train",
 			Speed: 90,
 			Image: BulletTrain.png,
@@ -647,6 +747,29 @@ Player2: {
 					DataType: Empty
 				}
 			]
+		},
+		{
+			DataType: Train,
+			Name: "Nuclear Train",
+			Speed: 70,
+			Image: NuclearTrain.png,
+			Moving: false,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Empty
+				}
+			]
+		},
+		{
+			DataType: Skip
 		}
 	],
 	Goals: [
@@ -669,6 +792,16 @@ Player2: {
 			TurnCount: 3,
 			ScoreValue: 135,
 			BonusValue: 236
+		},
+		{
+			Origin: Sarajevo,
+			Destination: Riga,
+			Intermediate: Sarajevo,
+			Train: None,
+			Turn: 5,
+			TurnCount: 0,
+			ScoreValue: 580,
+			BonusValue: 744
 		}
 	]
 }
