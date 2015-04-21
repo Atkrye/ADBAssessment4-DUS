@@ -40,7 +40,8 @@ public class Game{
 	private List<GameStateListener> gameStateListeners = new ArrayList<GameStateListener>();
 	private List<ObstacleListener> obstacleListeners = new ArrayList<ObstacleListener>();
 	private String MODE;
-	private static Game previousTurn;
+	private static String previousTurn = "";
+	private static String nextPreviousTurn = "";
 	//Default values
 	public int TOTAL_TURNS = 30;
 	public int MAX_POINTS = 3000;
@@ -244,11 +245,14 @@ public class Game{
 	}
 
 	public static void setInstance(Game setupGame, boolean newGameScreen) {
-		instance = setupGame;
 		if(newGameScreen)
 		{
 			GameScreen.getInstance().getSecond().dispose();
-			GameScreen.getInstance().getFirst().setScreen(new GameScreen(GameScreen.getInstance().getFirst(), getInstance()));
+			GameScreen.getInstance().getFirst().setScreen(new GameScreen(GameScreen.getInstance().getFirst(), setupGame));
+		}
+		else
+		{
+			instance = setupGame;
 		}
 	}
 	 
@@ -256,16 +260,21 @@ public class Game{
 	 public static void storeLastTurn()
 	 {
 		 System.out.println("Stored");
-		 previousTurn = new Game("FUCK", "YEAH", GameSetupScreen.MODETURNS, 30);
+		 if(nextPreviousTurn != "")
+		 {
+			 previousTurn = nextPreviousTurn;
+		 }
+		 nextPreviousTurn = SaveManager.getSaveText();
+		 System.out.println(nextPreviousTurn);
 	 }
 	 
 	 //If we can, we step the game back a turn using this method
 	 public static void undoTurn()
 	 {
-		 if(previousTurn != null)
+		 if(previousTurn != "")
 		 {
-			 setInstance(previousTurn, true);
-			 previousTurn = null;
+			 setInstance(SaveManager.loadFromText(previousTurn), true);
+			 previousTurn = "";
 		 }
 	 }
 

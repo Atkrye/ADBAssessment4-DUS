@@ -3,6 +3,7 @@ package fvs.taxe.controller;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.actor.TrainActor;
 import fvs.taxe.clickListener.StationClickListener;
+import gameLogic.Game;
 import gameLogic.GameState;
 import gameLogic.map.CollisionStation;
 import gameLogic.map.Connection;
@@ -89,9 +90,10 @@ public class RouteController {
 			if (editingRoute) {
 				//Checks whether the train's actor is paused due to a bug with blocked trains
 				if (train.getActor().isPaused()){
-					Station lastStation = train.getLastStation();
+					Station lastStation = null;
+					lastStation = train.getLastStation();
 					//Checks if a connection exists between the station the train is paused at and the clicked station
-					if (context.getGameLogic().getMap().doesConnectionExist(lastStation.getName(),station.getName())){
+					if (Game.getInstance().getMap().doesConnectionExist(lastStation.getName(),station.getName())){
 						positions.add(station.getPosition());
 
 						if (!(this.train.getClass().equals(KamikazeTrain.class))) {
@@ -125,22 +127,22 @@ public class RouteController {
 			}
 		} else {
 			//Finds the last station in the current route
-			IPositionable lastPosition = positions.get(positions.size() - 1);
-			Station lastStation = context.getGameLogic().getMap().getStationFromPosition(lastPosition);
-
+			Station lastStation  = Game.getInstance().getMap().getStationFromPosition(positions.get(positions.size() - 1));
+			
+			System.out.println(lastStation.getName());
 			//Check whether a connection exists using the function in Map
-			boolean hasConnection = context.getGameLogic().getMap().doesConnectionExist(station.getName(), lastStation.getName());
+			boolean hasConnection = Game.getInstance().getMap().doesConnectionExist(station.getName(), lastStation.getName());
 			if (!hasConnection) {
 				//If the connection doesn't exist then this informs the user
 				context.getTopBarController().displayFlashMessage("This connection doesn't exist", Color.RED);
 			} else {
-				distance+= context.getGameLogic().getMap().getStationDistance(lastStation, station);
+				distance+= Game.getInstance().getMap().getStationDistance(lastStation, station);
 				DecimalFormat integer = new DecimalFormat("0");
 
 				context.getTopBarController().displayMessage("Total Distance: " + integer.format(distance) + ". Will take " + integer.format(Math.ceil(distance / train.getSpeed() / 2)) + " turns.", Color.BLACK);
 				//If the connection exists then the station passed to the method is added to the route
 				positions.add(station.getPosition());
-				connections.add(context.getGameLogic().getMap().getConnection(station, lastStation));
+				connections.add(Game.getInstance().getMap().getConnection(station, lastStation));
 
 				if (!(this.train.getClass().equals(KamikazeTrain.class))) {
 					//Sets the relevant boolean checking if the last node on the route is a junction or not
@@ -223,7 +225,7 @@ public class RouteController {
 
 	private void confirmed() {
 		//Passes the positions to the backend to create a route
-		train.setRoute(context.getGameLogic().getMap().createRoute(positions));
+		train.setRoute(Game.getInstance().getMap().createRoute(positions));
 
 		//A move controller is created to allow the train to move along its route.
 		new TrainMoveController(context, train);

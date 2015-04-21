@@ -1,6 +1,7 @@
 package fvs.taxe.controller;
 
 import fvs.taxe.TaxeGame;
+import gameLogic.Game;
 import gameLogic.GameState;
 import gameLogic.listeners.ConnectionChangedListener;
 import gameLogic.listeners.StationChangedListener;
@@ -132,7 +133,7 @@ public class ConnectionController {
 	public void destroyConnection(KamikazeTrain train) {
 		Station l1 = train.getLastStation();
 		Station l2 = train.getNextStation();
-		Connection connection = context.getGameLogic().getMap().getConnection(l1, l2);
+		Connection connection = Game.getInstance().getMap().getConnection(l1, l2);
 
 		connectionRemoved(connection); // notify all listeners that the connection has been removed
 
@@ -367,5 +368,9 @@ public class ConnectionController {
 		for (StationChangedListener listener : slisteners ){
 			listener.stationRemoved(station);
 		}
+	}
+
+	public PioneerTrainController getPioneerTrainController() {
+		return controller;
 	}
 }

@@ -1,6 +1,7 @@
 package fvs.taxe.actor;
 
 import fvs.taxe.controller.Context;
+import gameLogic.Game;
 import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Position;
@@ -63,7 +64,7 @@ public class PioneerTrainActor extends TrainActor {
 			shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
 			// line color depends on whether night or day
-			if (context.getGameLogic().getPlayerManager().isNight()) {
+			if (Game.getInstance().getPlayerManager().isNight()) {
 				shapeRenderer.setColor(Color.WHITE);
 			} else {
 				shapeRenderer.setColor(Color.BLACK);
@@ -82,7 +83,7 @@ public class PioneerTrainActor extends TrainActor {
 		// find all connections that collide with the new connection, and where
 		ArrayList<Tuple<Connection, Position>> collidedPositions = new ArrayList<Tuple<Connection, Position>>();
 
-		List<Connection> connections = context.getGameLogic().getMap().getConnections();
+		List<Connection> connections = Game.getInstance().getMap().getConnections();
 		int x1,x2,x3,x4,y1,y2,y3,y4;
 
 		x3 = (int) (startPosition.getX() + 10*Math.cos(radAngle));
@@ -128,5 +129,11 @@ public class PioneerTrainActor extends TrainActor {
 		this.startPosition = connection.getStation1().getPosition();
 		this.endPosition = connection.getStation2().getPosition();
 		this.radAngle = Position.getAngle(startPosition,endPosition);
+	}
+	
+
+
+	public void setPosition(IPositionable position) {
+		this.setPosition(position.getX(), position.getY());
 	}
 }

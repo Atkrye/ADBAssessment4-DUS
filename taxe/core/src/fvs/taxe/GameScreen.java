@@ -1,6 +1,7 @@
 package fvs.taxe;
 
 import Util.Tuple;
+import adb.taxe.record.Recorder;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -61,7 +62,7 @@ public class GameScreen extends ScreenAdapter {
 		this(game, Game.getInstance(p1, p2, MODE, val));
 	}
 
-	public GameScreen(final TaxeGame game, Game loadedGame) {
+	public GameScreen(TaxeGame game, Game loadedGame) {
 		instance = this;
 		GameScreen.game = game;
 		stage = new Stage();
@@ -164,12 +165,6 @@ public class GameScreen extends ScreenAdapter {
 			
 			//Notify the Game once all controllers are set up
 		}
-		//Hard coded back button
-		if(Gdx.input.isKeyJustPressed(Keys.BACKSPACE))
-		{
-			Game.undoTurn();
-			System.out.println("UNDO!");
-		}
 
 		Texture texture = dayMapTexture;
 		
@@ -256,6 +251,14 @@ public class GameScreen extends ScreenAdapter {
 
 			goalController.drawHeaderText();
 		}
+		
+		//Hard coded back button
+		if(Gdx.input.isKeyJustPressed(Keys.BACKSPACE))
+		{
+			Game.undoTurn();
+			System.out.println("UNDO!");
+			Recorder.saveScreenshot();
+		}
 	}
 
 	@Override
@@ -279,8 +282,6 @@ public class GameScreen extends ScreenAdapter {
 				System.out.println("Train Add!");
 				trainController.addTrainToActors(t);
 			}*/
-			
-			gameLogic.getPlayerManager().finishLoad();
 			topBarController.drawBackground();
 			topBarController.drawLabels();
 			topBarController.addEndTurnButton();
@@ -290,6 +291,7 @@ public class GameScreen extends ScreenAdapter {
 			goalController.showCurrentPlayerGoals();
 			goalController.showControls();
 			i+=1;
+			gameLogic.getPlayerManager().finishLoad(context);
 		}
 	}
 
@@ -310,6 +312,11 @@ public class GameScreen extends ScreenAdapter {
 
 	public static Tuple<TaxeGame, GameScreen> getInstance() {
 		return new Tuple<TaxeGame, GameScreen>(game, instance);
+	}
+	
+	public Context getContext()
+	{
+		return context;
 	}
 
 	@Override

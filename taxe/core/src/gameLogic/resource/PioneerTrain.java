@@ -3,12 +3,18 @@ package gameLogic.resource;
 import fvs.taxe.actor.PioneerTrainActor;
 import fvs.taxe.actor.TrainActor;
 import gameLogic.map.Connection;
+import gameLogic.map.Position;
+import gameLogic.map.Station;
 
 public class PioneerTrain extends Train {
 
 	private Connection connection;	// connection that the train is creating
 	private boolean creating = false;
 	private PioneerTrainActor actor;
+	//Fields for loading a PioneerTrain
+	public Station setupFirstStation;
+	public Station setupLastStation;
+	public Position setupStartPos = null;
 	
 	public PioneerTrain() {
 		super("Pioneer", "PioneerTrain.png",  50);

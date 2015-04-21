@@ -125,6 +125,10 @@ public class Train extends Resource {
                 return route.get(i + 1);
             }
         }
+        if(route.size() > 0)
+        {
+        	return route.get(0);
+        }
         return null;
     }
 }

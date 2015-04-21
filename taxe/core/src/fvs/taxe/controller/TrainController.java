@@ -34,7 +34,7 @@ public class TrainController {
 			public void removed(Connection connection) {
 				// destroy any trains on connections that are then destroyed
 				List<Train> removedResources = new ArrayList<Train>();
-				for (Player player : context.getGameLogic().getPlayerManager().getAllPlayers()) {
+				for (Player player : Game.getInstance().getPlayerManager().getAllPlayers()) {
 					for (Resource resource : player.getResources()) {
 						if (resource instanceof Train) {
 							Train train = (Train) resource;
@@ -79,10 +79,9 @@ public class TrainController {
 	public void addTrainToActors(Train t)
 	{
 		TrainActors.addActor(t.getActor());
-		t.getActor().addListener(new TrainClicked(context, t));
 	}
 
-	public TrainActor renderTrain(Train train) {
+	public TrainActor renderTrain(Train train, boolean addListener) {
 		//This renders the actor of the train which is passed to it
 		TrainActor trainActor;
 		if (train.getClass().equals(PioneerTrain.class)){
@@ -92,8 +91,10 @@ public class TrainController {
 		} else {
 			trainActor = new TrainActor(train, context);
 		}
-
-		trainActor.addListener(new TrainClicked(context, train));
+		if(addListener)
+		{
+			trainActor.addListener(new TrainClicked(context, train));
+		}
 		trainActor.setVisible(false);
 		TrainActors.addActor(trainActor);
 		System.out.println(TrainActors.getChildren());
@@ -132,5 +133,14 @@ public class TrainController {
 				}
 			}
 		}
+	}
+
+	public void setContext(Context context) {
+		this.context = context;
+	}
+	
+	public Context getContext()
+	{
+		return context;
 	}
 }

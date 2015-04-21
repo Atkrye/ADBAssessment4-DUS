@@ -144,6 +144,7 @@ public class SaveManager {
 			    		  json.writeValue("Name", train.toString());
 			    		  json.writeValue("Speed", train.getSpeed());
 			    		  json.writeValue("Image", train.getImage().split("/")[1]);
+			    		  json.writeValue("Moving", train.isMoving());
 			    		  if(res.getClass().equals(KamikazeTrain.class))
 			    		  {
 				    		  json.writeValue("Special", "Kamikaze");
@@ -152,6 +153,10 @@ public class SaveManager {
 			    		  {
 				    		  json.writeValue("Special", "Pioneer");
 				    		  json.writeValue("Creating", ((PioneerTrain)train).isCreating());
+				    		  if(((PioneerTrain)train).isCreating())
+				    		  {
+				    			  json.writeValue("TargetStation", ((PioneerTrain)train).getConnection().getStation2().getName());
+				    		  }
 			    		  }
 			    		  if(train.getFinalDestination() == null)
 			    		  {
@@ -369,6 +374,11 @@ public class SaveManager {
 		file.writeString(fileData, false);
 	}
 	
+	public static String getSaveText()
+	{
+		return writer.prettyPrint(Game.getInstance());
+	}
+	
 	public static Game load(FileHandle file)
 	{
 
@@ -376,6 +386,11 @@ public class SaveManager {
 		JsonValue jsonData = jsonReader.parse(file);
 		Game g = writer.readValue(Game.class, jsonData);
 		return g;
+	}
+	
+	public static Game loadFromText(String text)
+	{
+		return writer.readValue(Game.class, new JsonReader().parse(text));
 	}
 
 }

@@ -1,21 +1,26 @@
 package gameLogic.player;
 
-import fvs.taxe.GameScreen;
 import fvs.taxe.actor.TrainActor;
+import fvs.taxe.clickListener.TrainClicked;
 import fvs.taxe.controller.Context;
 import fvs.taxe.controller.ObstacleController;
+import fvs.taxe.controller.PioneerTrainController;
 import fvs.taxe.controller.TrainController;
+import fvs.taxe.controller.TrainMoveController;
 import fvs.taxe.dialog.DialogTurnSkipped;
 import gameLogic.Game;
 import gameLogic.goal.Goal;
 import gameLogic.listeners.DayChangedListener;
 import gameLogic.listeners.TurnListener;
 import gameLogic.listeners.PlayerChangedListener;
+import gameLogic.map.Connection;
 import gameLogic.map.IPositionable;
 import gameLogic.map.Map;
 import gameLogic.map.Position;
 import gameLogic.map.Station;
 import gameLogic.player.Player;
+import gameLogic.resource.KamikazeTrain;
+import gameLogic.resource.PioneerTrain;
 import gameLogic.resource.ResourceManager;
 import gameLogic.resource.Skip;
 import gameLogic.resource.Train;
@@ -34,7 +39,7 @@ public class PlayerManager {
     private List<PlayerChangedListener> playerListeners = new ArrayList<PlayerChangedListener>();
 	private List<DayChangedListener> dayListeners = new ArrayList<DayChangedListener>();
     private boolean isNight = false;
-    private TrainController t;
+    private TrainController t = new TrainController(ObstacleController.getContext());;
     private ArrayList<Train> trainsToAdd = new ArrayList<Train>();
     /**Instantiation method for when creating a player manager from a saved game's Json data
      * @param jsonData The json data from the save game
@@ -44,7 +49,6 @@ public class PlayerManager {
     public PlayerManager(JsonValue jsonData, boolean isNight, int turn, Map map)
     {
     	//Use current Obstacle Controller context
-    	t = new TrainController(ObstacleController.getContext());
     	System.out.println("COntext: " + ObstacleController.getContext());
     	this.turnNumber = turn;
     	this.isNight = isNight;
@@ -56,11 +60,45 @@ public class PlayerManager {
     	players.add(p2);
     }
     
-    public void finishLoad()
+    public void finishLoad(Context context)
     {
+    	t.setContext(context);
     	for(Train tr : trainsToAdd)
     	{
-    		t.setTrainsVisible(tr, true);
+    		if(tr.getName().equals("Pioneer") && ((PioneerTrain)tr).setupFirstStation != null)
+    		{
+    			PioneerTrain train = (PioneerTrain)tr;
+    			context.getConnectionController().beginCreating(train);
+    			IPositionable position = null;
+    			if(train.setupStartPos == null)
+    			{
+    				position = train.setupFirstStation.getPosition();
+    			}
+    			else
+    			{
+    				position = train.setupStartPos;
+    			}
+    			context.getConnectionController().getPioneerTrainController().endCreating(train.setupLastStation, position);
+    			train.getActor().setPosition(position);
+    			train.getActor().getBounds().setPosition(position.getX(), position.getY());
+    		}
+    		else
+    		{
+    			if(tr.isMoving() && tr.getPosition().getX() == -1)
+    			{
+    				t.setTrainsVisible(tr, true);
+    				new TrainMoveController(context, tr);
+    			}
+    			else
+    			{
+    				IPositionable position = tr.getLastStation().getPosition();
+    				tr.getActor().setPosition(position.getX() - TrainActor.width/2, position.getY() - TrainActor.height/2);
+    				tr.getActor().setVisible(false);
+    				//Sets the train's position to be equal to its final destination's position so that it is appropriately hidden and linked to the station
+    				tr.setPosition(position);
+    			}
+				tr.getActor().addListener(new TrainClicked(context, tr));
+    		}
     	}
     }
     
@@ -101,7 +139,19 @@ public class PlayerManager {
     			String rName = resource.getString("Name");
     			int speed = resource.getInt("Speed");
     			String rImage = resource.getString("Image");
-    			Train t = new Train(rName, rImage, speed);
+    			Train t;
+    			if(rName.equals("Pioneer"))
+    			{
+    				t = new PioneerTrain();
+    			}
+    			else if(rName.equals("Kamikaze"))
+    			{
+    				t = new KamikazeTrain();
+    			}
+    			else
+    			{
+    				t = new Train(rName, rImage, speed);
+    			}
     			t.setPlayer(p);
     			p.addResource(t);
     			String xS = resource.getString("x");
@@ -110,17 +160,77 @@ public class PlayerManager {
     				int x = Integer.valueOf(resource.getString("x"));
     				int y = Integer.valueOf(resource.getString("y"));
     				t.setPosition(new Position(x, y));
-					TrainActor trainActor = trainController.renderTrain(t);
+					trainsToAdd.add(t);
+					TrainActor trainActor = trainController.renderTrain(t, false);
 					t.setActor(trainActor);
-    				//There is an actor on the screen
-    				if(x == -1 && y == -1)
+					//Iterate through history
+    				for(JsonValue historyLoc = resource.get("History").child(); historyLoc != null; historyLoc = historyLoc.next())
     				{
-    					trainsToAdd.add(t);
-    					t.getActor().setVisible(true);
-    					t.getActor().getBounds().setRotation(resource.getFloat("actorRot"));
-    					t.getActor().getBounds().setPosition(resource.getFloat("actorX"), resource.getFloat("actorY"));
-    					t.getActor().setPosition(resource.getFloat("actorX"), resource.getFloat("actorY"));
-    					t.getActor().setRotation(resource.getFloat("actorRot"));
+    					if(!historyLoc.getString("DataType").equals("Empty"))
+    					{
+    						//Add the data to the train
+    						Station station = m.getStationByName(historyLoc.getString("Name"));
+    						int turn = historyLoc.getInt("Turn");
+    						t.addHistory(station, turn);
+    					}
+    				}
+    				boolean noRoute = false;
+					if(rName.equals("Pioneer") && resource.getBoolean("Creating") == true)
+					{
+						noRoute = true;
+						PioneerTrain pt = (PioneerTrain)t;
+						pt.setupFirstStation = pt.getLastStation();
+						pt.setupLastStation = m.getStationByName(resource.getString("TargetStation"));
+						System.out.println(pt.setupLastStation.getName());
+					}
+    				//There is an actor on the screen
+    				if(resource.getBoolean("Moving") || noRoute)
+    				{
+    					if(x == -1 )
+    					{
+    						t.getActor().setVisible(true);
+    						t.getActor().getBounds().setRotation(resource.getFloat("actorRot"));
+    						t.getActor().getBounds().setPosition(resource.getFloat("actorX"), resource.getFloat("actorY"));
+    						t.getActor().setPosition(resource.getFloat("actorX"), resource.getFloat("actorY"));
+    						t.getActor().setRotation(resource.getFloat("actorRot"));
+    						if(t.getName().equals("Pioneer") && t.getActor().getX() != 0)
+    						{
+    							PioneerTrain pt = (PioneerTrain)t;
+    							pt.setupStartPos = new Position((int)resource.getFloat("actorX"), (int)resource.getFloat("actorY"));
+    						}
+    					}
+        				//Iterate through train route
+        				List<IPositionable> positions = new ArrayList<IPositionable>();
+        				Station finalDestination = null;
+        				if(noRoute)
+        				{
+    						Station lastStation = t.getLastStation();
+    						boolean routeFound = false;
+    						for(JsonValue routeLoc = resource.get("Route").child(); routeLoc != null; routeLoc = routeLoc.next())
+    						{
+    							System.out.println(t.getName() + "Route");
+    							if(!routeLoc.getString("DataType").equals("Empty"))
+    							{
+    								System.out.println("Route for " + t.getName());
+    								Station station = m.getStationByName(routeLoc.getString("Name"));
+    								if(station.equals(lastStation))
+    								{
+    									routeFound = true;
+    								}
+    								else if (routeFound)
+    								{
+    									positions.add(station.getPosition());
+    									finalDestination = station;
+    								}
+    							}
+        					}
+        				}
+        				if(finalDestination != null)
+        				{
+        					t.setFinalDestination(finalDestination);
+        				}
+        				t.setRoute(m.createRoute(positions));
+
     				}
     			}
     		}
@@ -198,7 +308,6 @@ public class PlayerManager {
     }
 
     private void turnChanged() {
-    	Game.storeLastTurn();
         turnNumber++;
         if (turnNumber%4 == 0){
         	isNight = !isNight;
@@ -209,6 +318,7 @@ public class PlayerManager {
 		for(int i = 0; i< turnListeners.size(); i++) {
 			turnListeners.get(turnListeners.size()-1-i).changed();
 		}
+    	Game.storeLastTurn();
     }
 
     public void subscribePlayerChanged(PlayerChangedListener listener) {

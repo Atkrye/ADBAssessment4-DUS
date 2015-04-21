@@ -95,7 +95,7 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 
 						//Hides the current train but makes all moving trains visible
 						TrainController trainController = new TrainController(context);
-						TrainActor trainActor = trainController.renderTrain(train);
+						TrainActor trainActor = trainController.renderTrain(train, true);
 						trainController.setTrainsVisible(null, true);
 						train.setActor(trainActor);
 
