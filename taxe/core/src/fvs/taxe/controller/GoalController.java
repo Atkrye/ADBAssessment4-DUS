@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.clickListener.GoalClickListener;
 import gameLogic.Game;
+import gameLogic.GameState;
 import gameLogic.player.Player;
 import gameLogic.listeners.PlayerChangedListener;
 import gameLogic.player.PlayerManager;
@@ -31,6 +32,7 @@ public class GoalController {
     
     public boolean exitPressed;
     private Group exitMenu = new Group();
+	private GameState prevState;
 
     public GoalController(Context context) {
         GoalController.context = context;
@@ -239,7 +241,8 @@ public class GoalController {
     
     private void exitPressed() {
     	System.out.println("exit");
-    	
+    	prevState = context.getGameLogic().getState();
+    	context.getGameLogic().setState(GameState.WAITING);
     	exitPressed = true;
     	
     	exitMenu.remove();
@@ -293,7 +296,7 @@ public class GoalController {
     
     public void resumePressed() {
     	System.out.println("resume");
-    	
+    	context.getGameLogic().setState(prevState);
     	exitMenu.remove();
         exitMenu.clear();
         

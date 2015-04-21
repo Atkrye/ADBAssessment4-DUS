@@ -209,15 +209,18 @@ public class GameScreen extends ScreenAdapter {
 
 
 		stationController.drawRoutingInfo(map.getConnections());
-		//Draw the number of trains at each station
-		if (gameLogic.getState() == GameState.NORMAL || gameLogic.getState() == GameState.PLACING_TRAIN) {
-			stationController.displayNumberOfTrainsAtStations();
-		}
+		
+		
 
 		if (goalController.exitPressed == false) {
-
+			//Draw the number of trains at each station
+			if (gameLogic.getState() == GameState.NORMAL || gameLogic.getState() == GameState.PLACING_TRAIN) {
+				stationController.displayNumberOfTrainsAtStations();
+			}
 			game.batch.begin();
 
+			
+			
 			if(Game.getInstance().getMode().equals(GameSetupScreen.MODETURNS))
 			{
 				//Bounds for text
