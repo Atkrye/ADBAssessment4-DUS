@@ -84,7 +84,7 @@ public class PlayerManager {
     		}
     		else
     		{
-    			if(tr.isMoving() && tr.getPosition().getX() == -1)
+    			if(tr.isMoving())
     			{
     				t.setTrainsVisible(tr, true);
     				new TrainMoveController(context, tr);
