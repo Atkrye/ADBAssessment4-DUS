@@ -92,8 +92,8 @@ public class MainMenuScreen extends ScreenAdapter {
             }
             if (exitBounds.contains(touchPoint.x, touchPoint.y)) {
             	//If the touch is within the boundaries of the rectangle exitBounds the game exits
-            	
-                Gdx.app.exit();
+            	SaveManager.loadRecordingFromChooser();
+                //Gdx.app.exit();
             }
        }
   }

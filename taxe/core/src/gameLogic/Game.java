@@ -92,7 +92,7 @@ public class Game{
 	}
 
 	//Constructor to be used when loading a game from a file
-	public Game(String MODE, int totalTurns, int maxPoints, PlayerManager pm, Map m, ObstacleManager om, boolean isRecording) {
+	public Game(String MODE, int totalTurns, int maxPoints, PlayerManager pm, Map m, ObstacleManager om, final boolean isRecording) {
 		this.MODE = MODE;
 		TOTAL_TURNS = totalTurns;
 		MAX_POINTS = maxPoints;
@@ -114,13 +114,16 @@ public class Game{
 			@Override
 			public void changed() {
 				Player currentPlayer = playerManager.getCurrentPlayer();
-				goalManager.addRandomGoalToPlayer(currentPlayer);
-				resourceManager.addRandomResourceToPlayer(currentPlayer);
-				resourceManager.addRandomResourceToPlayer(currentPlayer);
-				if (playerManager.getTurnNumber() != 1) {
-					// obstacles only occur from first turn onwards
-					calculateObstacles();
-					decreaseObstacleTime();
+				if(!isRecording)
+				{
+					goalManager.addRandomGoalToPlayer(currentPlayer);
+					resourceManager.addRandomResourceToPlayer(currentPlayer);
+					resourceManager.addRandomResourceToPlayer(currentPlayer);
+					if (playerManager.getTurnNumber() != 1) {
+						// obstacles only occur from first turn onwards
+						calculateObstacles();
+						decreaseObstacleTime();
+					}
 				}
 			}
 		});

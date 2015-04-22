@@ -1,7 +1,11 @@
 package fvs.taxe;
 
+import adb.taxe.record.RecordingScreen;
+import adb.taxe.record.SaveManager;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -36,8 +40,17 @@ public class TaxeGame extends Game {
 	public static TaxeGame context;
 	
     public ShapeRenderer shapeRenderer;
+    
+    String recordingFilePath = "";
 
-    @Override
+    public TaxeGame(String string) {
+		recordingFilePath = string;
+	}
+
+	public TaxeGame() {
+	}
+
+	@Override
     public void create() {
         batch = new SpriteBatch();
         shapeRenderer = new ShapeRenderer();
@@ -110,7 +123,14 @@ public class TaxeGame extends Game {
 		//--------------------
 
         //Sets the main screen to be the menu
-        setScreen(new MainMenuScreen(this));
+		if(recordingFilePath.equals(""))
+		{
+			setScreen(new MainMenuScreen(this));
+		}
+		else
+		{
+			setScreen(new RecordingScreen(this, SaveManager.loadRec(new FileHandle(recordingFilePath))));
+		}
         context = this;
     }
 
