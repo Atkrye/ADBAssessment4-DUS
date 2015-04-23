@@ -141,10 +141,11 @@ public class SaveManager {
 			    		  Train train = (Train)res;
 			    		  json.writeObjectStart();
 			    		  json.writeValue("DataType", "Train");
+			    		  json.writeValue("ID", train.getID());
 			    		  json.writeValue("Name", train.toString());
 			    		  json.writeValue("Speed", train.getSpeed());
 			    		  json.writeValue("Image", train.getImage().split("/")[1]);
-			    		  json.writeValue("Moving", train.isMoving());
+			    		  json.writeValue("HasRoute", !train.getRoute().isEmpty());
 			    		  if(res.getClass().equals(KamikazeTrain.class))
 			    		  {
 				    		  json.writeValue("Special", "Kamikaze");
@@ -289,6 +290,35 @@ public class SaveManager {
 					  else if(dataType.equals("Click"))
 					  {
 						  events.add(new ClickEvent(eventData.getInt("x"), eventData.getInt("y")));
+					  }
+					  else if(dataType.equals("Key"))
+					  {
+						  events.add(new KeyEvent(eventData.getInt("Keycode")));
+						  
+					  }
+					  else if(dataType.equals("Char"))
+					  {
+						  events.add(new CharEvent(eventData.getChar("CharValue")));
+					  }
+					  else if(dataType.equals("Obstacle"))
+					  {
+						  events.add(new ObstacleEvent(eventData.getString("ObstacleType"), eventData.getString("ObstacleStation")));
+					  }
+					  else if (dataType.equals("Goal"))
+					  {
+						  String origin = eventData.getString("Origin");
+						  String destination = eventData.getString("Destination");
+						  String intermediary = eventData.getString("Intermediary");
+						  int turn = eventData.getInt("Turn");
+						  int turnsTime = eventData.getInt("TurnsTime");
+						  int score = eventData.getInt("Score");
+						  int bonus = eventData.getInt("Bonus");
+						  String train = eventData.getString("Train");
+						  events.add(new GoalEvent(origin, destination, intermediary, turn, turnsTime, score, bonus, train));
+					  }
+					  else if (dataType.equals("Resource"))
+					  {
+						  events.add(new ResourceEvent(eventData.getString("Name")));
 					  }
 				  }
 				  return new EventArrayContainer(events);

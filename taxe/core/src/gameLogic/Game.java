@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Util.Tuple;
+import adb.taxe.record.ObstacleEvent;
+import adb.taxe.record.RecordingScreen;
 import adb.taxe.record.SaveManager;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -79,9 +81,9 @@ public class Game{
 			@Override
 			public void changed() {
 				Player currentPlayer = playerManager.getCurrentPlayer();
-				goalManager.addRandomGoalToPlayer(currentPlayer);
-				resourceManager.addRandomResourceToPlayer(currentPlayer);
-				resourceManager.addRandomResourceToPlayer(currentPlayer);
+				goalManager.addRandomGoalToPlayer(currentPlayer, false);
+				resourceManager.addRandomResourceToPlayer(currentPlayer, false);
+				resourceManager.addRandomResourceToPlayer(currentPlayer, false);
 				if (playerManager.getTurnNumber() != 1) {
 					// obstacles only occur from first turn onwards
 					calculateObstacles();
@@ -114,16 +116,13 @@ public class Game{
 			@Override
 			public void changed() {
 				Player currentPlayer = playerManager.getCurrentPlayer();
-				if(!isRecording)
-				{
-					goalManager.addRandomGoalToPlayer(currentPlayer);
-					resourceManager.addRandomResourceToPlayer(currentPlayer);
-					resourceManager.addRandomResourceToPlayer(currentPlayer);
-					if (playerManager.getTurnNumber() != 1) {
-						// obstacles only occur from first turn onwards
-						calculateObstacles();
-						decreaseObstacleTime();
-					}
+				goalManager.addRandomGoalToPlayer(currentPlayer, false);
+				resourceManager.addRandomResourceToPlayer(currentPlayer, false);
+				resourceManager.addRandomResourceToPlayer(currentPlayer, false);
+				if (playerManager.getTurnNumber() != 1) {
+					// obstacles only occur from first turn onwards
+					calculateObstacles();
+					decreaseObstacleTime();
 				}
 			}
 		});
@@ -148,9 +147,9 @@ public class Game{
 	// The second player gets them when turn changes!
 	private void initialisePlayers() {
 		Player player = playerManager.getAllPlayers().get(0);
-		goalManager.addRandomGoalToPlayer(player);
-		resourceManager.addRandomResourceToPlayer(player);
-		resourceManager.addRandomResourceToPlayer(player);
+		goalManager.addRandomGoalToPlayer(player, true);
+		resourceManager.addRandomResourceToPlayer(player, true);
+		resourceManager.addRandomResourceToPlayer(player, true);
 	}
 	
 	public String getMode()
@@ -213,18 +212,49 @@ public class Game{
 	}
 
 	private void calculateObstacles() {
-		// randomly choose one obstacle, then make the obstacle happen with its associated probability
-		ArrayList<Tuple<Obstacle, Float>> obstacles = obstacleManager.getObstacles();
-		int index = MathUtils.random(obstacles.size()-1);
+		//Choose where we get our obstacle based on whether the GameScreen is a recording
+		if(!GameScreen.instance.getClass().equals(RecordingScreen.class))
+		{
+			//We are in a normal GameScreen so we calculate our obstacle as normal
+			// randomly choose one obstacle, then make the obstacle happen with its associated probability
+			ArrayList<Tuple<Obstacle, Float>> obstacles = obstacleManager.getObstacles();
+			int index = MathUtils.random(obstacles.size()-1);
 
 
-		Tuple<Obstacle, Float> obstacleProbPair = obstacles.get(index);
-		boolean obstacleOccured = MathUtils.randomBoolean(obstacleProbPair.getSecond());
-		Obstacle obstacle = obstacleProbPair.getFirst();
+			Tuple<Obstacle, Float> obstacleProbPair = obstacles.get(index);
+			boolean obstacleOccured = MathUtils.randomBoolean(obstacleProbPair.getSecond());
+			Obstacle obstacle = obstacleProbPair.getFirst();
 
-		// if it has occurred and isnt already active, start the obstacle
-		if(obstacleOccured && !obstacle.isActive()){
-			obstacleStarted(obstacle);
+			// if it has occurred and isnt already active, start the obstacle
+			if(obstacleOccured && !obstacle.isActive()){
+				obstacleStarted(obstacle);
+
+				//If we're recording, record the obstacle start
+				if(GameScreen.instance.isRecording())
+				{
+					GameScreen.instance.record.recordObstacle(obstacle);
+				}
+			}
+			//We need to record that no obstacle occured if the obstacle was not started
+			else if(GameScreen.instance.isRecording())
+			{
+				GameScreen.instance.record.recordObstacle();
+			}
+		}
+		else
+		{
+			//We are in a recording and need to load our Obstacle from the playback
+			
+			RecordingScreen rec = (RecordingScreen)GameScreen.instance;
+			ObstacleEvent obstacleEvent = rec.eventPlayer.getNextObstacleEvent();
+			for(Tuple<Obstacle, Float> o : obstacleManager.getObstacles())
+			{
+				Obstacle foundObstacle = o.getFirst();
+				if(foundObstacle.getType().toString().equals(obstacleEvent.getType()) && foundObstacle.getStation().getName().equals(obstacleEvent.getStation()))
+				{
+					obstacleStarted(foundObstacle);
+				}
+			}
 		}
 	}
 
@@ -268,7 +298,6 @@ public class Game{
 			 previousTurn = nextPreviousTurn;
 		 }
 		 nextPreviousTurn = SaveManager.getSaveText();
-		 System.out.println(nextPreviousTurn);
 	 }
 	 
 	 //If we can, we step the game back a turn using this method

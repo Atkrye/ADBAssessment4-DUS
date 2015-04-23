@@ -2,62 +2,65 @@
 Recording: [
 	{
 		Type: "Game Data",
-		Data: "{\nDataType: GameData,\nMode: POINTS,\n\"Max Turns\": -1,\n\"Max Points\": 3000,\nNighttime: false,\nTurn: 2,\nstations: [\n\t{\n\t\tname: Madrid,\n\t\tjunction: false,\n\t\tx: 449,\n\t\ty: 19\n\t},\n\t{\n\t\tname: Paris,\n\t\tjunction: false,\n\t\tx: 620,\n\t\ty: 280\n\t},\n\t{\n\t\tname: London,\n\t\tjunction: false,\n\t\tx: 590,\n\t\ty: 373\n\t},\n\t{\n\t\tname: Lille,\n\t\tjunction: true,\n\t\tx: 642,\n\t\ty: 334\n\t},\n\t{\n\t\tname: Amsterdam,\n\t\tjunction: false,\n\t\tx: 701,\n\t\ty: 384\n\t},\n\t{\n\t\tname: Berlin,\n\t\tjunction: false,\n\t\tx: 835,\n\t\ty: 385\n\t},\n\t{\n\t\tname: Rome,\n\t\tjunction: false,\n\t\tx: 838,\n\t\ty: 65\n\t},\n\t{\n\t\tname: Lisbon,\n\t\tjunction: false,\n\t\tx: 328,\n\t\ty: 22\n\t},\n\t{\n\t\tname: Barcelona,\n\t\tjunction: false,\n\t\tx: 550,\n\t\ty: 36\n\t},\n\t{\n\t\tname: Andorra,\n\t\tjunction: true,\n\t\tx: 586,\n\t\ty: 82\n\t},\n\t{\n\t\tname: Monaco,\n\t\tjunction: false,\n\t\tx: 707,\n\t\ty: 105\n\t},\n\t{\n\t\tname: Milan,\n\t\tjunction: false,\n\t\tx: 775,\n\t\ty: 161\n\t},\n\t{\n\t\tname: Vaduz,\n\t\tjunction: true,\n\t\tx: 770,\n\t\ty: 216\n\t},\n\t{\n\t\tname: Copenhagen,\n\t\tjunction: false,\n\t\tx: 798,\n\t\ty: 473\n\t},\n\t{\n\t\tname: Warsaw,\n\t\tjunction: false,\n\t\tx: 990,\n\t\ty: 399\n\t},\n\t{\n\t\tname: Krakow,\n\t\tjunction: false,\n\t\tx: 992,\n\t\ty: 323\n\t},\n\t{\n\t\tname: Prague,\n\t\tjunction: false,\n\t\tx: 882,\n\t\ty: 306\n\t},\n\t{\n\t\tname: Budapest,\n\t\tjunction: false,\n\t\tx: 982,\n\t\ty: 234\n\t},\n\t{\n\t\tname: Poznan,\n\t\tjunction: true,\n\t\tx: 929,\n\t\ty: 379\n\t},\n\t{\n\t\tname: Sarajevo,\n\t\tjunction: false,\n\t\tx: 975,\n\t\ty: 128\n\t},\n\t{\n\t\tname: Vienna,\n\t\tjunction: false,\n\t\tx: 911,\n\t\ty: 259\n\t},\n\t{\n\t\tname: Sofia,\n\t\tjunction: false,\n\t\tx: 1106,\n\t\ty: 97\n\t},\n\t{\n\t\tname: Thessaloniki,\n\t\tjunction: false,\n\t\tx: 1104,\n\t\ty: 38\n\t},\n\t{\n\t\tname: Istanbul,\n\t\tjunction: false,\n\t\tx: 1241,\n\t\ty: 79\n\t},\n\t{\n\t\tname: Bucharest,\n\t\tjunction: false,\n\t\tx: 1150,\n\t\ty: 185\n\t},\n\t{\n\t\tname: Kiev,\n\t\tjunction: false,\n\t\tx: 1202,\n\t\ty: 376\n\t},\n\t{\n\t\tname: Minsk,\n\t\tjunction: false,\n\t\tx: 1121,\n\t\ty: 474\n\t},\n\t{\n\t\tname: Riga,\n\t\tjunction: false,\n\t\tx: 1032,\n\t\ty: 555\n\t},\n\t{\n\t\tname: Cluj,\n\t\tjunction: true,\n\t\tx: 1072,\n\t\ty: 231\n\t},\n\t{\n\t\tname: Stockholm,\n\t\tjunction: false,\n\t\tx: 904,\n\t\ty: 610\n\t},\n\t{\n\t\tname: York,\n\t\tjunction: false,\n\t\tx: 580,\n\t\ty: 452\n\t}\n],\nconnections: [\n\t{\n\t\tstation1: Madrid,\n\t\tstation2: Paris\n\t},\n\t{\n\t\tstation1: London,\n\t\tstation2: Lille\n\t},\n\t{\n\t\tstation1: Lille,\n\t\tstation2: Paris\n\t},\n\t{\n\t\tstation1: Lille,\n\t\tstation2: Amsterdam\n\t},\n\t{\n\t\tstation1: Madrid,\n\t\tstation2: Lisbon\n\t},\n\t{\n\t\tstation1: Barcelona,\n\t\tstation2: Madrid\n\t},\n\t{\n\t\tstation1: Barcelona,\n\t\tstation2: Andorra\n\t},\n\t{\n\t\tstation1: Andorra,\n\t\tstation2: Madrid\n\t},\n\t{\n\t\tstation1: Milan,\n\t\tstation2: Paris\n\t},\n\t{\n\t\tstation1: Vaduz,\n\t\tstation2: Milan\n\t},\n\t{\n\t\tstation1: Andorra,\n\t\tstation2: Monaco\n\t},\n\t{\n\t\tstation1: Vaduz,\n\t\tstation2: Vienna\n\t},\n\t{\n\t\tstation1: Milan,\n\t\tstation2: Rome\n\t},\n\t{\n\t\tstation1: Milan,\n\t\tstation2: Monaco\n\t},\n\t{\n\t\tstation1: Amsterdam,\n\t\tstation2: Berlin\n\t},\n\t{\n\t\tstation1: Berlin,\n\t\tstation2: Copenhagen\n\t},\n\t{\n\t\tstation1: Copenhagen,\n\t\tstation2: Stockholm\n\t},\n\t{\n\t\tstation1: Berlin,\n\t\tstation2: Poznan\n\t},\n\t{\n\t\tstation1: Poznan,\n\t\tstation2: Warsaw\n\t},\n\t{\n\t\tstation1: Warsaw,\n\t\tstation2: Krakow\n\t},\n\t{\n\t\tstation1: Poznan,\n\t\tstation2: Prague\n\t},\n\t{\n\t\tstation1: Prague,\n\t\tstation2: Vienna\n\t},\n\t{\n\t\tstation1: Budapest,\n\t\tstation2: Sarajevo\n\t},\n\t{\n\t\tstation1: Sarajevo,\n\t\tstation2: Thessaloniki\n\t},\n\t{\n\t\tstation1: Thessaloniki,\n\t\tstation2: Sofia\n\t},\n\t{\n\t\tstation1: Cluj,\n\t\tstation2: Bucharest\n\t},\n\t{\n\t\tstation1: Bucharest,\n\t\tstation2: Istanbul\n\t},\n\t{\n\t\tstation1: Budapest,\n\t\tstation2: Cluj\n\t},\n\t{\n\t\tstation1: Istanbul,\n\t\tstation2: Sofia\n\t},\n\t{\n\t\tstation1: Sofia,\n\t\tstation2: Bucharest\n\t},\n\t{\n\t\tstation1: Bucharest,\n\t\tstation2: Kiev\n\t},\n\t{\n\t\tstation1: Kiev,\n\t\tstation2: Minsk\n\t},\n\t{\n\t\tstation1: Kiev,\n\t\tstation2: Krakow\n\t},\n\t{\n\t\tstation1: Krakow,\n\t\tstation2: Cluj\n\t},\n\t{\n\t\tstation1: Warsaw,\n\t\tstation2: Riga\n\t},\n\t{\n\t\tstation1: Riga,\n\t\tstation2: Minsk\n\t},\n\t{\n\t\tstation1: Vienna,\n\t\tstation2: Budapest\n\t},\n\t{\n\t\tstation1: York,\n\t\tstation2: London\n\t},\n\t{\n\t\tstation1: Paris,\n\t\tstation2: Andorra\n\t},\n\t{\n\t\tstation1: Amsterdam,\n\t\tstation2: Vaduz\n\t}\n],\nobstacles: [\n\t{\n\t\t\"Obstacle Type\": BLIZZARD,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.4,\n\t\tx: 904,\n\t\ty: 610,\n\t\tStation: Stockholm,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": BLIZZARD,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.1,\n\t\tx: 798,\n\t\ty: 473,\n\t\tStation: Copenhagen,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": BLIZZARD,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.6,\n\t\tx: 1121,\n\t\ty: 474,\n\t\tStation: Minsk,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": FLOOD,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.4,\n\t\tx: 328,\n\t\ty: 22,\n\t\tStation: Lisbon,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": FLOOD,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.7,\n\t\tx: 590,\n\t\ty: 373,\n\t\tStation: London,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": FLOOD,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.2,\n\t\tx: 701,\n\t\ty: 384,\n\t\tStation: Amsterdam,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": VOLCANO,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.2,\n\t\tx: 838,\n\t\ty: 65,\n\t\tStation: Rome,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": VOLCANO,\n\t\t\"Time left\": 0,\n\t\tProbability: 1.0E-8,\n\t\tx: 590,\n\t\ty: 373,\n\t\tStation: London,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": EARTHQUAKE,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.3,\n\t\tx: 1106,\n\t\ty: 97,\n\t\tStation: Sofia,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": EARTHQUAKE,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.5,\n\t\tx: 1072,\n\t\ty: 231,\n\t\tStation: Cluj,\n\t\tActive: false\n\t}\n],\nPlayer1: {\n\tDataType: Player1,\n\tName: \"Enter Name\",\n\tScore: 0,\n\tSkip: false,\n\tActive: true,\n\tResources: [\n\t\t{\n\t\t\tDataType: Train,\n\t\t\tName: Kamikaze,\n\t\t\tSpeed: 10,\n\t\t\tImage: KamikazeTrain.png,\n\t\t\tMoving: false,\n\t\t\tSpecial: Kamikaze,\n\t\t\tDestination: Empty,\n\t\t\tx: Empty,\n\t\t\ty: Empty,\n\t\t\tRoute: [\n\t\t\t\t{\n\t\t\t\t\tDataType: Empty\n\t\t\t\t}\n\t\t\t],\n\t\t\tHistory: [\n\t\t\t\t{\n\t\t\t\t\tDataType: Empty\n\t\t\t\t}\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\tDataType: Skip\n\t\t},\n\t\t{\n\t\t\tDataType: Train,\n\t\t\tName: \"Electric Train\",\n\t\t\tSpeed: 60,\n\t\t\tImage: ElectricTrain.png,\n\t\t\tMoving: false,\n\t\t\tDestination: Empty,\n\t\t\tx: 580,\n\t\t\ty: 452,\n\t\t\tRoute: [\n\t\t\t\t{\n\t\t\t\t\tDataType: Empty\n\t\t\t\t}\n\t\t\t],\n\t\t\tHistory: [\n\t\t\t\t{\n\t\t\t\t\tDataType: Station,\n\t\t\t\t\tName: York,\n\t\t\t\t\tTurn: 2\n\t\t\t\t}\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\tDataType: Train,\n\t\t\tName: \"Steam Train\",\n\t\t\tSpeed: 20,\n\t\t\tImage: SteamTrain.png,\n\t\t\tMoving: false,\n\t\t\tDestination: Empty,\n\t\t\tx: Empty,\n\t\t\ty: Empty,\n\t\t\tRoute: [\n\t\t\t\t{\n\t\t\t\t\tDataType: Empty\n\t\t\t\t}\n\t\t\t],\n\t\t\tHistory: [\n\t\t\t\t{\n\t\t\t\t\tDataType: Empty\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t],\n\tGoals: [\n\t\t{\n\t\t\tOrigin: Sarajevo,\n\t\t\tDestination: Istanbul,\n\t\t\tIntermediate: Sarajevo,\n\t\t\tTrain: None,\n\t\t\tTurn: 0,\n\t\t\tTurnCount: 3,\n\t\t\tScoreValue: 365,\n\t\t\tBonusValue: 547\n\t\t},\n\t\t{\n\t\t\tOrigin: Kiev,\n\t\t\tDestination: Bucharest,\n\t\t\tIntermediate: Lisbon,\n\t\t\tTrain: None,\n\t\t\tTurn: 2,\n\t\t\tTurnCount: 0,\n\t\t\tScoreValue: 201,\n\t\t\tBonusValue: 2081\n\t\t}\n\t]\n},\nPlayer2: {\n\tDataType: Player2,\n\tName: \"Enter Name\",\n\tScore: 0,\n\tSkip: false,\n\tActive: false,\n\tResources: [\n\t\t{\n\t\t\tDataType: Skip\n\t\t},\n\t\t{\n\t\t\tDataType: Train,\n\t\t\tName: Kamikaze,\n\t\t\tSpeed: 10,\n\t\t\tImage: KamikazeTrain.png,\n\t\t\tMoving: false,\n\t\t\tSpecial: Kamikaze,\n\t\t\tDestination: Empty,\n\t\t\tx: Empty,\n\t\t\ty: Empty,\n\t\t\tRoute: [\n\t\t\t\t{\n\t\t\t\t\tDataType: Empty\n\t\t\t\t}\n\t\t\t],\n\t\t\tHistory: [\n\t\t\t\t{\n\t\t\t\t\tDataType: Empty\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t],\n\tGoals: [\n\t\t{\n\t\t\tOrigin: Berlin,\n\t\t\tDestination: Milan,\n\t\t\tIntermediate: Berlin,\n\t\t\tTrain: \"Nuclear Train\",\n\t\t\tTurn: 1,\n\t\t\tTurnCount: 0,\n\t\t\tScoreValue: 384,\n\t\t\tBonusValue: 495\n\t\t}\n\t]\n}\n}"
+		Data: "{\nDataType: GameData,\nMode: POINTS,\n\"Max Turns\": -1,\n\"Max Points\": 3000,\nNighttime: false,\nTurn: 0,\nstations: [\n\t{\n\t\tname: Madrid,\n\t\tjunction: false,\n\t\tx: 449,\n\t\ty: 19\n\t},\n\t{\n\t\tname: Paris,\n\t\tjunction: false,\n\t\tx: 620,\n\t\ty: 280\n\t},\n\t{\n\t\tname: London,\n\t\tjunction: false,\n\t\tx: 590,\n\t\ty: 373\n\t},\n\t{\n\t\tname: Lille,\n\t\tjunction: true,\n\t\tx: 642,\n\t\ty: 334\n\t},\n\t{\n\t\tname: Amsterdam,\n\t\tjunction: false,\n\t\tx: 701,\n\t\ty: 384\n\t},\n\t{\n\t\tname: Berlin,\n\t\tjunction: false,\n\t\tx: 835,\n\t\ty: 385\n\t},\n\t{\n\t\tname: Rome,\n\t\tjunction: false,\n\t\tx: 838,\n\t\ty: 65\n\t},\n\t{\n\t\tname: Lisbon,\n\t\tjunction: false,\n\t\tx: 328,\n\t\ty: 22\n\t},\n\t{\n\t\tname: Barcelona,\n\t\tjunction: false,\n\t\tx: 550,\n\t\ty: 36\n\t},\n\t{\n\t\tname: Andorra,\n\t\tjunction: true,\n\t\tx: 586,\n\t\ty: 82\n\t},\n\t{\n\t\tname: Monaco,\n\t\tjunction: false,\n\t\tx: 707,\n\t\ty: 105\n\t},\n\t{\n\t\tname: Milan,\n\t\tjunction: false,\n\t\tx: 775,\n\t\ty: 161\n\t},\n\t{\n\t\tname: Vaduz,\n\t\tjunction: true,\n\t\tx: 770,\n\t\ty: 216\n\t},\n\t{\n\t\tname: Copenhagen,\n\t\tjunction: false,\n\t\tx: 798,\n\t\ty: 473\n\t},\n\t{\n\t\tname: Warsaw,\n\t\tjunction: false,\n\t\tx: 990,\n\t\ty: 399\n\t},\n\t{\n\t\tname: Krakow,\n\t\tjunction: false,\n\t\tx: 992,\n\t\ty: 323\n\t},\n\t{\n\t\tname: Prague,\n\t\tjunction: false,\n\t\tx: 882,\n\t\ty: 306\n\t},\n\t{\n\t\tname: Budapest,\n\t\tjunction: false,\n\t\tx: 982,\n\t\ty: 234\n\t},\n\t{\n\t\tname: Poznan,\n\t\tjunction: true,\n\t\tx: 929,\n\t\ty: 379\n\t},\n\t{\n\t\tname: Sarajevo,\n\t\tjunction: false,\n\t\tx: 975,\n\t\ty: 128\n\t},\n\t{\n\t\tname: Vienna,\n\t\tjunction: false,\n\t\tx: 911,\n\t\ty: 259\n\t},\n\t{\n\t\tname: Sofia,\n\t\tjunction: false,\n\t\tx: 1106,\n\t\ty: 97\n\t},\n\t{\n\t\tname: Thessaloniki,\n\t\tjunction: false,\n\t\tx: 1104,\n\t\ty: 38\n\t},\n\t{\n\t\tname: Istanbul,\n\t\tjunction: false,\n\t\tx: 1241,\n\t\ty: 79\n\t},\n\t{\n\t\tname: Bucharest,\n\t\tjunction: false,\n\t\tx: 1150,\n\t\ty: 185\n\t},\n\t{\n\t\tname: Kiev,\n\t\tjunction: false,\n\t\tx: 1202,\n\t\ty: 376\n\t},\n\t{\n\t\tname: Minsk,\n\t\tjunction: false,\n\t\tx: 1121,\n\t\ty: 474\n\t},\n\t{\n\t\tname: Riga,\n\t\tjunction: false,\n\t\tx: 1032,\n\t\ty: 555\n\t},\n\t{\n\t\tname: Cluj,\n\t\tjunction: true,\n\t\tx: 1072,\n\t\ty: 231\n\t},\n\t{\n\t\tname: Stockholm,\n\t\tjunction: false,\n\t\tx: 904,\n\t\ty: 610\n\t},\n\t{\n\t\tname: York,\n\t\tjunction: false,\n\t\tx: 580,\n\t\ty: 452\n\t}\n],\nconnections: [\n\t{\n\t\tstation1: Madrid,\n\t\tstation2: Paris\n\t},\n\t{\n\t\tstation1: London,\n\t\tstation2: Lille\n\t},\n\t{\n\t\tstation1: Lille,\n\t\tstation2: Paris\n\t},\n\t{\n\t\tstation1: Lille,\n\t\tstation2: Amsterdam\n\t},\n\t{\n\t\tstation1: Madrid,\n\t\tstation2: Lisbon\n\t},\n\t{\n\t\tstation1: Barcelona,\n\t\tstation2: Madrid\n\t},\n\t{\n\t\tstation1: Barcelona,\n\t\tstation2: Andorra\n\t},\n\t{\n\t\tstation1: Andorra,\n\t\tstation2: Madrid\n\t},\n\t{\n\t\tstation1: Milan,\n\t\tstation2: Paris\n\t},\n\t{\n\t\tstation1: Vaduz,\n\t\tstation2: Milan\n\t},\n\t{\n\t\tstation1: Andorra,\n\t\tstation2: Monaco\n\t},\n\t{\n\t\tstation1: Vaduz,\n\t\tstation2: Vienna\n\t},\n\t{\n\t\tstation1: Milan,\n\t\tstation2: Rome\n\t},\n\t{\n\t\tstation1: Milan,\n\t\tstation2: Monaco\n\t},\n\t{\n\t\tstation1: Amsterdam,\n\t\tstation2: Berlin\n\t},\n\t{\n\t\tstation1: Berlin,\n\t\tstation2: Copenhagen\n\t},\n\t{\n\t\tstation1: Copenhagen,\n\t\tstation2: Stockholm\n\t},\n\t{\n\t\tstation1: Berlin,\n\t\tstation2: Poznan\n\t},\n\t{\n\t\tstation1: Poznan,\n\t\tstation2: Warsaw\n\t},\n\t{\n\t\tstation1: Warsaw,\n\t\tstation2: Krakow\n\t},\n\t{\n\t\tstation1: Poznan,\n\t\tstation2: Prague\n\t},\n\t{\n\t\tstation1: Prague,\n\t\tstation2: Vienna\n\t},\n\t{\n\t\tstation1: Budapest,\n\t\tstation2: Sarajevo\n\t},\n\t{\n\t\tstation1: Sarajevo,\n\t\tstation2: Thessaloniki\n\t},\n\t{\n\t\tstation1: Thessaloniki,\n\t\tstation2: Sofia\n\t},\n\t{\n\t\tstation1: Cluj,\n\t\tstation2: Bucharest\n\t},\n\t{\n\t\tstation1: Bucharest,\n\t\tstation2: Istanbul\n\t},\n\t{\n\t\tstation1: Budapest,\n\t\tstation2: Cluj\n\t},\n\t{\n\t\tstation1: Istanbul,\n\t\tstation2: Sofia\n\t},\n\t{\n\t\tstation1: Sofia,\n\t\tstation2: Bucharest\n\t},\n\t{\n\t\tstation1: Bucharest,\n\t\tstation2: Kiev\n\t},\n\t{\n\t\tstation1: Kiev,\n\t\tstation2: Minsk\n\t},\n\t{\n\t\tstation1: Kiev,\n\t\tstation2: Krakow\n\t},\n\t{\n\t\tstation1: Krakow,\n\t\tstation2: Cluj\n\t},\n\t{\n\t\tstation1: Warsaw,\n\t\tstation2: Riga\n\t},\n\t{\n\t\tstation1: Riga,\n\t\tstation2: Minsk\n\t},\n\t{\n\t\tstation1: Vienna,\n\t\tstation2: Budapest\n\t},\n\t{\n\t\tstation1: York,\n\t\tstation2: London\n\t},\n\t{\n\t\tstation1: Paris,\n\t\tstation2: Andorra\n\t},\n\t{\n\t\tstation1: Amsterdam,\n\t\tstation2: Vaduz\n\t}\n],\nobstacles: [\n\t{\n\t\t\"Obstacle Type\": BLIZZARD,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.4,\n\t\tx: 904,\n\t\ty: 610,\n\t\tStation: Stockholm,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": BLIZZARD,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.1,\n\t\tx: 798,\n\t\ty: 473,\n\t\tStation: Copenhagen,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": BLIZZARD,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.6,\n\t\tx: 1121,\n\t\ty: 474,\n\t\tStation: Minsk,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": FLOOD,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.4,\n\t\tx: 328,\n\t\ty: 22,\n\t\tStation: Lisbon,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": FLOOD,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.7,\n\t\tx: 590,\n\t\ty: 373,\n\t\tStation: London,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": FLOOD,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.2,\n\t\tx: 701,\n\t\ty: 384,\n\t\tStation: Amsterdam,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": VOLCANO,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.2,\n\t\tx: 838,\n\t\ty: 65,\n\t\tStation: Rome,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": VOLCANO,\n\t\t\"Time left\": 0,\n\t\tProbability: 1.0E-8,\n\t\tx: 590,\n\t\ty: 373,\n\t\tStation: London,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": EARTHQUAKE,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.3,\n\t\tx: 1106,\n\t\ty: 97,\n\t\tStation: Sofia,\n\t\tActive: false\n\t},\n\t{\n\t\t\"Obstacle Type\": EARTHQUAKE,\n\t\t\"Time left\": 0,\n\t\tProbability: 0.5,\n\t\tx: 1072,\n\t\ty: 231,\n\t\tStation: Cluj,\n\t\tActive: false\n\t}\n],\nPlayer1: {\n\tDataType: Player1,\n\tName: \"Enter Name\",\n\tScore: 0,\n\tSkip: false,\n\tActive: true,\n\tResources: [\n\t\t{\n\t\t\tDataType: Train,\n\t\t\tID: 1,\n\t\t\tName: \"Steam Train\",\n\t\t\tSpeed: 20,\n\t\t\tImage: SteamTrain.png,\n\t\t\tHasRoute: false,\n\t\t\tDestination: Empty,\n\t\t\tx: Empty,\n\t\t\ty: Empty,\n\t\t\tRoute: [\n\t\t\t\t{\n\t\t\t\t\tDataType: Empty\n\t\t\t\t}\n\t\t\t],\n\t\t\tHistory: [\n\t\t\t\t{\n\t\t\t\t\tDataType: Empty\n\t\t\t\t}\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\tDataType: Train,\n\t\t\tID: 2,\n\t\t\tName: Kamikaze,\n\t\t\tSpeed: 10,\n\t\t\tImage: KamikazeTrain.png,\n\t\t\tHasRoute: false,\n\t\t\tSpecial: Kamikaze,\n\t\t\tDestination: Empty,\n\t\t\tx: Empty,\n\t\t\ty: Empty,\n\t\t\tRoute: [\n\t\t\t\t{\n\t\t\t\t\tDataType: Empty\n\t\t\t\t}\n\t\t\t],\n\t\t\tHistory: [\n\t\t\t\t{\n\t\t\t\t\tDataType: Empty\n\t\t\t\t}\n\t\t\t]\n\t\t}\n\t],\n\tGoals: [\n\t\t{\n\t\t\tOrigin: Madrid,\n\t\t\tDestination: Sarajevo,\n\t\t\tIntermediate: Madrid,\n\t\t\tTrain: \"Nuclear Train\",\n\t\t\tTurn: 0,\n\t\t\tTurnCount: 0,\n\t\t\tScoreValue: 803,\n\t\t\tBonusValue: 1026\n\t\t}\n\t]\n},\nPlayer2: {\n\tDataType: Player2,\n\tName: \"Enter Name\",\n\tScore: 0,\n\tSkip: false,\n\tActive: false,\n\tResources: [],\n\tGoals: []\n}\n}"
 	},
 	{
 		Type: Click,
-		x: 593,
-		y: 238
+		x: 1225,
+		y: 37
+	},
+	{
+		Type: Goal,
+		Origin: Vienna,
+		Destination: Rome,
+		Intermediary: Vienna,
+		Turn: 1,
+		TurnsTime: 3,
+		Score: 327,
+		Bonus: 490,
+		Train: None
+	},
+	{
+		Type: Resource,
+		Name: "Bullet Train"
+	},
+	{
+		Type: Resource,
+		Name: Kamikaze
 	},
 	{
 		Type: Click,
-		x: 588,
-		y: 245
+		x: 1225,
+		y: 37
+	},
+	{
+		Type: Goal,
+		Origin: Rome,
+		Destination: Thessaloniki,
+		Intermediary: Rome,
+		Turn: 2,
+		TurnsTime: 6,
+		Score: 700,
+		Bonus: 1050,
+		Train: None
+	},
+	{
+		Type: Resource,
+		Name: Pioneer
+	},
+	{
+		Type: Resource,
+		Name: "Steam Train"
+	},
+	{
+		Type: Obstacle,
+		ObstacleType: NULL,
+		ObstacleStation: NULL
 	},
 	{
 		Type: Click,
-		x: 592,
-		y: 371
-	},
-	{
-		Type: Click,
-		x: 584,
-		y: 328
-	},
-	{
-		Type: Click,
-		x: 638,
-		y: 356
-	},
-	{
-		Type: Click,
-		x: 644,
-		y: 364
-	},
-	{
-		Type: Click,
-		x: 704,
-		y: 312
-	},
-	{
-		Type: Click,
-		x: 842,
-		y: 316
-	},
-	{
-		Type: Click,
-		x: 795,
-		y: 228
-	},
-	{
-		Type: Click,
-		x: 1070,
-		y: 46
-	},
-	{
-		Type: Click,
-		x: 66,
-		y: 674
+		x: 56,
+		y: 678
 	}
 ]
 }

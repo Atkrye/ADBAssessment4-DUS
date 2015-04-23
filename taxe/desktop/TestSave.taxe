@@ -456,11 +456,33 @@ Player1: {
 	Resources: [
 		{
 			DataType: Train,
+			Name: "Electric Train",
+			Speed: 60,
+			Image: ElectricTrain.png,
+			HasRoute: false,
+			Destination: Empty,
+			x: 835,
+			y: 385,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Station,
+					Name: Berlin,
+					Turn: 0
+				}
+			]
+		},
+		{
+			DataType: Train,
 			Name: "MagLev Train",
 			Speed: 80,
 			Image: MagLevTrain.png,
-			Moving: true,
-			Destination: Stockholm,
+			HasRoute: true,
+			Destination: Amsterdam,
 			x: 580,
 			y: 452,
 			Route: [
@@ -479,18 +501,6 @@ Player1: {
 				{
 					DataType: Station,
 					Name: Amsterdam
-				},
-				{
-					DataType: Station,
-					Name: Berlin
-				},
-				{
-					DataType: Station,
-					Name: Copenhagen
-				},
-				{
-					DataType: Station,
-					Name: Stockholm
 				}
 			],
 			History: [
@@ -500,39 +510,18 @@ Player1: {
 					Turn: 0
 				}
 			]
-		},
-		{
-			DataType: Train,
-			Name: Kamikaze,
-			Speed: 10,
-			Image: KamikazeTrain.png,
-			Moving: false,
-			Special: Kamikaze,
-			Destination: Empty,
-			x: Empty,
-			y: Empty,
-			Route: [
-				{
-					DataType: Empty
-				}
-			],
-			History: [
-				{
-					DataType: Empty
-				}
-			]
 		}
 	],
 	Goals: [
 		{
-			Origin: Rome,
-			Destination: Minsk,
-			Intermediate: Rome,
-			Train: "Petrol Train",
+			Origin: Paris,
+			Destination: Thessaloniki,
+			Intermediate: Paris,
+			Train: None,
 			Turn: 0,
-			TurnCount: 0,
-			ScoreValue: 873,
-			BonusValue: 1275
+			TurnCount: 8,
+			ScoreValue: 793,
+			BonusValue: 1288
 		}
 	]
 },

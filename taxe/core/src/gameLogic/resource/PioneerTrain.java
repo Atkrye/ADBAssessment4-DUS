@@ -20,6 +20,11 @@ public class PioneerTrain extends Train {
 		super("Pioneer", "PioneerTrain.png",  50);
 	}
 	
+	/**Constructor with ID enforced*/
+	public PioneerTrain(int id) {
+		super(id, "Pioneer", "PioneerTrain.png",  50);
+	}
+	
 	@Override
 	public void setActor(TrainActor actor){
 		this.actor = (PioneerTrainActor) actor;

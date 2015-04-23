@@ -91,7 +91,18 @@ public class GameScreen extends ScreenAdapter {
 				}
 				return super.keyDown(keycode);
 			}
+			
+			@Override
+			public boolean keyTyped(char key)
+			{
+				if(record.isRecording())
+				{
+					record.recordCharTyped(key);
+				}
+				return super.keyTyped(key);
+			}
 		};
+		
 
 		//Sets the skin
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));

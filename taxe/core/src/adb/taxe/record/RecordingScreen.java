@@ -160,11 +160,14 @@ public class RecordingScreen extends GameScreen{
 	public void render(float delta)
 	{
 		super.render(delta);
-		ticks = ticks + replaySpeed;
-		if(ticks > tickClock)
+		if(!this.gameLogic.getState().equals(GameState.ANIMATING))
 		{
-			ticks = 0;
-			eventPlayer.nextEvent();
+			ticks = ticks + replaySpeed;
+			if(ticks > tickClock)
+			{
+				ticks = 0;
+				eventPlayer.nextEvent();
+			}
 		}
 	}
 

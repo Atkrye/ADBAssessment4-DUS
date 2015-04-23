@@ -1,9 +1,11 @@
 package adb.taxe.record;
 
 
-import java.util.ArrayList;
+import gameLogic.goal.Goal;
+import gameLogic.obstacle.Obstacle;
+import gameLogic.resource.Resource;
 
-import com.badlogic.gdx.utils.JsonReader;
+import java.util.ArrayList;
 
 public class Recorder {
 
@@ -57,5 +59,33 @@ public class Recorder {
 	   */
 	  public void recordCharTyped(char ch) {
 		  events.add(new CharEvent(ch));
+	  }
+
+	  /**Tells the recorder to record a new obstacle starting
+	   * @param obstacle The obstacle started
+	   */
+	  public void recordObstacle(Obstacle obstacle) {
+		  events.add(new ObstacleEvent(obstacle));
+	  }
+	  
+	  /**Duplicate method with no argument indicates to record that no obstacle happened
+	   */
+	  public void recordObstacle() {
+		  events.add(new ObstacleEvent());
+	  }
+
+	  /**Tells the recorder to record a new goal that has been given to a player
+	   * @param g The goal to be recorded
+	   */
+	  public void recordGoal(Goal g) {
+		  events.add(new GoalEvent(g));
+	  }
+	  
+	  /**Tells the recorder to record a new resource that has been given to a player
+	   * @param resource The resource to be recorded
+	   */
+	  public void recordResource(Resource resource)
+	  {
+		  events.add(new ResourceEvent(resource));
 	  }
 }

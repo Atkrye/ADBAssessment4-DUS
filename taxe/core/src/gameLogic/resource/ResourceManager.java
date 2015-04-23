@@ -1,11 +1,14 @@
 package gameLogic.resource;
 
 import Util.Tuple;
+import fvs.taxe.GameScreen;
 import gameLogic.player.Player;
 import gameLogic.map.JSONImporter;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import adb.taxe.record.RecordingScreen;
 
 public class ResourceManager {
     public final int CONFIG_MAX_RESOURCES = 6;
@@ -58,30 +61,74 @@ public class ResourceManager {
     {
     	for(Tuple<String, Integer> train : trains)
     	{
-    		if(train.getFirst().equals(trains))
+    		if(train.getFirst().equals(trainName))
     		{
     	        return new Train(train.getFirst(), train.getFirst().replaceAll(" ", "") + ".png", train.getSecond());
     		}
     	}
     	return null;
     }
+    
+    public Resource getResourceByName(String resourceName)
+    {
+    	if(resourceName.equals("Skip Turn"))
+    	{
+    		return new Skip();
+    	}
+    	else if(resourceName.equals("Pioneer"))
+    	{
+    		return new PioneerTrain();
+    	}
+    	else if(resourceName.equals("Kamikaze"))
+    	{
+    		return new KamikazeTrain();
+    	}
+    	else
+    	{
+    		return getTrainByName(resourceName);
+    	}
+    }
 
 
-    public void addRandomResourceToPlayer(Player player) {
+    public void addRandomResourceToPlayer(Player player, boolean firstTurn) {
         //This adds a random resource to player
 
         //Need to check whether the player is skipping their turn as they should not receive a resource if they are
         if (!player.getSkip()) {
-            //Generates random resource
-            Resource resource = getRandomResource();
+        	if(firstTurn)
+        	{
+        		//Generates random resource
+        		Resource resource = getRandomResource();
 
-            //If player has a particular resource it will generate a new one until they do not have the generated resource.
-            //This is to prevent a build up of obstacles/skips/engineers
-            //Note: This method does not take into account trains, hence the player can have 7 of the same train in theory
-            while (player.hasResource(resource)) {
-                resource = getRandomResource();
-            }
-            addResourceToPlayer(player, resource);
+        		//If player has a particular resource it will generate a new one until they do not have the generated resource.
+        		//This is to prevent a build up of obstacles/skips/engineers
+        		//Note: This method does not take into account trains, hence the player can have 7 of the same train in theory
+        		while (player.hasResource(resource)) {
+        			resource = getRandomResource();
+        		}
+        		addResourceToPlayer(player, resource);
+        	}
+			else if(!GameScreen.instance.getClass().equals(RecordingScreen.class))
+			{
+        		//Generates random resource
+        		Resource resource = getRandomResource();
+
+        		//If player has a particular resource it will generate a new one until they do not have the generated resource.
+        		//This is to prevent a build up of obstacles/skips/engineers
+        		//Note: This method does not take into account trains, hence the player can have 7 of the same train in theory
+        		while (player.hasResource(resource)) {
+        			resource = getRandomResource();
+        		}
+        		addResourceToPlayer(player, resource);
+        		if(GameScreen.instance.isRecording())
+    			{
+    				GameScreen.instance.record.recordResource(resource);
+    			}
+			}
+			else
+			{
+				addResourceToPlayer(player, getResourceByName(((RecordingScreen)GameScreen.instance).eventPlayer.getNextResourceEvent().getName()));
+			}
         }
     }
 

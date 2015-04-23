@@ -91,18 +91,63 @@ public class Playback {
 	   * @return The event that has just been injected
 	   */
 	public Event nextEvent() {
-		Event e = events.get(eventIndex);
-		injectEvent(e);
-		if(!reverse)
+		if((eventIndex < events.size() && !reverse) || (eventIndex > -1 && reverse))
 		{
-			eventIndex++;
+			Event e = events.get(eventIndex);
+			injectEvent(e);
+			if(!reverse)
+			{
+				eventIndex++;
+			}
+			else
+			{
+				eventIndex--;
+			}
+			return e;
 		}
-		else
+		return null;
+	}
+	
+	public ObstacleEvent getNextObstacleEvent()
+	{
+		ObstacleEvent ret = null;
+		for(int i = 0; i < events.size(); i++)
 		{
-			eventIndex--;
+			if(events.get(i).getClass().equals(ObstacleEvent.class) && ret == null)
+			{
+				ret = (ObstacleEvent)events.remove(i);
+				break;
+			}
 		}
-		return e;
-		
+		return ret;
+	}
+	
+	public GoalEvent getNextGoalEvent()
+	{
+		GoalEvent ret = null;
+		for(int i = 0; i < events.size(); i++)
+		{
+			if(events.get(i).getClass().equals(GoalEvent.class) && ret == null)
+			{
+				ret = (GoalEvent)events.remove(i);
+				break;
+			}
+		}
+		return ret;
+	}
+	
+	public ResourceEvent getNextResourceEvent()
+	{
+		ResourceEvent ret = null;
+		for(int i = 0; i < events.size(); i++)
+		{
+			if(events.get(i).getClass().equals(ResourceEvent.class) && ret == null)
+			{
+				ret = (ResourceEvent)events.remove(i);
+				break;
+			}
+		}
+		return ret;
 	}
 
 	public boolean isReverse() {

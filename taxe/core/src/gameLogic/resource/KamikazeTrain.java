@@ -11,6 +11,12 @@ public class KamikazeTrain extends Train {
 		super("Kamikaze", "KamikazeTrain.png", 10);
 	}
 	
+	/**Constructor with ID enforced*/
+	public KamikazeTrain(int id) {
+		super(id, "Kamikaze", "KamikazeTrain.png", 10);
+	}
+	
+	
 	@Override
 	public void setActor(TrainActor actor){
 		this.actor = (KamikazeTrainActor) actor;

@@ -37,9 +37,9 @@ public class ResourceManagerTest extends TestCase {
 		playerManager.createPlayers(2);
 		Player player1 = playerManager.getCurrentPlayer();
 
-		rm.addRandomResourceToPlayer(player1);
-		rm.addRandomResourceToPlayer(player1);
-		rm.addRandomResourceToPlayer(player1);
+		rm.addRandomResourceToPlayer(player1, false);
+		rm.addRandomResourceToPlayer(player1, false);
+		rm.addRandomResourceToPlayer(player1, false);
 
 		assertEquals(3, player1.getResources().size());
 
