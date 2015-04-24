@@ -24,6 +24,7 @@ public class MainMenuScreen extends ScreenAdapter {
     private OrthographicCamera camera;
     private Rectangle playBounds;
     private Rectangle loadBounds;
+    private Rectangle recordingBounds;
     private Rectangle exitBounds;
     private Vector3 touchPoint;
     private Texture mapTexture;
@@ -39,9 +40,10 @@ public class MainMenuScreen extends ScreenAdapter {
         camera = new OrthographicCamera(TaxeGame.WIDTH, TaxeGame.HEIGHT);
         camera.setToOrtho(false);
 
-        playBounds = new Rectangle(TaxeGame.WIDTH / 2 - 310, 480, 660, 133);
-        loadBounds = new Rectangle(TaxeGame.WIDTH / 2 - 310, 285, 660, 133);
-        exitBounds = new Rectangle(TaxeGame.WIDTH / 2 - 310, 90, 660, 133);
+        playBounds = new Rectangle(TaxeGame.WIDTH / 2 - 310, 520, 660, 133);
+        loadBounds = new Rectangle(TaxeGame.WIDTH / 2 - 310, 360, 660, 133);
+        recordingBounds = new Rectangle(TaxeGame.WIDTH / 2 - 310, 202, 660, 133);
+        exitBounds = new Rectangle(TaxeGame.WIDTH / 2 - 310, 45, 660, 133);
         touchPoint = new Vector3();
 
         //Loads the gameMap in
@@ -90,10 +92,13 @@ public class MainMenuScreen extends ScreenAdapter {
                 	game.setScreen(new GameScreen(game, loadedGame));
                 }
             }
+            if (recordingBounds.contains(touchPoint.x, touchPoint.y)) {
+            	//If the touch is within the boundaries of the rectangle recordingBounds, load recordings
+            	SaveManager.loadRecordingFromChooser();
+            }
             if (exitBounds.contains(touchPoint.x, touchPoint.y)) {
             	//If the touch is within the boundaries of the rectangle exitBounds the game exits
-            	SaveManager.loadRecordingFromChooser();
-                //Gdx.app.exit();
+                Gdx.app.exit();
             }
        }
   }
