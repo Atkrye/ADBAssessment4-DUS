@@ -46,40 +46,42 @@ public class TrainMoveController {
 	private RunnableAction perStationAction(final Station station) {
 		return new RunnableAction() {
 			public void run() {
-				if (!train.getRoute().get(0).equals(station)) {
-					train.getActor().setRecentlyPaused(false);
-				}
+				if (!obstacleCollision(station)) {	
+					if (!train.getRoute().get(0).equals(station)) {
+						train.getActor().setRecentlyPaused(false);
+					}
 
-				train.addHistory(station, context.getGameLogic().getPlayerManager().getTurnNumber());
+					train.addHistory(station, context.getGameLogic().getPlayerManager().getTurnNumber());
 
-				//Uncomment to test whether or not the train is correctly adding stations to its history.
-				/*                System.out.println("Added to history: passed " + station.getName() + " on turn "
+					//Uncomment to test whether or not the train is correctly adding stations to its history.
+					/*                System.out.println("Added to history: passed " + station.getName() + " on turn "
                         + context.getGameLogic().getPlayerManager().getTurnNumber());*/
 
-				int stationIndex = train.getRoute().indexOf(station); //find this station in route
-				int nextIndex = stationIndex + 1;
+					int stationIndex = train.getRoute().indexOf(station); //find this station in route
+					int nextIndex = stationIndex + 1;
 
-	
-				//This checks whether or not the train is at its final destination by checking whether the index is still less than the list size
-				if (nextIndex < train.getRoute().size()) {
-					Station nextStation = train.getRoute().get(nextIndex);
-					
-					//Checks whether the next connection is blocked, if so the train is paused, if not the train is unpaused.
-					if (train.getActor().isPaused()) {
+
+					//This checks whether or not the train is at its final destination by checking whether the index is still less than the list size
+					if (nextIndex < train.getRoute().size()) {
+						Station nextStation = train.getRoute().get(nextIndex);
+
+						//Checks whether the next connection is blocked, if so the train is paused, if not the train is unpaused.
+						if (train.getActor().isPaused()) {
+							train.getActor().setPaused(false);
+							train.getActor().setRecentlyPaused(true);
+						}
+
+						// check that the connection hasnt been destroyed, if so then stop the train
+						if (!context.getGameLogic().getMap().doesConnectionExist(station.getName(), nextStation.getName())) {
+							train.setFinalDestination(station);
+							train.getActor().clearActions();
+							train.getActor().addAction(afterAction());
+							train.getActor().setPaused(false);
+						}
+					} else {
+						//If the train is at its final destination then the train is set to unpaused so that it does not cause issues elsewhere in the program.
 						train.getActor().setPaused(false);
-						train.getActor().setRecentlyPaused(true);
 					}
-					
-					// check that the connection hasnt been destroyed, if so then stop the train
-					if (!context.getGameLogic().getMap().doesConnectionExist(station.getName(), nextStation.getName())) {
-						train.setFinalDestination(station);
-						train.getActor().clearActions();
-						train.getActor().addAction(afterAction());
-						train.getActor().setPaused(false);
-					}
-				} else {
-					//If the train is at its final destination then the train is set to unpaused so that it does not cause issues elsewhere in the program.
-					train.getActor().setPaused(false);
 				}
 			}
 		};
@@ -94,11 +96,11 @@ public class TrainMoveController {
 				for (String message : completedGoals) {
 					context.getTopBarController().displayFlashMessage(message, Color.WHITE, 2);
 				}
-				
+
 				// set actor position for if train has moved beyond track (occurs if track destroyed)
 				IPositionable position = train.getFinalDestination() .getPosition();
 				train.getActor().setPosition(position.getX() - TrainActor.width/2, position.getY() - TrainActor.height/2);
-				
+
 				//Sets the train's position to be equal to its final destination's position so that it is appropriately hidden and linked to the station
 				train.setPosition(train.getFinalDestination().getPosition());
 				train.getActor().setVisible(false);
@@ -128,13 +130,13 @@ public class TrainMoveController {
 			// rotate the train to face forwards
 			float angle = MathUtils.radiansToDegrees*Position.getAngle(current, next);
 			actions.addAction(Actions.rotateTo(angle));
-			
+
 			//This adds the action to the actor which makes it move from point A to point B in a certain amount of time, calculated using duration and the two station positions.
-			
+
 			actions.addAction(moveTo(next.getX() - TrainActor.width / 2, next.getY() - TrainActor.height / 2, duration));
 			actions.addAction(perStationAction(station));
-			
-			
+
+
 			current = next;
 		}
 
@@ -147,7 +149,17 @@ public class TrainMoveController {
 		train.getActor().addAction(actions);
 	}
 
-	
+	/**This method checks if the train has collided with an obstacle when it reaches a station. If it has, the train is destroyed.*/
+	private boolean obstacleCollision(Station station) {
+		// works out if the station has an obstacle active there, whether to destroy the train
+		if (station.hasObstacle() && MathUtils.randomBoolean(station.getObstacle().getDestructionChance())){
+			train.getActor().remove();
+			train.getPlayer().removeResource(train);
+			context.getTopBarController().displayFlashMessage("Your train was hit by a natural disaster...", Color.BLACK, Color.RED, 4);
+			return true;
+		}
+		return false;
+	}
 
 	//We removed collisions from here as it was more appropriate for how we wanted collisions to work to test it every time the trains were rendered
 }
