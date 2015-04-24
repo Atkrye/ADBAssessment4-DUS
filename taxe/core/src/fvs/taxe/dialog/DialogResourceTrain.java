@@ -15,10 +15,20 @@ import gameLogic.resource.Train;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Dialog to show when a train has been selected */
 public class DialogResourceTrain extends Dialog {
-	private List<ResourceDialogClickListener> clickListeners = new ArrayList<ResourceDialogClickListener>();
-	private Context context;
+	/**List of Click Listeners. When a button is clicked, each Click Listener is notified.*/
+    private List<ResourceDialogClickListener> clickListeners = new ArrayList<ResourceDialogClickListener>();
+	
+    /**The Game context.*/
+    private Context context;
 
+    /**The instantiation sets up the dialogue for a train resource.
+	 * @param context The context of the game.
+	 * @param train The train resource in use.
+	 * @param skin The skin for the GUI.
+	 * @param trainPlaced Whether the train has been placed.
+	 */
 	public DialogResourceTrain(Context context, Train train, Skin skin, boolean trainPlaced) {
 		super(train.toString(), skin);
 		this.context = context;
@@ -79,6 +89,7 @@ public class DialogResourceTrain extends Dialog {
 
 	}
 
+	 /**This method is called when a button is clicked. All of the registered click listeners are notified.*/
 	private void clicked(Button button) {
 		for (ResourceDialogClickListener listener : clickListeners) {
 			listener.clicked(button);

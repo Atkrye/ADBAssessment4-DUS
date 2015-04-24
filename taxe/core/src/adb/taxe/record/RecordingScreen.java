@@ -128,7 +128,7 @@ public class RecordingScreen extends GameScreen{
 			public void changed(GameState state) {
 				if ((gameLogic.getPlayerManager().getTurnNumber() == gameLogic.TOTAL_TURNS || (gameLogic.getPlayerManager().getCurrentPlayer().getScore() >= gameLogic.MAX_POINTS && gameLogic.MAX_POINTS != -1))  && state == GameState.NORMAL) {
 					//If the game should end due to the turn number or points total then the appropriate dialog is displayed
-					DialogEndGame dia = new DialogEndGame(context, GameScreen.game, gameLogic.getPlayerManager(), skin);
+					DialogEndGame dia = new DialogEndGame(context, gameLogic.getPlayerManager(), skin);
 					dia.show(stage);
 				} else if (gameLogic.getState() == GameState.ROUTING || gameLogic.getState() == GameState.PLACING_TRAIN) {
 					//If the player is routing or place a train then the goals and nodes are colour coded

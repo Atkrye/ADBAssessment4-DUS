@@ -12,13 +12,17 @@ import gameLogic.player.Player;
 import gameLogic.player.PlayerManager;
 
 public class DialogEndGame extends Dialog {
-    //private TaxeGame game;
 
+	/** The context of the dialog */
     private Context context;
 
-	public DialogEndGame(Context context, TaxeGame game, PlayerManager pm, Skin skin) {
+    /**The instantiation sets up the Dialogue for the end of the game.
+	 * @param game The game type.
+	 * @param pm The player manager containing the players.
+	 * @param skin The skin used for the GUI.
+	 */
+	public DialogEndGame(Context context, PlayerManager pm, Skin skin) {
         super("GAME OVER", skin);
-       // this.game = game;
         this.context = context;
         double highScore = 0;
         int playerNum = 0;
