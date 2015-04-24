@@ -319,7 +319,7 @@ public class GameScreen extends ScreenAdapter {
 	// Called when GameScreen becomes current screen of the game
 	public void show() {
 		if (i == 0) {
-			//We only render this once a turn, this allows the buttons generated to be clickable.
+			//We only render this once, this allows the buttons generated to be clickable.
 			//Initially some of this functionality was in the draw() routine, but it was found that when the player clicked on a button a new one was rendered before the input could be handled
 			//This is why the header texts and the buttons are rendered separately, to prevent these issues from occurring
 			obstacleController.drawObstacles();
