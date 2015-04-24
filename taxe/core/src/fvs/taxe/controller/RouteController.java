@@ -170,12 +170,13 @@ public class RouteController {
 			cancelImage.setPosition(TaxeGame.WIDTH - 120, TaxeGame.HEIGHT - 56);
             
 			doneRouting = new ImageButton(context.getSkin());
-			cancel = new ImageButton(context.getSkin());
 
 			doneRouting.setPosition(TaxeGame.WIDTH - 285, TaxeGame.HEIGHT - 56);
 			doneRouting.setWidth(150);
 			doneRouting.setHeight(37);
 			
+
+			cancel = new ImageButton(context.getSkin());
 			cancel.setPosition(TaxeGame.WIDTH - 120, TaxeGame.HEIGHT - 56);
 			cancel.setWidth(106);
 			cancel.setHeight(37);
@@ -266,6 +267,14 @@ public class RouteController {
 
 		//This works by simulating the creation of a new route, but without the ability to save the route
 		//This will instead draw the route passed to it, which is the one located in train.getRoute()
+		//Because of the nature of save load, this can actually be called before a route has been chosen, so we have to ensure the buttons are created
+		addRoutingButtons();
+		downRoutingImage.setVisible(false);
+		doneRouting.setVisible(false);
+		isRouting = false;
+		editingRoute = false;
+		cancel.setVisible(true);
+		cancelImage.setVisible(true);
 		this.train = train;
 		positions = new ArrayList<IPositionable>();
 		Station prevStation=null;
@@ -281,9 +290,6 @@ public class RouteController {
 		}
 
 		context.getGameLogic().setState(GameState.ROUTING);
-
-		cancel.setVisible(true);
-		cancelImage.setVisible(true);
 		drawPartialRoute();
 	}
 

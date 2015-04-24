@@ -84,7 +84,7 @@ public class PlayerManager {
     		}
     		else
     		{
-    			if(tr.isMoving() && tr.getPosition().getX() == -1)
+    			if(!tr.getRoute().isEmpty())
     			{
     				t.setTrainsVisible(tr, true);
     				new TrainMoveController(context, tr);
@@ -136,21 +136,22 @@ public class PlayerManager {
     		}
     		else
     		{
+    			int id = resource.getInt("ID");
     			String rName = resource.getString("Name");
     			int speed = resource.getInt("Speed");
     			String rImage = resource.getString("Image");
     			Train t;
     			if(rName.equals("Pioneer"))
     			{
-    				t = new PioneerTrain();
+    				t = new PioneerTrain(id);
     			}
     			else if(rName.equals("Kamikaze"))
     			{
-    				t = new KamikazeTrain();
+    				t = new KamikazeTrain(id);
     			}
     			else
     			{
-    				t = new Train(rName, rImage, speed);
+    				t = new Train(id, rName, rImage, speed);
     			}
     			t.setPlayer(p);
     			p.addResource(t);
@@ -184,7 +185,7 @@ public class PlayerManager {
 						System.out.println(pt.setupLastStation.getName());
 					}
     				//There is an actor on the screen
-    				if(resource.getBoolean("Moving") || noRoute)
+    				if(resource.getBoolean("HasRoute") || noRoute)
     				{
     					if(x == -1 )
     					{
@@ -228,8 +229,8 @@ public class PlayerManager {
         				if(finalDestination != null)
         				{
         					t.setFinalDestination(finalDestination);
+            				t.setRoute(m.createRoute(positions));
         				}
-        				t.setRoute(m.createRoute(positions));
 
     				}
     			}

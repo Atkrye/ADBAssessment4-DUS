@@ -20,6 +20,14 @@ public class DesktopLauncher {
 		config.addIcon("icon/dus32.png", FileType.Internal);
 		config.addIcon("icon/dus16.png", FileType.Internal);
 		//config.fullscreen = true;
-		new LwjglApplication(new TaxeGame(), config);
+		if(arg.length > 0)
+		{
+			new LwjglApplication(new TaxeGame(arg[0]), config);
+			
+		}
+		else
+		{
+			new LwjglApplication(new TaxeGame(), config);
+		}
 	}
 }

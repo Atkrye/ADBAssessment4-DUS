@@ -1,15 +1,19 @@
 package gameLogic.goal;
 
+import fvs.taxe.GameScreen;
 import gameLogic.Game;
-import gameLogic.player.Player;
 import gameLogic.map.CollisionStation;
 import gameLogic.map.Map;
 import gameLogic.map.Station;
+import gameLogic.player.Player;
 import gameLogic.resource.ResourceManager;
 import gameLogic.resource.Train;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import adb.taxe.record.GoalEvent;
+import adb.taxe.record.RecordingScreen;
 
 public class GoalManager {
     public final static int CONFIG_MAX_PLAYER_GOALS = 3;
@@ -91,16 +95,36 @@ public class GoalManager {
         return goal;
     }
 
-    public void addRandomGoalToPlayer(Player player) {
-        //Needs to check whether the player is skipping their turn, if they are then they should not be given a goal
-        if (!player.getSkip()) {
-            player.addGoal(generateRandom(player.getPlayerManager().getTurnNumber()));
-        }
-
-		/* Uncomment to test the appropriateness of the generated points for the goals
-        for (int i = 0; i<20;i++){
-			generateRandom(player.getPlayerManager().getTurnNumber());
-		}*/
+    public void addRandomGoalToPlayer(Player player, boolean firstTurn) {
+        //Firstly check if this is a game or a recording
+    	//Needs to check whether the player is skipping their turn, if they are then they should not be given a goal
+		if (!player.getSkip()) {
+			if(firstTurn)
+			{
+				//It is a game, so we generate a new goal and add it to the player
+    			Goal g = generateRandom(player.getPlayerManager().getTurnNumber());
+    			player.addGoal(g);
+			}
+			else if(!GameScreen.instance.getClass().equals(RecordingScreen.class))
+			{
+				//It is a game, so we generate a new goal and add it to the player
+    			Goal g = generateRandom(player.getPlayerManager().getTurnNumber());
+    			player.addGoal(g);
+    			if(GameScreen.instance.isRecording())
+    			{
+    				GameScreen.instance.record.recordGoal(g);
+    			}
+			}
+			else
+			{
+				//It is a recording, so we load a goal from the playback
+				RecordingScreen rec = (RecordingScreen)GameScreen.instance;
+				
+				GoalEvent goalE = rec.eventPlayer.getNextGoalEvent();
+				Goal g = goalE.asGoal(Game.getInstance().getMap(), resourceManager);
+				player.addGoal(g);
+			}
+    	}
     }
 
     public ArrayList<String> trainArrived(Train train, Player player) {

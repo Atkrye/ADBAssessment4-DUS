@@ -10,6 +10,10 @@ import java.util.List;
 import Util.Tuple;
 
 public class Train extends Resource {
+	/**Id field used to ensure every train has a unique id, for tracking in collisions in the replay system*/
+	private static int idVal;
+	/**The id of the train*/
+	private int id;
     private String image;
     private IPositionable position;
     private TrainActor actor;
@@ -25,11 +29,22 @@ public class Train extends Resource {
 
 
     public Train(String name, String image, int speed) {
-        this.name = name;
+        this(getFreshId(), name, image, speed);
+    }
+    
+    public Train(int id, String name, String image, int speed)
+    {
+    	this.id = id;
+    	this.name = name;
         this.image = image;
         this.speed = speed;
         history = new ArrayList<Tuple<Station, Integer>>();
         route = new ArrayList<Station>();
+    }
+    
+    public int getID()
+    {
+    	return id;
     }
 
     public String getName() {
@@ -130,5 +145,12 @@ public class Train extends Resource {
         	return route.get(0);
         }
         return null;
+    }
+    
+    public static int getFreshId()
+    {
+    	int id = idVal;
+    	idVal++;
+    	return id;
     }
 }

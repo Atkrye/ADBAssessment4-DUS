@@ -2,8 +2,11 @@ package fvs.taxe;
 
 import Util.Tuple;
 import adb.taxe.record.Recorder;
+import adb.taxe.record.RecordingWindow;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -31,32 +34,43 @@ import gameLogic.trong.TrongScreen;
 
 
 public class GameScreen extends ScreenAdapter {
-	private static TaxeGame game;
+	public static TaxeGame game;
 	public static GameScreen instance;
-	private Stage stage;
-	private BlankMapActor blankMapActor;
-	private Game gameLogic;
-	private Skin skin;
-	private Map map;
+	protected Stage stage;
+	protected BlankMapActor blankMapActor;
+	protected Game gameLogic;
+	protected Skin skin;
+	protected Map map;
 	private float timeAnimated = 0;
 	public static final int ANIMATION_TIME = 2;
-	private Tooltip tooltip;
-	private Context context;
+	protected Tooltip tooltip;
+	protected Context context;
 
-	private StationController stationController;
-	private TopBarController topBarController;
-	private ResourceController resourceController;
-	private GoalController goalController;
-	private RouteController routeController;
-	private ObstacleController obstacleController;
-	private Rumble rumble;
+	protected StationController stationController;
+	protected TopBarController topBarController;
+	protected ResourceController resourceController;
+	protected GoalController goalController;
+	protected RouteController routeController;
+	protected ObstacleController obstacleController;
+	protected Rumble rumble;
 	public TrongScreen trongScreen = null;
-	private ConnectionController connectionController;
-	private Texture dayMapTexture;
-	private Texture nightMapTexture;
+	protected ConnectionController connectionController;
+	protected Texture dayMapTexture;
+	protected Texture nightMapTexture;
 	private int i;
-	private TrainController trainController;
+	protected TrainController trainController;
+	
+	/**The recorder that is attached to this game screen*/
+	public Recorder record;
+	/**Whether the mouse was keyed down on the last tick. Use for detecting events in recording*/
+	private boolean isMouseDown = false;
 
+	/**Implicit constructor for extension to RecordingScreen.java*/
+	public GameScreen(TaxeGame game)
+	{
+		GameScreen.game = game;
+	}
+	
 	public GameScreen(TaxeGame game, String p1, String p2, String MODE, int val)
 	{
 		this(game, Game.getInstance(p1, p2, MODE, val));
@@ -65,7 +79,30 @@ public class GameScreen extends ScreenAdapter {
 	public GameScreen(TaxeGame game, Game loadedGame) {
 		instance = this;
 		GameScreen.game = game;
-		stage = new Stage();
+		//Set up stage with an adapted 
+		stage = new Stage()
+		{
+			@Override
+			public boolean keyDown(int keycode)
+			{
+				if(record.isRecording())
+				{
+					record.recordKeyPressed(keycode);
+				}
+				return super.keyDown(keycode);
+			}
+			
+			@Override
+			public boolean keyTyped(char key)
+			{
+				if(record.isRecording())
+				{
+					record.recordCharTyped(key);
+				}
+				return super.keyTyped(key);
+			}
+		};
+		
 
 		//Sets the skin
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -101,6 +138,8 @@ public class GameScreen extends ScreenAdapter {
 		context.setConnectionController(connectionController);
 
 		rumble = obstacleController.getRumble();
+		
+		record = new Recorder();
 
 		show();
 		
@@ -256,11 +295,23 @@ public class GameScreen extends ScreenAdapter {
 		}
 		
 		//Hard coded back button
-		if(Gdx.input.isKeyJustPressed(Keys.BACKSPACE))
+		//if(Gdx.input.isKeyJustPressed(Keys.BACKSPACE))
+		//{
+		//	Game.undoTurn();
+		//	System.out.println("UNDO!");
+		//	RecordingWindow.createNewRecordingWindow();
+		//}
+		if(Gdx.input.isButtonPressed(Buttons.LEFT))
 		{
-			Game.undoTurn();
-			System.out.println("UNDO!");
-			Recorder.saveScreenshot();
+			if(!isMouseDown && record.isRecording())
+			{
+				record.recordMouseClick(Gdx.input.getX(), Gdx.input.getY());
+			}
+			isMouseDown = true;
+		}
+		else
+		{
+			isMouseDown = false;
 		}
 	}
 
@@ -333,5 +384,19 @@ public class GameScreen extends ScreenAdapter {
 
 	public static TrongScreen makeTrongGame(Train t1, Train t2){
 		return new TrongScreen(game, t1, t2);
+	}
+	
+	public void startRecording()
+	{
+		record.startRecording();
+	}
+	
+	public void stopRecording()
+	{
+		record.stopRecording();
+	}
+
+	public boolean isRecording() {
+		return record.isRecording();
 	}
 }

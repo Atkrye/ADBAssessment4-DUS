@@ -1,5 +1,6 @@
 package fvs.taxe.controller;
 
+import fvs.taxe.GameScreen;
 import fvs.taxe.TaxeGame;
 import gameLogic.Game;
 import gameLogic.GameState;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 
 import Util.TextEntryDialog;
 import Util.Tuple;
+import adb.taxe.record.RecordingScreen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -238,6 +240,10 @@ public class ConnectionController {
 			@Override
 			public boolean keyDown(int keycode) {
 				super.keyDown(keycode);
+				if(GameScreen.instance.isRecording() && keycode == Keys.ENTER || keycode == Input.Keys.ESCAPE)
+				{
+					GameScreen.instance.record.recordKeyPressed(keycode);
+				}
 				if (keycode == Keys.ENTER){
 					// finish naming when enter pressed
 					String text = textEntryBar.getLabelValue();
@@ -247,7 +253,15 @@ public class ConnectionController {
 						controller.endCreating(station);
 						textEntryBar.clear();
 						setVisible(false); // hide the dialog box
-						Gdx.input.setInputProcessor(ip); // change the input processor back to the old one
+						// change the input processor back to the old one
+						if(GameScreen.instance.getClass().equals(RecordingScreen.class))
+						{
+							((RecordingScreen)GameScreen.instance).eventPlayer.setPlaybackProcessor(ip);;
+						}
+						else
+						{
+							Gdx.input.setInputProcessor(ip);
+						}
 
 					} else {
 						context.getTopBarController().displayFlashMessage("Please enter a unique station name", Color.RED);
@@ -257,12 +271,37 @@ public class ConnectionController {
 					// cancel name entry if escape pressed
 					context.getGameLogic().setState(GameState.CREATING_CONNECTION);
 					setVisible(false);
-					Gdx.input.setInputProcessor(ip);
+
+					if(GameScreen.instance.getClass().equals(RecordingScreen.class))
+					{
+						((RecordingScreen)GameScreen.instance).eventPlayer.setPlaybackProcessor(ip);;
+					}
+					else
+					{
+						Gdx.input.setInputProcessor(ip);
+					}
 				}
 				return true;
 			}
+			
+			@Override
+			public boolean keyTyped(char ch)
+			{
+				if(GameScreen.instance.isRecording())
+				{
+					GameScreen.instance.record.recordCharTyped(ch);
+				}
+				return super.keyTyped(ch);
+			}
 		};
-		Gdx.input.setInputProcessor(nameip);
+		if(GameScreen.instance.getClass().equals(RecordingScreen.class))
+		{
+			((RecordingScreen)GameScreen.instance).eventPlayer.setPlaybackProcessor(nameip);
+		}
+		else
+		{
+			Gdx.input.setInputProcessor(nameip);
+		}
 	}
 
 	/** Reorganise connections so that any connection overlaps are changed into a junction with new connections

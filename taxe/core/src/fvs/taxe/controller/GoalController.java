@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import fvs.taxe.GameScreen;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.clickListener.GoalClickListener;
 import gameLogic.Game;
@@ -208,7 +209,14 @@ public class GoalController {
         recordButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("record");
+        		if(!GameScreen.instance.isRecording())
+        		{
+        			GameScreen.instance.startRecording();
+        		}
+        		else
+        		{
+                    GameScreen.instance.stopRecording();
+        		}
             };
         } );
         context.getStage().addActor(recordButton);

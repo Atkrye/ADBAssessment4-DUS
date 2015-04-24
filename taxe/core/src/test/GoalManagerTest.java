@@ -57,9 +57,9 @@ public class GoalManagerTest extends TestCase {
 		Player player1 = playerManager.getCurrentPlayer();
 		assertEquals(0,player1.getGoals().size());
 
-		goalManager.addRandomGoalToPlayer(player1);
-		goalManager.addRandomGoalToPlayer(player1);
-		goalManager.addRandomGoalToPlayer(player1);
+		goalManager.addRandomGoalToPlayer(player1, false);
+		goalManager.addRandomGoalToPlayer(player1, false);
+		goalManager.addRandomGoalToPlayer(player1, false);
 
 
 		assertEquals(3, player1.getGoals().size());
