@@ -23,6 +23,7 @@ public class ParticleEffectActor extends Actor {
 	@Override
 	public void draw(Batch batch, float parentAlpha) {
 		//Draw the particleEffect in real time (will stop being visible onscreen based on particle effect parameters)
+		super.draw(batch, parentAlpha);
 		particleEffect.draw(batch, Gdx.graphics.getDeltaTime());
 	}
 	
@@ -37,5 +38,4 @@ public class ParticleEffectActor extends Actor {
 		//We must reposition the particleEffect itself too
 		particleEffect.setPosition(x, y);
 	}
-
 }
