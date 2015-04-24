@@ -40,7 +40,7 @@ public class PioneerTrainController {
 	/** The connectionController for this controller */ 
 	private ConnectionController connectionController;
 
-	/** Constructor for class, registers clicks for pioneer train immediately 
+	/** Constructor for class, takes input immediately 
 	 * Class will be created once connectionController begins creating a connection*/
 	public PioneerTrainController(PioneerTrain train, final Context context) {
 		this.context = context;
@@ -208,7 +208,7 @@ public class PioneerTrainController {
 
 		if (collidedPositions.size() == 0){
 			// just add new connection if no overlaps
-			connectionController.connectionAdded(connection);
+			context.getConnectionController().connectionAdded(connection);
 
 		} else {
 			// if the train has collided with some connections, create the new connections and junctions
