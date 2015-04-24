@@ -4,11 +4,16 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import fvs.taxe.GameScreen;
+import fvs.taxe.GameSetupScreen;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.Tooltip;
 import fvs.taxe.clickListener.StationClickListener;
@@ -30,6 +35,16 @@ import gameLogic.map.BlankMapActor;
 import gameLogic.map.Station;
 
 public class RecordingScreen extends GameScreen{
+	
+	// Texture for playback controls
+	Texture playbackTexture;
+	
+	// Rectangles from play, pause and forward buttons on playback control
+	private Rectangle playBounds;
+    private Rectangle pauseBounds;
+    private Rectangle forwardBounds;
+    private Vector3 touchPoint;
+    private OrthographicCamera camera;
 
 	/**The rate at which ticks build up. Ticks increases by the value of replaySpeed every frame*/
 	public float replaySpeed = 1.0f;
@@ -85,6 +100,17 @@ public class RecordingScreen extends GameScreen{
 		stage.addActor(blankMapActor);
 		map = gameLogic.getMap();
 		map.setMapActor(blankMapActor);
+		
+		// Playback Controls
+		playbackTexture = new Texture(Gdx.files.internal("playback_controls.png"));
+		
+		// Set bounds of buttons
+		playBounds = new Rectangle(325, 552, 45, 45);
+        pauseBounds = new Rectangle(378, 552, 45, 45);
+        forwardBounds = new Rectangle(432, 552, 45, 45);
+        touchPoint = new Vector3();
+        camera = new OrthographicCamera(TaxeGame.WIDTH, TaxeGame.HEIGHT);
+        camera.setToOrtho(false);
 
 		tooltip = new Tooltip(skin);
 		stage.addActor(tooltip);
@@ -156,9 +182,43 @@ public class RecordingScreen extends GameScreen{
 		});
 	}
 	
+	private void update() {
+    	
+    	
+        if (Gdx.input.justTouched()) {
+        	//detects which area of the screen is touched
+        	//If rectangles are touch then relevant action is taken
+            camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
+            if (playBounds.contains(touchPoint.x, touchPoint.y)) {
+            	System.out.println("Play Pressed");
+            }
+            if (pauseBounds.contains(touchPoint.x, touchPoint.y)) {
+            	System.out.println("Pause Pressed");
+            }
+            if (forwardBounds.contains(touchPoint.x, touchPoint.y)) {
+            	System.out.println("Forward Pressed");
+            }
+
+       }
+	}
+	
+	private void draw() {
+    	//This method draws the mainScreen Texture 
+    	camera.update();
+        game.batch.setProjectionMatrix(camera.combined);
+        game.batch.begin();
+        game.batch.draw(playbackTexture, 305, 490);
+        game.batch.end();
+        
+    }
+	
 	@Override
 	public void render(float delta)
 	{
+		
+		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
 		super.render(delta);
 		if(!this.gameLogic.getState().equals(GameState.ANIMATING))
 		{
@@ -169,6 +229,9 @@ public class RecordingScreen extends GameScreen{
 				eventPlayer.nextEvent();
 			}
 		}
+		
+		update();
+		draw();
 	}
 
 }
