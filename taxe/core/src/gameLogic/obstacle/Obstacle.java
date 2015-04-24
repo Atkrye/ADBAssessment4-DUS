@@ -39,24 +39,6 @@ public class Obstacle {
 		this.position = station.getPosition();
 		this.active = false;
 	}
-	
-	/** Get the chance of a train being destroyed by the obstacle - depends upon obstacle Type
-	 * @return The probability (between 0 - 1) that the train will be destroyed (1 = always destroyed, 0 = never)
-	 */
-	public float getDestructionChance() {
-		switch(this.type){
-		case BLIZZARD:
-			return 0.7f;
-		case EARTHQUAKE:
-			return 0.9f;
-		case FLOOD:
-			return 0.6f;
-		case VOLCANO:
-			return 1f;
-		default:
-			return 0f;
-		}
-	}
 
 	/** Get the station that the obstacle is located at
 	 * @return The station that the obstacle is associated with

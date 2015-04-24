@@ -149,10 +149,11 @@ public class TrainMoveController {
 		train.getActor().addAction(actions);
 	}
 
-	/**This method checks if the train has collided with an obstacle when it reaches a station. If it has, the train is destroyed.*/
+	/**This method checks if the train has collided with an obstacle when it reaches a station. If it has, the train is destroyed.
+	 * @return boolean that says whether the train has been deleted
+	 */
 	private boolean obstacleCollision(Station station) {
-		// works out if the station has an obstacle active there, whether to destroy the train
-		if (station.hasObstacle() && MathUtils.randomBoolean(station.getObstacle().getDestructionChance())){
+		if (station.hasObstacle()){
 			train.getActor().remove();
 			train.getPlayer().removeResource(train);
 			context.getTopBarController().displayFlashMessage("Your train was hit by a natural disaster...", Color.BLACK, Color.RED, 4);

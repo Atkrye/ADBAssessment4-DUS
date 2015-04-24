@@ -178,7 +178,7 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 
 		case TRAIN_CREATE_CONNECTION:
 			// Begin creating the connection between 2 points
-			context.getConnectionController().beginCreating((PioneerTrain) train);
+			context.getConnectionController().beginCreatingMode((PioneerTrain) train);
 			break;
 
 		case TRAIN_KAMIKAZE:
