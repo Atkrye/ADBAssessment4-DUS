@@ -15,11 +15,18 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 
+/**Controller for moving trains.*/
 public class TrainMoveController {
-	//This class handles all train movement in the game
+	/**The context of the game.*/
 	private Context context;
+	
+	/**The train being controlled by the controller.*/
 	private Train train;
 
+	/**Instantiation adds a turn listener to interrupt the train's action when a turn changes.
+	 * @param context The game context.
+	 * @param train The train to be controlled.
+	 */
 	public TrainMoveController(Context context, Train train) {
 		this.context = context;
 		this.train = train;
@@ -28,7 +35,9 @@ public class TrainMoveController {
 		addMoveActions();
 	}
 
-	// an action for the train to run before it starts moving across the screen
+	/**This method produces an action for the train to run before moving on the screen.
+	 * @return An action where the train is set to visible and off the screen.
+	 */
 	private RunnableAction beforeAction() {
 		return new RunnableAction() {
 			public void run() {
@@ -42,9 +51,13 @@ public class TrainMoveController {
 		};
 	}
 
-	// this action will run every time the train reaches a station within a route
+	/**This method produces an action to run every time a train reaches a station on it's route.
+	 * @param station The station reached.
+	 * @return An action which adds the train movement to the move history and continues the journey of the train.
+	 */
 	private RunnableAction perStationAction(final Station station) {
 		return new RunnableAction() {
+			// pausing mechanism not currently in  use, but kept for future use
 			public void run() {
 				if (!obstacleCollision(station)) {	
 					if (!train.getRoute().get(0).equals(station)) {
@@ -87,7 +100,9 @@ public class TrainMoveController {
 		};
 	}
 
-	// an action for the train to run after it has moved the whole route
+	/**This method produces an action for when the train has reached it's final destination.
+	 * @return A runnable action that displays a message and notifies the goal manager.
+	 */
 	private RunnableAction afterAction() {
 		return new RunnableAction() {
 			public void run() {
@@ -109,7 +124,7 @@ public class TrainMoveController {
 		};
 	}
 
-	//Adds the relevant movement actions to the train's actor
+	/**This method uses the current's train's routes to create a set of move actions for the train.*/
 	public void addMoveActions() {
 		SequenceAction actions = Actions.sequence();
 		IPositionable current = train.getPosition();
@@ -156,7 +171,7 @@ public class TrainMoveController {
 		if (station.hasObstacle()){
 			train.getActor().remove();
 			train.getPlayer().removeResource(train);
-			context.getTopBarController().displayFlashMessage("Your train was hit by a natural disaster...", Color.BLACK, Color.RED, 4);
+			context.getTopBarController().displayFlashMessage("Your train was hit by a natural disaster...", Color.RED, 4);
 			return true;
 		}
 		return false;

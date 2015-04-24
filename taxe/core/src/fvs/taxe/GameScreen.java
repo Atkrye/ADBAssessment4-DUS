@@ -153,7 +153,7 @@ public class GameScreen extends ScreenAdapter {
 					gameLogic.setState(GameState.ANIMATING);
 
 					String str = "Time is Passing";
-					topBarController.displayFlashMessage(str, Color.GREEN, Color.BLACK, 2f);
+					topBarController.displayFlashMessage(str, Color.BLACK, 2f);
 				}
 			}
 		});
