@@ -21,11 +21,17 @@ import gameLogic.resource.Resource;
 import gameLogic.resource.Train;
 
 
+/**Controller for managing games graphics*/
 public class TrainController {
-	//This class controls all the train actors
-	private Context context;
+	/**The game context.*/
+    private Context context;
+    
+    /** Group of actors that represent the trains */
 	private static Group TrainActors;
 
+	/**Instantiation method.
+     * @param context The game context.
+     */
 	public TrainController(final Context context) {
 		this.context = context;
 
@@ -64,11 +70,12 @@ public class TrainController {
 		});
 	}
 
+	/** Called once, Add the trainActors to the stage */
 	public void drawTrains(Stage stage) {
-		//TrainActors = new Group();
 		stage.addActor(TrainActors);
 	}
 
+	/** Setup the group of Train Actors */
 	public void setupTrainActors()
 	{
 		if (TrainActors == null){
@@ -76,11 +83,17 @@ public class TrainController {
 		}
 	}
 
+	/** Add the actor to the group of trainactors */
 	public void addTrainToActors(Train t)
 	{
 		TrainActors.addActor(t.getActor());
 	}
 
+	/**This method renders a train by adding it to the Game as a TrainActor.
+	 * Will render a pioneerTrain/KamikazeTrain depending upon train given
+     * @param train The train to be rendered.
+     * @return The TrainActor produced using the train.
+     */
 	public TrainActor renderTrain(Train train, boolean addListener) {
 		//This renders the actor of the train which is passed to it
 		TrainActor trainActor;
@@ -102,7 +115,7 @@ public class TrainController {
 	}
 
 
-	// Sets all trains on the map visible or invisible except one that we are routing for
+	/** Sets all trains on the map visible or invisible except one that we are routing for */
 	public void setTrainsVisible(Train train, boolean visible) {
 		for (Player player : Game.getInstance().getPlayerManager().getAllPlayers()) {
 			for (Resource resource : player.getResources()) {
@@ -114,12 +127,6 @@ public class TrainController {
 							break;
 						}
 					}
-					/*if (resource.getClass().equals(PioneerTrain.class)){
-						// if a train is creating a route, its visibility doesnt get changed
-						if (!((PioneerTrain) resource).isCreating()) {
-							((Train) resource).getActor().setVisible(visible);
-						}
-					}*/
 					if (((Train) resource).getActor() != null && resource != train && !trainAtStation) {
 						if (resource.getClass().equals(PioneerTrain.class)){
 							// if a train is creating a route, its visibility doesnt get changed

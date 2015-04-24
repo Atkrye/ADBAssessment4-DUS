@@ -153,7 +153,7 @@ public class GameScreen extends ScreenAdapter {
 					gameLogic.setState(GameState.ANIMATING);
 
 					String str = "Time is Passing";
-					topBarController.displayFlashMessage(str, Color.GREEN, Color.BLACK, 2f);
+					topBarController.displayFlashMessage(str, Color.BLACK, 2f);
 				}
 			}
 		});
@@ -163,7 +163,7 @@ public class GameScreen extends ScreenAdapter {
 			public void changed(GameState state) {
 				if ((gameLogic.getPlayerManager().getTurnNumber() == gameLogic.TOTAL_TURNS || (gameLogic.getPlayerManager().getCurrentPlayer().getScore() >= gameLogic.MAX_POINTS && gameLogic.MAX_POINTS != -1))  && state == GameState.NORMAL) {
 					//If the game should end due to the turn number or points total then the appropriate dialog is displayed
-					DialogEndGame dia = new DialogEndGame(context, GameScreen.game, gameLogic.getPlayerManager(), skin);
+					DialogEndGame dia = new DialogEndGame(context, gameLogic.getPlayerManager(), skin);
 					dia.show(stage);
 				} else if (gameLogic.getState() == GameState.ROUTING || gameLogic.getState() == GameState.PLACING_TRAIN) {
 					//If the player is routing or place a train then the goals and nodes are colour coded
@@ -248,15 +248,18 @@ public class GameScreen extends ScreenAdapter {
 
 
 		stationController.drawRoutingInfo(map.getConnections());
-		//Draw the number of trains at each station
-		if (gameLogic.getState() == GameState.NORMAL || gameLogic.getState() == GameState.PLACING_TRAIN) {
-			stationController.displayNumberOfTrainsAtStations();
-		}
+		
+		
 
 		if (goalController.exitPressed == false) {
-
+			//Draw the number of trains at each station
+			if (gameLogic.getState() == GameState.NORMAL || gameLogic.getState() == GameState.PLACING_TRAIN) {
+				stationController.displayNumberOfTrainsAtStations();
+			}
 			game.batch.begin();
 
+			
+			
 			if(Game.getInstance().getMode().equals(GameSetupScreen.MODETURNS))
 			{
 				//Bounds for text
@@ -316,7 +319,7 @@ public class GameScreen extends ScreenAdapter {
 	// Called when GameScreen becomes current screen of the game
 	public void show() {
 		if (i == 0) {
-			//We only render this once a turn, this allows the buttons generated to be clickable.
+			//We only render this once, this allows the buttons generated to be clickable.
 			//Initially some of this functionality was in the draw() routine, but it was found that when the player clicked on a button a new one was rendered before the input could be handled
 			//This is why the header texts and the buttons are rendered separately, to prevent these issues from occurring
 			obstacleController.drawObstacles();

@@ -28,7 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class PioneerTrainController {
 	private Context context;
 	
-	/** Whether the pioneer train controller is completed (if false, taking input)*/
+	/** Whether the pioneer train controller (not the actor itself) is completed (if false, taking input)*/
 	private boolean completed = false;
 	
 	/** The firstStation of the corresponding train*/
@@ -40,7 +40,7 @@ public class PioneerTrainController {
 	/** The connectionController for this controller */ 
 	private ConnectionController connectionController;
 
-	/** Constructor for class, takes input immediately 
+	/** Constructor for class, registers clicks for pioneer train immediately 
 	 * Class will be created once connectionController begins creating a connection*/
 	public PioneerTrainController(PioneerTrain train, final Context context) {
 		this.context = context;
@@ -57,7 +57,7 @@ public class PioneerTrainController {
 						if (!map.connectionOverlaps(firstStation, station)){ 
 							if (!map.doesConnectionExist(firstStation.getName(), station.getName())) {
 								if (!connectionController.connectionBeingMade(station)){
-									endCreating(station);
+									startTrainCreating(station);
 								} else {
 									context.getTopBarController().displayFlashMessage("Connection being created", Color.RED);
 								}
@@ -97,8 +97,8 @@ public class PioneerTrainController {
 		});
 	}
 	
-	/** Start the pioneer train creating- display actor correspondingly*/
-	public void beginCreating() {
+	/** Start the pioneerTrainController creating mode - display actor correspondingly*/
+	public void beginCreatingMode() {
 		context.getGameLogic().setState(GameState.CREATING_CONNECTION);
 		firstStation = train.getLastStation();
 		train.getActor().setVisible(true);
@@ -108,40 +108,40 @@ public class PioneerTrainController {
 	/** Stop the pioneer train creating- set the train on its course to plant the new connection 
 	 * @param station Station at the other end of the connection 
 	 */
-	public void endCreating(Station station) {
+	public void startTrainCreating(Station station) {
 		Connection connection = new Connection(firstStation, station);
 		train.setPosition(new Position(-1, -1));
 		train.setCreating(connection);
 
 		train.getActor().setupConnectionPlanting(connection); 
 		addPioneerActions(station);
-		connectionController.endCreating(connection);
+		connectionController.endCreatingMode(connection);
 		
 		completed = true;
 	}
 	
-	/** Stop the pioneer train creating- set the train on its course to plant the new connection. Give the train a specific start
+	/** Start the pioneer train creating- set the train on its course to plant the new connection. Give the train a specific start
 	 * position using the extra paramater
 	 * @param station Station at the other end of the connection 
 	 * @param Position the position to start the train at
 	 */
-	public void endCreating(Station station, IPositionable position) {
-		Connection connection = new Connection(firstStation, station);
+	public void startTrainCreating(Station station, IPositionable position) {
+		Connection connection = new Connection(firstStation, station); 
 		train.setPosition(new Position(-1, -1));
 		train.setCreating(connection);
-
 		train.getActor().setupConnectionPlanting(connection); 
-		addPioneerActions(station, position);
-		connectionController.endCreating(connection);
+		addPioneerCreateActions(station, position);
 		
-		completed = true;
+		connectionController.endCreatingMode(connection);
+		
+		completed = true; // pioneerTrainContoller has completed its creationCOmpleting mode, take no more user input
 	}
 
 	/** Give the pioneer train the actions needed to plant the connections
 	 * @param station Station at other end of connection 
 	 * @param position start position of the train (for loading)
 	 */
-	private void addPioneerActions(Station station, IPositionable position) {
+	private void addPioneerCreateActions(Station station, IPositionable position) {
 		train.getActor().clearActions();
 		SequenceAction actions = Actions.sequence();
 
@@ -199,25 +199,25 @@ public class PioneerTrainController {
 		train.getActor().addAction(actions);
 	}
 	
-	/** Once the pioneerTrain has completed planting the new connection, create the new connections and junctions */
+	/** Once the pioneerTrain has completed planting the new connection, create the new corresponding connections and junctions */
 	public void pioneerTrainComplete() {
 		PioneerTrainActor actor = train.getActor();
-		ArrayList<Tuple<Connection, Position>> collidedPositions = actor.overlappedConnection();
+		ArrayList<Tuple<Connection, Position>> collidedPositions = actor.getOverlappedConnection();
 		
 		Connection connection = actor.getConnection();
 
 		if (collidedPositions.size() == 0){
-			// just add new connection if no overlaps
-			context.getConnectionController().connectionAdded(connection);
+			// just add a single new connection if no overlaps
+			connectionController.connectionAdded(connection);
 
 		} else {
-			// if the train has collided with some connections, create the new connections and junctions
+			// if the train has overlapped with some connections, create the new connections and junctions
 			connectionController.addNewConnections(collidedPositions, connection);
 		}
 		actor.getTrain().creationCompleted();
 	}
 
-	public void setActive(boolean active) {
-		this.completed = active;
+	public void setCompleted(boolean completed) {
+		this.completed = completed;
 	}
 }

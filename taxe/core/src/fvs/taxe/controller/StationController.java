@@ -36,25 +36,41 @@ import gameLogic.player.Player;
 import gameLogic.resource.Resource;
 import gameLogic.resource.Train;
 
+/**Controller for the Graphical interface of stations*/
 public class StationController {
-	public final static int CONNECTION_LINE_WIDTH = 4;
+	
+	/**The Width of a connection between stations, in pixels.*/
+	public final static int CONNECTION_LINE_WIDTH = 5;
 
+	/**The context of the game.*/
 	private static Context context;
+	
+	/**The ToolTip to be used to display Station information.*/
 	private static Tooltip tooltip;
+
+	/** The group of actors that correspond to the station's actors */
+	private static Group stationActors;
+	
+	/** The group of actors that correspond to the connection's actors */
+	private Group connectionActors;
+	
 	/*
 	have to use CopyOnWriteArrayList because when we iterate through our listeners and execute
 	their handler's method, one case unsubscribes from the event removing itself from this list
 	and this list implementation supports removing elements whilst iterating through it
 	 */
+	/**The collection of station click listeners that is populated externally using subscribeStationClick().*/
 	private static List<StationClickListener> stationClickListeners = new CopyOnWriteArrayList<StationClickListener>();
 
-	private static Group stationActors;
-	private Group connectionActors;
-
+	/**Instatiation method.
+	 * @param context The Context of the game.
+	 * @param tooltip The tooltip used to display Station information.
+	 */
 	public StationController(final Context context, Tooltip tooltip) {
 		StationController.context = context;
 		StationController.tooltip = tooltip;
 
+		// remove and add connections accordingly
 		ConnectionController.subscribeConnectionChanged(new ConnectionChangedListener() {
 			@Override
 			public void removed(Connection connection) {
@@ -71,15 +87,7 @@ public class StationController {
 			}
 		});
 
-		/*Map.subscribeJunctionRemovedListener(new StationRemovedListener() {
-			@Override
-			public void stationRemoved(Station station) {
-				if (station.getClass().equals(CollisionStation.class)) {
-					stationActors.removeActor(((CollisionStation) station).getCollisionStationActor());
-				}
-			}
-		});*/
-
+		// remove and add stations accordingly
 		ConnectionController.subscribeStationAdded(new StationChangedListener() {
 			@Override
 			public void stationAdded(Station station) {
@@ -94,9 +102,8 @@ public class StationController {
 			}
 		});
 
-
+		// change the images of the stations when day changed
 		context.getGameLogic().getPlayerManager().subscribeDayChanged(new DayChangedListener() {
-
 			@Override
 			public void changed(Boolean isNight) {
 				SnapshotArray<Actor> list = stationActors.getChildren();
@@ -119,12 +126,14 @@ public class StationController {
 		stationClickListeners.remove(listener);
 	}
 
+	/**When a station is clicked this method is called. The controller then passes this click notification to all of the stationClickListeners.*/
 	private static void stationClicked(Station station) {
 		for (StationClickListener listener : stationClickListeners) {
 			listener.clicked(station);
 		}
 	}
 
+	/**This method draws all of the stations, as Stations or CollisionStations.*/
 	public void renderStations() {
 		//Calls the relevant rendering methods from within the controller class based on what type of station needs to be rendered
 		List<Station> stations = context.getGameLogic().getMap().getStations();
@@ -144,6 +153,9 @@ public class StationController {
 		context.getStage().addActor(stationActors);
 	}
 
+	/**This method creates a StationActor from the station and adds Enter and Exit methods to it.
+	 * @param station The Station to used to create the StationActor.
+	 */
 	public static StationActor renderStation(final Station station) {
 		//This method renders the station passed to the method
 		final StationActor stationActor = new StationActor(station.getPosition(), station);
@@ -200,6 +212,9 @@ public class StationController {
 		return stationActor;
 	}
 
+	/**This method creates a StationActor from the CollisionStation and adds Clicked, Enter and Exit methods to it.
+	 * @param collisionStation The CollisionStation to used to create the StationActor.
+	 */
 	public static CollisionStationActor renderCollisionStation(final CollisionStation collisionStation) {
 		//Carries out the same code but this time as a collision station
 		final CollisionStationActor collisionStationActor = new CollisionStationActor(
@@ -255,10 +270,11 @@ public class StationController {
 		return collisionStationActor;
 	}
 
+	/** The array of the colours for the station highlights */
 	public static Color[] colours = {Color.RED, Color.GREEN, Color.PINK};
 
+	/** This method is responsible for rendering the colours around the goal nodes when placing a train or routing */
 	public void renderStationGoalHighlights() {
-		//This method is responsible for rendering the colours around the goal nodes
 		List<Station> stations = context.getGameLogic().getMap().getStations();
 		ArrayList<StationHighlight> list = new ArrayList<StationHighlight>();
 		for (Station station : stations) {
@@ -306,6 +322,7 @@ public class StationController {
 		}
 	}
 
+	/** Inner class that represents the goal station highlights */
 	class StationHighlight implements Comparable<StationHighlight> {
 		//This class stores the station, radius and colour of each highlight
 		private final Station station;
@@ -336,6 +353,7 @@ public class StationController {
 		}
 	}
 
+	// Create all of the Actors for all of the connections and add them to the connectionActors group
 	public void addConnections(List<Connection> connections, final Color color) {
 		connectionActors = new Group();
 		for (Connection connection : connections) {
@@ -348,6 +366,7 @@ public class StationController {
 		context.getStage().addActor(connectionActors);
 	}
 
+	/** Display the length of the connections when the game is in routing mode */
 	public void drawRoutingInfo(List<Connection> connections){
 		TaxeGame game = context.getTaxeGame();
 		// if the game is in routing mode, then the length of the connection is displayed
@@ -355,6 +374,7 @@ public class StationController {
 			if (Game.getInstance().getState() == GameState.ROUTING) {
 				IPositionable midpoint = connection.getMidpoint();
 				game.batch.begin();
+				// change colour depending on whether day or night
 				if (context.getGameLogic().getPlayerManager().isNight()) {
 					game.fontTinyLight.setColor(Color.WHITE);
 				} else {
@@ -371,6 +391,7 @@ public class StationController {
 		}
 	}
 
+	/**This method creates a Text field at each station displaying the number of trains the current player has at that station.*/
 	public void displayNumberOfTrainsAtStations() {
 		//This renders the number next to each station of how many trains are located there
 		TaxeGame game = context.getTaxeGame();
@@ -389,6 +410,10 @@ public class StationController {
 		game.batch.end();
 	}
 
+	/**This method counts the number of trains the current player has at a specific station.
+	 * @param station The station to check.
+	 * @return The number of train's the current player has at the station.
+	 */
 	private int trainsAtStation(Station station) {
 		int count = 0;
 		//This method iterates through every train and checks whether or not the location of the train matches the location of the station. Returns the number of trains at that station

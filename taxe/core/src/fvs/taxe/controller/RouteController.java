@@ -19,26 +19,57 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+/**Controller for using routing, with GUI*/
 public class RouteController {
+
+	/**The context of the Game.*/
 	private Context context;
+
+	/**The positions selected in routing.*/
 	private List<IPositionable> positions;
+
+	/**The connections selected in routing.*/
+	private List<Connection> connections;
+
+	/**Whether or not the player is currently using routing*/
 	private boolean isRouting = false;
+
+	/**The train currently having a route selected*/
 	private Train train;
+
+	/**Whether or not the currently selected route is at a point where the routing can be completed*/
 	private boolean canEndRouting = true;
+
+	/** Whether the route is currently being edited (true if it is, else its a new route being made */
 	private boolean editingRoute = false;
+
+	/** Distance of the route currently beng made in pixels */
 	private double distance = 0;
-	private ArrayList<Connection> connections;
+
+	/** Image button corresponding to the done routing */
 	private ImageButton doneRouting;
+
+	/** Image burron corresponding to the cancellation of routing */
 	private ImageButton cancel;
-	private Image downRoutingImage;
+
+	/** Image related to the doneRouting button */
+	private Image doneRoutingImage;
+
+	/** Image related to the cancel button */
 	private Image cancelImage;
+
+	/** If view route has been selected, the index into the connections array of which connection the train is partly across */
 	private int indexPartial = -1;
 
+	/**Instantiation method. Sets up a listener for when a train is selected. If the RouteController is routing, that station is then added to the route,
+	 * @param context The context of the game.
+	 */
 	public RouteController(Context context) {
 		this.context = context;
 
@@ -54,6 +85,9 @@ public class RouteController {
 		});
 	}
 
+	/**This method is called when a train is selected for routing,
+	 * @param train The train to produce a route for.
+	 */
 	public void begin(Train train) {
 		//This method is called when the user wants to create a route
 		this.train = train;
@@ -84,6 +118,9 @@ public class RouteController {
 		train.getActor().setVisible(true);
 	}
 
+	/**This method adds a station to the route if its suitable. Its location is added, and the appropriate connection is stored.
+	 * @param station The station to be added.
+	 */
 	private void addStationToRoute(Station station) {
 		// the latest position chosen in the positions so far
 		if (positions.size() == 0) {
@@ -96,6 +133,7 @@ public class RouteController {
 					if (Game.getInstance().getMap().doesConnectionExist(lastStation.getName(),station.getName())){
 						positions.add(station.getPosition());
 
+						// kamikaze trains can end on a junction
 						if (!(this.train.getClass().equals(KamikazeTrain.class))) {
 							//Sets the relevant boolean checking if the last node on the route is a junction or not
 							canEndRouting = !(station instanceof CollisionStation);
@@ -128,7 +166,7 @@ public class RouteController {
 		} else {
 			//Finds the last station in the current route
 			Station lastStation  = Game.getInstance().getMap().getStationFromPosition(positions.get(positions.size() - 1));
-			
+
 			System.out.println(lastStation.getName());
 			//Check whether a connection exists using the function in Map
 			boolean hasConnection = Game.getInstance().getMap().doesConnectionExist(station.getName(), lastStation.getName());
@@ -154,27 +192,28 @@ public class RouteController {
 		}
 	}
 
+	/**This method is called when Routing commences for a Train. It sets up buttons for cancelling and finishing the routing,*/
 	private void addRoutingButtons() {
 		if (doneRouting == null){
-			
+
 			Texture doneRoutingText = new Texture(Gdx.files.internal("btn_routecomplete.png"));
-			downRoutingImage = new Image(doneRoutingText);
-			downRoutingImage.setWidth(150);
-			downRoutingImage.setHeight(37);
-			downRoutingImage.setPosition(TaxeGame.WIDTH - 285, TaxeGame.HEIGHT - 56);
-			
+			doneRoutingImage = new Image(doneRoutingText);
+			doneRoutingImage.setWidth(150);
+			doneRoutingImage.setHeight(37);
+			doneRoutingImage.setPosition(TaxeGame.WIDTH - 285, TaxeGame.HEIGHT - 56);
+
 			Texture cancelText = new Texture(Gdx.files.internal("btn_cancel.png"));
 			cancelImage = new Image(cancelText);
 			cancelImage.setWidth(106);
 			cancelImage.setHeight(37);
 			cancelImage.setPosition(TaxeGame.WIDTH - 120, TaxeGame.HEIGHT - 56);
-            
+
 			doneRouting = new ImageButton(context.getSkin());
 
 			doneRouting.setPosition(TaxeGame.WIDTH - 285, TaxeGame.HEIGHT - 56);
 			doneRouting.setWidth(150);
 			doneRouting.setHeight(37);
-			
+
 
 			cancel = new ImageButton(context.getSkin());
 			cancel.setPosition(TaxeGame.WIDTH - 120, TaxeGame.HEIGHT - 56);
@@ -204,26 +243,25 @@ public class RouteController {
 					}
 				}
 			});
-			
+
 			//Adds the images to the screen
 			context.getStage().addActor(cancelImage);
-			context.getStage().addActor(downRoutingImage);
-			
+			context.getStage().addActor(doneRoutingImage);
+
 			//Adds the buttons to the screen
 			context.getStage().addActor(cancel);
 			context.getStage().addActor(doneRouting);
 		} else {
-			//routingButtons.setVisible(true);
-			
 			cancelImage.setVisible(true);
-			downRoutingImage.setVisible(true);
-			
+			doneRoutingImage.setVisible(true);
+
 			cancel.setVisible(true);
 			doneRouting.setVisible(true);
-			
 		}
 	}
 
+	/**This method is called when a Route has been finalised by the player. The route is created from the positions, and the Train is set along this route
+	 * using a TrainController.*/
 	private void confirmed() {
 		//Passes the positions to the backend to create a route
 		train.setRoute(Game.getInstance().getMap().createRoute(positions));
@@ -232,12 +270,13 @@ public class RouteController {
 		new TrainMoveController(context, train);
 	}
 
+	/**This method is called when the routing is finalised by the player or cancelled. The existing route is dropped and the RouteController is set up for the next Routing.*/
 	private void endRouting() {
 		//This routine sets the gamescreen back to how it should be for normal operation
 		context.getGameLogic().setState(GameState.NORMAL);
 		//All buttons are removed and flags set to the relevant values.
 		cancelImage.setVisible(false);
-		downRoutingImage.setVisible(false);
+		doneRoutingImage.setVisible(false);
 		cancel.setVisible(false);
 		doneRouting.setVisible(false);
 		isRouting = false;
@@ -262,14 +301,13 @@ public class RouteController {
 		}
 	}
 
+	/** Method is used to draw the trains current route so that the user can see where their trains are going */
 	public void viewRoute(Train train) {
-		//This method is used to draw the trains current route so that the user can see where their trains are going
-
 		//This works by simulating the creation of a new route, but without the ability to save the route
 		//This will instead draw the route passed to it, which is the one located in train.getRoute()
 		//Because of the nature of save load, this can actually be called before a route has been chosen, so we have to ensure the buttons are created
 		addRoutingButtons();
-		downRoutingImage.setVisible(false);
+		doneRoutingImage.setVisible(false);
 		doneRouting.setVisible(false);
 		isRouting = false;
 		editingRoute = false;
@@ -293,15 +331,17 @@ public class RouteController {
 		drawPartialRoute();
 	}
 
+	/**This method draws the currently selected Route for the player to view, using a different Color.
+     * @param color The Color of the Route.
+     */
 	public void drawRoute(Color color) {
 		for (Connection connection : connections) {
 			connection.getActor().setConnectionColor(color);
 		}
 	}
 
+	/** draws a route with a train partially on it */
 	private void drawPartialRoute() {
-		// draws a route with a train partially on it
-
 		// calculate where train is
 		Station next = train.getNextStation();
 		Connection partialConnection = context.getGameLogic().getMap().getConnection(next, train.getLastStation());

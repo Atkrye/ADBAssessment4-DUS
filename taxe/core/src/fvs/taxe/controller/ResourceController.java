@@ -16,11 +16,21 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 
+/**Controller for updating UI with resources.*/
 public class ResourceController {
+	
+	/**The context of the Game.*/
     private Context context;
+    
+    /**The group of resource buttons used in the Game GUI.*/
     private Group resourceButtons = new Group();
+    
+    /** The group of resource images used to represent the resources in the Game GUI*/
     private Group resourceImages = new Group();
 
+    /**The instantiation method sets up a listener that updates the player Resources graphics when the player changes.
+     * @param context The context of the game
+     */
     public ResourceController(final Context context) {
         this.context = context;
         //Subscribes to the listener so that the resources are redrawn whenever the player changes.
@@ -32,6 +42,9 @@ public class ResourceController {
         });
     }
 
+    /**This method draws a specific player's resources.
+     * @param player The active player who's resources should be drawn.
+     */
     public void drawPlayerResources(Player player) {
         //This method draws the buttons representing the player's resources, alter this method if you want to change how resources are represented.
         float x = 10.0f;

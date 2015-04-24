@@ -11,10 +11,16 @@ import gameLogic.resource.Train;
 
 import java.util.ArrayList;
 
+/**This is a special type of dialogue used when there are multiple trains at a station.*/
 public class DialogStationMultitrain extends Dialog {
-    //This class is used to create a dialog for when there are multiple trains in one location
-    private Context context;
+	/**The context of the Game.*/
+	private Context context;
 
+	/**The instantiation method sets up the dialogue.
+	 * @param station The station to be used.
+	 * @param skin The skin for the GUI.
+	 * @param context The context of the game.
+	 */
     public DialogStationMultitrain(ArrayList<Train> trains, Skin skin, Context context) {
     	
         //This constructor is called when there are multiple blocked trains sitting on top of each other

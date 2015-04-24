@@ -67,7 +67,7 @@ public class ConnectionController {
 	/** The station that corresponds to the first station of the active train*/
 	private Station firstStation;
 
-	/** Constructor for COnnectionController. Has no effect until beginCreating() called */
+	/** Constructor for ConnectionController. Has no effect until beginCreatingMode() called */
 	public ConnectionController(final Context context) {
 		this.context = context;
 	}
@@ -76,11 +76,11 @@ public class ConnectionController {
 	 * Show only the pioneer train, cancel button
 	 * @param train Pioneer train that is creating the connection
 	 */
-	public void beginCreating(PioneerTrain train) {
+	public void beginCreatingMode(PioneerTrain train) {
 		this.train = train;
 		this.firstStation = train.getLastStation();
 		controller = new PioneerTrainController(train, context);
-		controller.beginCreating();
+		controller.beginCreatingMode();
 		context.getGameLogic().setState(GameState.CREATING_CONNECTION);
 		
 		TrainController trainController = new TrainController(context);
@@ -94,7 +94,7 @@ public class ConnectionController {
 	 * Clear all variables, show all trains and go back to normal mode
 	 * @param connection The connection that has been created (null if none created)
 	 */
-	public void endCreating(Connection connection) {
+	public void endCreatingMode(Connection connection) {
 		// Only add the connection if it is null
 		if (connection != null){
 			connections.add(connection);
@@ -118,9 +118,9 @@ public class ConnectionController {
 	}
 
 	/** Create and correctly render a new station. Notify all stationChanged listeners 
-	 * @param string Name of the new station (given by user)
+	 * @param string Name of the new station
 	 * @param location Location of the new station
-	 * @return The stationt hat is created
+	 * @return The station that is created
 	 */
 	private Station createNewStation(String string, Position location) {
 		Station station = new Station(string, location); 
@@ -129,8 +129,8 @@ public class ConnectionController {
 		return station;
 	}
 
-	/** Destroy the connection that the train is currently on (and the train)
-	 * @param train The kamikaze train that will destroy the connnection
+	/** Destroy the connection that the train is currently on (and destroy the train)
+	 * @param train The kamikaze train that will destroy itself and the connnection
 	 */
 	public void destroyConnection(KamikazeTrain train) {
 		Station l1 = train.getLastStation();
@@ -139,18 +139,18 @@ public class ConnectionController {
 
 		connectionRemoved(connection); // notify all listeners that the connection has been removed
 
-		removeIsolatedJunctions(l1);
-		removeIsolatedJunctions(l2);
+		removeIsolatedCollisionStations(l1);
+		removeIsolatedCollisionStations(l2);
 	}
 
-	/** If the junction is left isolated (no connections) remove it, otherwise do nothing
-	 * @param l1 CollisionStation to test if there is any connections to it
+	/** If the collisionSTation is left isolated (no connections) remove it, otherwise do nothing
+	 * @param cs CollisionStation to test if there is any connections to it
 	 */
-	public void removeIsolatedJunctions(Station l1) {
+	public void removeIsolatedCollisionStations(Station cs) {
 		// test to see if any junctions are left isolated- if they are, remove them
-		if (l1.getClass().equals(CollisionStation.class)) {
-			if (!context.getGameLogic().getMap().hasConnection(l1)) {
-				stationRemoved(l1);
+		if (cs.getClass().equals(CollisionStation.class)) {
+			if (!context.getGameLogic().getMap().hasConnection(cs)) {
+				stationRemoved(cs);
 			}
 		}
 	}
@@ -176,8 +176,7 @@ public class ConnectionController {
 	}
 
 	/** draw a line from the trains first station to the current mouse position
-	 * will draw black if day, white if night
-	 * will only draw in creating_connection mode */
+	 * will draw black if day, white if night */
 	public void drawMouse() {
 		ShapeRenderer shapeRenderer = context.getTaxeGame().shapeRenderer;
 		shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -213,8 +212,8 @@ public class ConnectionController {
 			cancel.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
-					endCreating(null); // cancel creation mode
-					controller.setActive(true); // stops clicks being registered by pioneerTrainController
+					endCreatingMode(null); // cancel creation mode
+					controller.setCompleted(true); // stops clicks being registered by pioneerTrainController
 					
 				}
 			});
@@ -250,7 +249,7 @@ public class ConnectionController {
 					if (context.getGameLogic().getMap().isUniqueName(text)) {
 						// only create station if name is unique
 						Station station = createNewStation(text, location);
-						controller.endCreating(station);
+						controller.startTrainCreating(station);
 						textEntryBar.clear();
 						setVisible(false); // hide the dialog box
 						// change the input processor back to the old one
@@ -305,30 +304,30 @@ public class ConnectionController {
 	}
 
 	/** Reorganise connections so that any connection overlaps are changed into a junction with new connections
-	 * @param collidedPositions List of pairs of connections that will be removed, and where collision took place (ordered by distance from firstSTation
-	 * @param connection The connection that the positions collide with
+	 * @param overlappingPositions List of pairs of connections that will be removed, and where collision took place (ordered by distance from firstSTation
+	 * @param connection The connection that the positions overlaps with
 	 */
-	public void addNewConnections(ArrayList<Tuple<Connection, Position>> collidedPositions, Connection connection) {
-		// Iterates through the list of collidedPositions to progressively build up the new correct junctions and conenctions
+	public void addNewConnections(ArrayList<Tuple<Connection, Position>> overlappingPositions, Connection connection) {
+		// Iterates through the list of overlappingPositions to progressively build up the new correct junctions and connections
 		CollisionStation prevJunction = null; 
 		Station startStation = connection.getStation1();
 		Station endStation = connection.getStation2();
-		for (int i = 0; i < collidedPositions.size(); i++) {
-			Tuple<Connection, Position> pair = collidedPositions.get(i);
+		for (int i = 0; i < overlappingPositions.size(); i++) {
+			Tuple<Connection, Position> pair = overlappingPositions.get(i);
 			
-			// create a new collision station atthe location of the collision
+			// create a new collision station at the location of the overlap
 			Position position = pair.getSecond();
-			CollisionStation junction = context.getGameLogic().getMap().addJunction(ConnectionController.getNextJunctionNum(), position);
+			CollisionStation junction = context.getGameLogic().getMap().addJunction(ConnectionController.getNextJunctionNumber(), position);
 			StationController.renderCollisionStation(junction);
 
-			// Remove the connection that the given connection has collided with
-			Connection collidedConn = pair.getFirst();
-			connectionRemoved(collidedConn);
+			// Remove the connection that the given connection has overlapped with
+			Connection overlappingConnection = pair.getFirst();
+			connectionRemoved(overlappingConnection);
 
-			Station cStation1 = collidedConn.getStation1(); 
-			Station cStation2 = collidedConn.getStation2();
-			if (i == 0 && collidedPositions.size() == 1) {
-				// if there is only one connection, only one junction is required therefore only 4 connections needed
+			Station cStation1 = overlappingConnection.getStation1(); 
+			Station cStation2 = overlappingConnection.getStation2();
+			if (i == 0 && overlappingPositions.size() == 1) {
+				// if there is only one connection overlap, only 4 connections needed
 				// one from each of the 4 stations to the newly created junction
 				connectionAdded(new Connection(cStation1, junction)); 
 				connectionAdded(new Connection(cStation2, junction));
@@ -336,19 +335,20 @@ public class ConnectionController {
 				connectionAdded(new Connection(endStation, junction));
 
 			} else if (i == 0) {
-				// if there is more than one connection and it is the first collided connection, create 3 connections to the new junction
+				// if there is more than one connection overlap and it is the first (ie closest to start station)
+				// overlapping connection, create 3 connections to the new junction
 				
-				// one from each of the collidedConnections stations
+				// one from each of the overlappingConnections stations
 				connectionAdded(new Connection(cStation1, junction));
 				connectionAdded(new Connection(cStation2, junction));
 				connectionAdded(new Connection(startStation, junction)); // one from firstStation to the junction 
 				// leave the 4th connection, as it will connect to another junction not yet created
 				prevJunction = junction;
 
-			} else if (i == collidedPositions.size() -1) {
-				// if there is more than one connection and it is the final connection, then 4 connections needed
+			} else if (i == overlappingPositions.size() -1) {
+				// if there is more than one connection overlap and it is the final connection, then 4 connections needed
 
-				// one each from the collidedCOnnections stations to the junction
+				// one each from the overlappingConnections stations to the junction
 				connectionAdded(new Connection(cStation1, junction));
 				connectionAdded(new Connection(cStation2, junction));
 				connectionAdded(new Connection(prevJunction, junction)); // one from the previous junction to the new junction
@@ -357,8 +357,7 @@ public class ConnectionController {
 			} else {
 				// if there is more than one connection, and it is an intermediate between 2 junctions (ie not first or final connection)
 				// create 3 new connections
-				
-				// one each from the collidedConnections stations to the junction
+				// one each from the overlappingConnections stations to the junction
 				connectionAdded(new Connection(cStation1, junction));
 				connectionAdded(new Connection(cStation2, junction));
 				connectionAdded(new Connection(prevJunction, junction)); // one from the old junction to the new junction 
@@ -371,7 +370,7 @@ public class ConnectionController {
 	/** Get the string that corresponds to the next junction number
 	 * @return String that corresponds to the next junction number
 	 */
-	public static String getNextJunctionNum() {
+	public static String getNextJunctionNumber() {
 		String string = Integer.toString(junctionNumber);
 		junctionNumber+=1;
 		return string;
@@ -409,6 +408,9 @@ public class ConnectionController {
 		}
 	}
 
+	/** Get the currently active pioneerTrainController (or null if none active)
+	 * @return The currently active PioneerTrainController
+	 */
 	public PioneerTrainController getPioneerTrainController() {
 		return controller;
 	}

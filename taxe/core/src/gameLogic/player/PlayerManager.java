@@ -68,7 +68,7 @@ public class PlayerManager {
     		if(tr.getName().equals("Pioneer") && ((PioneerTrain)tr).setupFirstStation != null)
     		{
     			PioneerTrain train = (PioneerTrain)tr;
-    			context.getConnectionController().beginCreating(train);
+    			context.getConnectionController().beginCreatingMode(train);
     			IPositionable position = null;
     			if(train.setupStartPos == null)
     			{
@@ -78,7 +78,7 @@ public class PlayerManager {
     			{
     				position = train.setupStartPos;
     			}
-    			context.getConnectionController().getPioneerTrainController().endCreating(train.setupLastStation, position);
+    			context.getConnectionController().getPioneerTrainController().startTrainCreating(train.setupLastStation, position);
     			train.getActor().setPosition(position);
     			train.getActor().getBounds().setPosition(position.getX(), position.getY());
     		}

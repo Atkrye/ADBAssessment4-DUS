@@ -16,6 +16,7 @@ import fvs.taxe.GameScreen;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.clickListener.GoalClickListener;
 import gameLogic.Game;
+import gameLogic.GameState;
 import gameLogic.player.Player;
 import gameLogic.listeners.PlayerChangedListener;
 import gameLogic.player.PlayerManager;
@@ -23,16 +24,30 @@ import gameLogic.goal.Goal;
 
 import java.text.DecimalFormat;
 
+/**Controller for updating UI with goals.*/
 public class GoalController {
 	
-    //This class is in control of drawing all the goals
-    private static Context context;
-    private Group goalButtons = new Group();
+	/**The context of the Game.*/
+	private static Context context;
+	
+	/**A group of buttons used for controlling the goals,*/
+	private Group goalButtons = new Group();
+	
+	/** The array of colours used for drawing the goal station highlights */
     private Color[] colours = new Color[3];
     
+    /** Whether the exit button has been pressed */
     public boolean exitPressed;
+    
+    /** The group of actors for the exit menu */
     private Group exitMenu = new Group();
+    
+    /** The previous state if exit has been pressed, used to restore the state when exit finished*/
+	private GameState prevState;
 
+	/**The instantation method sets up listeners for Goal changes and Player changes so that it can update the UI accordingly,
+	 * @param context The context of the game.
+	 */
     public GoalController(Context context) {
         GoalController.context = context;
         //Makes the system redraw the currentGoals whenever the player changes.
@@ -45,6 +60,7 @@ public class GoalController {
 				});
     }
 
+    /**This method draws the header text (e.g. the current Player) for the goals.*/
     public void drawHeaderText() {
         //This method draws the header for the goals, this is called at the beginning of every turn
         TaxeGame game = context.getTaxeGame();
@@ -57,68 +73,68 @@ public class GoalController {
         // If player 1 is current player
         if (context.getGameLogic().getPlayerManager().getOtherPlayer().getPlayerNumber() == 2) {
         	
-        	TextBounds currentPlayerNameBounds = game.fontTinyBold.getBounds(currentPlayerName());
+        	TextBounds currentPlayerNameBounds = game.fontTinyBold.getBounds(getCurrentPlayerName());
             
         	// Draw left player score labels
             game.fontTinyBold.setColor(Color.WHITE);
-            game.fontTinyBold.draw(game.batch, currentPlayerName(), 60 - currentPlayerNameBounds.width/2, y);
+            game.fontTinyBold.draw(game.batch, getCurrentPlayerName(), 60 - currentPlayerNameBounds.width/2, y);
             
-            TextBounds currentPlayerScoreBounds = game.fontLight.getBounds(currentPlayerScore());
+            TextBounds currentPlayerScoreBounds = game.fontLight.getBounds(getCurrentPlayerScore());
             
             game.fontLight.setColor(Color.WHITE);
-            game.fontLight.draw(game.batch, currentPlayerScore(), 60 - currentPlayerScoreBounds.width/2, y+50);
+            game.fontLight.draw(game.batch, getCurrentPlayerScore(), 60 - currentPlayerScoreBounds.width/2, y+50);
             //----------------
             
-            TextBounds otherPlayerNameBounds = game.fontTinyBold.getBounds(otherPlayerName());
+            TextBounds otherPlayerNameBounds = game.fontTinyBold.getBounds(getOtherPlayerName());
             
             // Draw right player score labels
             game.fontTinyBold.setColor(Color.WHITE);
-            game.fontTinyBold.draw(game.batch, otherPlayerName(), 228 - otherPlayerNameBounds.width/2, y);
+            game.fontTinyBold.draw(game.batch, getOtherPlayerName(), 228 - otherPlayerNameBounds.width/2, y);
             
-            TextBounds otherPlayerScoreBounds = game.fontLight.getBounds(otherPlayerScore());
+            TextBounds otherPlayerScoreBounds = game.fontLight.getBounds(getOtherPlayerScore());
             
             game.fontLight.setColor(Color.WHITE);
-            game.fontLight.draw(game.batch, otherPlayerScore(), 228 - otherPlayerScoreBounds.width/2, y+50);
+            game.fontLight.draw(game.batch, getOtherPlayerScore(), 228 - otherPlayerScoreBounds.width/2, y+50);
             //----------------
 
         }
         else {
         	
-        	TextBounds otherPlayerNameBounds = game.fontTinyBold.getBounds(otherPlayerName());
+        	TextBounds otherPlayerNameBounds = game.fontTinyBold.getBounds(getOtherPlayerName());
             
         	// Draw left player score labels
             game.fontTinyBold.setColor(Color.WHITE);
-            game.fontTinyBold.draw(game.batch, otherPlayerName(), 60 - otherPlayerNameBounds.width/2, y);
+            game.fontTinyBold.draw(game.batch, getOtherPlayerName(), 60 - otherPlayerNameBounds.width/2, y);
             
-            TextBounds otherPlayerScoreBounds = game.fontLight.getBounds(otherPlayerScore());
+            TextBounds otherPlayerScoreBounds = game.fontLight.getBounds(getOtherPlayerScore());
             
             game.fontLight.setColor(Color.WHITE);
-            game.fontLight.draw(game.batch, otherPlayerScore(), 60 - otherPlayerScoreBounds.width/2, y+50);
+            game.fontLight.draw(game.batch, getOtherPlayerScore(), 60 - otherPlayerScoreBounds.width/2, y+50);
             //----------------
             
-            TextBounds currentPlayerNameBounds = game.fontTinyBold.getBounds(currentPlayerName());
+            TextBounds currentPlayerNameBounds = game.fontTinyBold.getBounds(getCurrentPlayerName());
             
             // Draw right player score labels
             game.fontTinyBold.setColor(Color.WHITE);
-            game.fontTinyBold.draw(game.batch, currentPlayerName(), 228 - currentPlayerNameBounds.width/2, y);
+            game.fontTinyBold.draw(game.batch, getCurrentPlayerName(), 228 - currentPlayerNameBounds.width/2, y);
             
-            TextBounds currentPlayerScoreBounds = game.fontLight.getBounds(currentPlayerScore());
+            TextBounds currentPlayerScoreBounds = game.fontLight.getBounds(getCurrentPlayerScore());
             
             game.fontLight.setColor(Color.WHITE);
-            game.fontLight.draw(game.batch, currentPlayerScore(), 228 - currentPlayerScoreBounds.width/2, y+50);
+            game.fontLight.draw(game.batch, getCurrentPlayerScore(), 228 - currentPlayerScoreBounds.width/2, y+50);
             //----------------
 
         }
         
         // Draw player turn label at top
         TextBounds lightBounds = game.fontSmallLight.getBounds("Your Turn, ");
-        TextBounds boldBounds = game.fontSmallBold.getBounds(currentPlayerName());
+        TextBounds boldBounds = game.fontSmallBold.getBounds(getCurrentPlayerName());
         
         game.fontSmallLight.setColor(Color.WHITE);
         game.fontSmallLight.draw(game.batch, "Your Turn, ", (290/2) - (lightBounds.width + boldBounds.width)/2, (top - (75/2) + (lightBounds.height/2)));
         
         game.fontSmallBold.setColor(Color.WHITE);
-        game.fontSmallBold.draw(game.batch, currentPlayerName(), (290/2) - (lightBounds.width + boldBounds.width)/2 + lightBounds.width, (top - (75/2) + (lightBounds.height/2)));
+        game.fontSmallBold.draw(game.batch, getCurrentPlayerName(), (290/2) - (lightBounds.width + boldBounds.width)/2 + lightBounds.width, (top - (75/2) + (lightBounds.height/2)));
         //---------------
         
         game.batch.end();
@@ -131,6 +147,7 @@ public class GoalController {
         showCurrentPlayerGoals();
     }
 
+    /**This method draws the current player's goals in the game UI.*/
     public void showCurrentPlayerGoals() {
         //This method displays the player's current goals
         //First the current goals are cleared so that the other player's goals are not displayed too.
@@ -176,6 +193,7 @@ public class GoalController {
         context.getStage().addActor(goalButtons);
     }
     
+    /** Draw the controls related to recording, saving and exiting */
     public void showControls() {
     	// Draw record, save and exit controls
     	
@@ -245,9 +263,11 @@ public class GoalController {
     	
     }
     
+    /** What occurs when the exit button has pressed, setup the exit menu and register clicks */
     private void exitPressed() {
     	System.out.println("exit");
-    	
+    	prevState = context.getGameLogic().getState();
+    	context.getGameLogic().setState(GameState.WAITING);
     	exitPressed = true;
     	
     	exitMenu.remove();
@@ -299,34 +319,33 @@ public class GoalController {
     	context.getStage().addActor(exitMenu);
     }
     
+    /** If resume is pressed when the game has the exit menu pressed, restore the game to its previous state*/
     public void resumePressed() {
     	System.out.println("resume");
-    	
+    	context.getGameLogic().setState(prevState);
     	exitMenu.remove();
         exitMenu.clear();
         
         exitPressed = false;
     }
 
-    private String currentPlayerName() {
-        //This method is used to draw the current player's name
+    private String getCurrentPlayerName() {
         return context.getGameLogic().getPlayerManager().getCurrentPlayer().getName();
     }
-    
-    private String currentPlayerScore() {
-        //This method is used to draw the current player's name and their score
-        //It was necessary to apply a decimal format to the score as it is stored a double which by default is "0.0", however that is not intuitive for scoring as it should only be integer values.
+   
+     /**This method is used to draw the current player's name and their score */
+    private String getCurrentPlayerScore() {
+       //It was necessary to apply a decimal format to the score as it is stored a double which by default is "0.0", however that is not intuitive for scoring as it should only be integer values.
         DecimalFormat integer = new DecimalFormat("0");
         return integer.format(
                 context.getGameLogic().getPlayerManager().getCurrentPlayer().getScore());
     }
     
-    private String otherPlayerName() {
-        //This method is used to draw the current player's name
+    private String getOtherPlayerName() {
         return context.getGameLogic().getPlayerManager().getOtherPlayer().getName();
     }
     
-    private String otherPlayerScore() {
+    private String getOtherPlayerScore() {
         //This method is used to draw the current player's name and their score
         //It was necessary to apply a decimal format to the score as it is stored a double which by default is "0.0", however that is not intuitive for scoring as it should only be integer values.
         DecimalFormat integer = new DecimalFormat("0");

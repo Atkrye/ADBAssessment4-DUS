@@ -20,19 +20,33 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+/**Controller for the Top Bar of the GUI, changes the Top Bar.*/
 public class TopBarController {
-    //This class controls what is displayed in the topBar, the primary method of informing the players of events that occur in game
-    //It's very possible to move away from a topBar orientated design and more to dialogs as we have done, but we decided not to entirely due to the work required.
-    public final static int CONTROLS_HEIGHT = 75;
+	
+	/**The height of the Top Bar.*/
+	public final static int CONTROLS_HEIGHT = 75;
 
-    private Context context;
-    private ImageButton endTurnButton;
-    private Image endTurnImage;
-    private Label flashMessage;
+	/**The Game Context.*/
+	private Context context;
+	
+	/**The end Turn Button used for the player to End the Turn.*/
+	private ImageButton endTurnButton;
+	
+	/** Image that represents the ending turn button*/
+	private Image endTurnImage;
+	
+	/**Label for displaying a message to the player.*/
+	private Label flashMessage;
+    
+	/**Label for display obstacle events to the player.*/
 	private Label obstacleLabel;
 
+	/**Actor for the background to the Top Bar*/
 	private TopBarActor topBarBackground;
 
+	/**Instantiation method sets up a listener for Events starting to display the Event message in the Top Bar.
+	 * @param context The game Context.
+	 */
     public TopBarController(Context context) {
         this.context = context;
         //This creates a listener that changes the bar colour based on the state that the game is in
@@ -74,11 +88,13 @@ public class TopBarController {
         drawFlashLabel();
     }
 
+    /**This method calls the label drawing methods*/
     public void drawLabels() {
 		drawFlashLabel();
 		drawObstacleLabel();
 	}
     
+    /**This method draws a label for a message*/
 	public void drawFlashLabel() {
 		flashMessage = new Label("", context.getSkin());
 		flashMessage.setPosition(690, TaxeGame.HEIGHT - 44);
@@ -86,6 +102,7 @@ public class TopBarController {
 		context.getStage().addActor(flashMessage);
 	}
 
+	/**This method draws a label for obstacle messages*/
 	public void drawObstacleLabel() {
 		obstacleLabel = new Label("", context.getSkin());
 		obstacleLabel.setColor(Color.BLACK);
@@ -93,6 +110,10 @@ public class TopBarController {
 		context.getStage().addActor(obstacleLabel);
 	}
     
+	/**This method displays a message in the Top Bar with a specified background Color.
+	 * @param message The message to be displayed.
+	 * @param color The background color to be displayed behind the message.
+	 */
     public void displayObstacleMessage(String message, Color color) {
 		// display a message to the obstacle topBar label, with topBarBackground color color and given message
 		obstacleLabel.clearActions();
@@ -101,44 +122,49 @@ public class TopBarController {
 		obstacleLabel.addAction(sequence(delay(2f),fadeOut(0.25f)));
 	}
     
+    /**This method displays a message of a certain color in the Top Bar.
+	 * @param message The message to be displayed.
+	 * @param color The color of the message to be displayed.
+	 */
     public void displayFlashMessage(String message, Color color) {
 		displayFlashMessage(message, color, 2f);
 	}
 
+    /**This method displays a message of a certain color in the Top Bar for a certain amount of time.
+	 * @param message The message to be displayed.
+	 * @param color The color of the message to be displayed.
+	 * @param time The length of time to display the message, in seconds.
+	 */
 	public void displayFlashMessage(String message, Color color, float time) {
 		flashMessage.setText(message);
 		flashMessage.setColor(color);
 		flashMessage.addAction(sequence(delay(time), fadeOut(0.25f)));
 	}
-
-	public void displayFlashMessage(String message, Color backgroundColor, Color textColor, float time) {
-		// currently doesnt change background colour
-		flashMessage.clearActions();
-		flashMessage.setText(message);
-		flashMessage.setColor(textColor);
-		flashMessage.addAction(sequence(delay(time), fadeOut(0.25f)));
-	}
 	
+	/** This method sets a permanent message until it is overwritten
+	 * @param message Message to set the top bar to
+	 * @param color Color of the text 
+	 */
     public void displayMessage(String message, Color color){
-        //This method sets a permanent message until it is overwritten
         flashMessage.setText(message);
         flashMessage.setColor(color);
     }
 
+    /** Method clears the current message on the top bar background */
     public void clearMessage(){
-        //This method clears the current message
         flashMessage.setText("");
         flashMessage.setColor(Color.LIGHT_GRAY);
     }
 
+    /**This method adds the background to the game.*/
     public void drawBackground() {
 		topBarBackground = new TopBarActor();
 		context.getStage().addActor(topBarBackground);
 	}
 
+    /**This method adds an End Turn button to the game that captures an on click event and notifies the game when the turn is over.*/
+	
     public void addEndTurnButton() {
-        //This method adds an endTurn button to the topBar which allows the user to end their turn
-    	
     	Texture buttonText = new Texture(Gdx.files.internal("btn_endturn.png"));
     	endTurnImage = new Image(buttonText);
     	endTurnImage.setWidth(106);
