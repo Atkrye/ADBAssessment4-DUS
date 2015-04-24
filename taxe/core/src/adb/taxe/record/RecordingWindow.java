@@ -12,11 +12,12 @@ public class RecordingWindow {
 			String path = RecordingWindow.class.getProtectionDomain().getCodeSource().getLocation().getPath();
 			String decodedPath = URLDecoder.decode(path, "UTF-8");
 			System.out.println(decodedPath);
-			Process proc = Runtime.getRuntime().exec("java -jar " + decodedPath.split("/")[decodedPath.split("/").length - 1] + " " + fileLoc);
+			String[] cmd = {"java", "-jar" , decodedPath.split("/")[decodedPath.split("/").length - 1],  fileLoc};
+			Process proc = Runtime.getRuntime().exec(cmd);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
 }
+ 
