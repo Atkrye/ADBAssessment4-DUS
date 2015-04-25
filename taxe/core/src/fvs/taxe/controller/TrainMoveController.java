@@ -180,7 +180,7 @@ public class TrainMoveController {
 		if (station.hasObstacle()){
 			train.getActor().remove();
 			train.getPlayer().removeResource(train);
-			context.getTopBarController().displayFlashMessage("Your train was hit by a natural disaster...", Color.RED, 4);
+			context.getTopBarController().displayFlashMessage(train.getPlayer().getName() + "'s train was hit by a "  + station.getObstacle().getType().toString().toLowerCase() + " in " + station.getName(), Color.RED, 4);
 			return true;
 		}
 		return false;

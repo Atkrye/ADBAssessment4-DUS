@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -54,6 +55,12 @@ public class RecordingScreen extends GameScreen{
 	public static final int tickClock = 60;
 	/**The playback device that will be injecting events into the game*/
 	public Playback eventPlayer;
+	/**The initial speed the replaySpeed is set to when play is pressed*/
+	public final static float baseRate = 1.0f;
+	/**The rate at which replaySpeed increases when fast forward is pressed*/
+	public final static float multiplier = 2.0f;
+	/**The maximum speed of playback*/
+	public final static float replaySpeedCap = 16.0f;
 	/**Constructor constructs as normal, but specifically changes inputs so that all inputs come from the record Recorder instance
 	 * @param game The instance of TaxeGame this screen is running from
 	 * @param loadedGame The game that has been loaded
@@ -63,19 +70,8 @@ public class RecordingScreen extends GameScreen{
 		Game loadedGame = ((EmbeddedSaveData)events.get(0)).getGame();
 		events.remove(0);
 		instance = this;
-		//Set up stage with an adapted 
-		stage = new Stage()
-		{
-			@Override
-			public boolean keyDown(int keycode)
-			{
-				if(record.isRecording())
-				{
-					record.recordKeyPressed(keycode);
-				}
-				return super.keyDown(keycode);
-			}
-		};
+		//Set up stage
+		stage = new Stage();
 
 		//Sets the skin
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -182,33 +178,63 @@ public class RecordingScreen extends GameScreen{
 		});
 	}
 	
+	/**This method contains all of the base logic that must be called every frame*/
 	private void update() {
-    	
+		if(!this.gameLogic.getState().equals(GameState.ANIMATING))
+		{
+			ticks = ticks + replaySpeed;
+			if(ticks > tickClock)
+			{
+				ticks = 0;
+				eventPlayer.nextEvent();
+			}
+		}
     	
         if (Gdx.input.justTouched()) {
         	//detects which area of the screen is touched
         	//If rectangles are touch then relevant action is taken
             camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
             if (playBounds.contains(touchPoint.x, touchPoint.y)) {
-            	System.out.println("Play Pressed");
+            	//Play has been pressed, so replay speed is set to the base speed
+            	setReplaySpeed(baseRate);
             }
             if (pauseBounds.contains(touchPoint.x, touchPoint.y)) {
-            	System.out.println("Pause Pressed");
+            	//Pause has been pressed, so the replay speed is set to 0 to pause the playback
+            	setReplaySpeed(0);
             }
             if (forwardBounds.contains(touchPoint.x, touchPoint.y)) {
-            	System.out.println("Forward Pressed");
+            	setReplaySpeed(replaySpeed * multiplier);
             }
 
        }
 	}
 	
+	/**Sets the speed of replay and updates the UI (where 1.0f is 1 event per second*/
+	private void setReplaySpeed(float newSpeed) {
+		if(newSpeed > replaySpeedCap)
+		{
+			replaySpeed = replaySpeedCap;
+		}
+		else
+		{
+			replaySpeed = newSpeed;
+		}
+	}
+
+	/**Draws any graphs exclusive to the replayScreen, e.g. the replay buttons*/
 	private void draw() {
     	//This method draws the mainScreen Texture 
     	camera.update();
         game.batch.setProjectionMatrix(camera.combined);
         game.batch.begin();
-        game.batch.draw(playbackTexture, 305, 490);
+        game.batch.draw(playbackTexture, 305, 490);       
+
+        game.fontLight.setScale(0.6f);
+        TextBounds replaySpeedBounds = game.fontLight.getBounds("x" + replaySpeed);
+        game.fontLight.setColor(Color.WHITE);
+        game.fontLight.draw(game.batch, "x" + replaySpeed, 450 - replaySpeedBounds.width/2, 550 - replaySpeedBounds.height / 2);
         game.batch.end();
+        game.fontLight.setScale(1.0f);
         
     }
 	
@@ -220,15 +246,6 @@ public class RecordingScreen extends GameScreen{
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
 		super.render(delta);
-		if(!this.gameLogic.getState().equals(GameState.ANIMATING))
-		{
-			ticks = ticks + replaySpeed;
-			if(ticks > tickClock)
-			{
-				ticks = 0;
-				eventPlayer.nextEvent();
-			}
-		}
 		
 		update();
 		draw();

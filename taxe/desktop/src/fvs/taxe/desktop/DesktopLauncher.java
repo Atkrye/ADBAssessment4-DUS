@@ -12,7 +12,6 @@ public class DesktopLauncher {
 		//Set window size
 		config.height = TaxeGame.HEIGHT;
 		config.width = TaxeGame.WIDTH;
-		config.title = "TaxE";
 		config.resizable = false;
 		config.addIcon("icon/dus256.png", FileType.Internal);
 		config.addIcon("icon/dus128.png", FileType.Internal);
@@ -22,11 +21,13 @@ public class DesktopLauncher {
 		//config.fullscreen = true;
 		if(arg.length > 0)
 		{
+			config.title = "TaxE Replay";
 			new LwjglApplication(new TaxeGame(arg[0]), config);
 			
 		}
 		else
 		{
+			config.title = "TaxE";
 			new LwjglApplication(new TaxeGame(), config);
 		}
 	}

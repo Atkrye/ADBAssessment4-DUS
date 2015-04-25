@@ -9,6 +9,8 @@ import gameLogic.map.Station;
 import gameLogic.player.Player;
 import gameLogic.resource.Train;
 import gameLogic.trong.TrongScreen;
+import adb.taxe.record.CollisionEvent;
+import adb.taxe.record.RecordingScreen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -79,25 +81,48 @@ public class TrainActor extends Image {
 			if (collidedTrain != null) {
 				if(Game.trongEnabled)
 				{
-					//Make a new trong game and add it to the stack. Determine which player is player 1 and ensure that that train is passed as the first train
-					TrongScreen trongGame;
-					if(this.train.getPlayer().getPlayerNumber() < collidedTrain.getPlayer().getPlayerNumber())
+					//Firstly determine whether we're in a recording or an actual game
+					if(GameScreen.instance.getClass().equals(RecordingScreen.class))
 					{
-						trongGame = GameScreen.makeTrongGame(this.train, collidedTrain);
+						//It is a recording so we load the collision and destroy the losing train.
+						CollisionEvent ce = ((RecordingScreen)GameScreen.instance).eventPlayer.getCollisionEvent(this.train, collidedTrain);
+						//If ce is null no collision event was found so the game continues ignoring the collision
+						if(ce != null)
+						{
+							if(this.train.getID() == ce.getDestroyedID())
+							{
+								train.getPlayer().removeResource(train);
+								this.remove();
+							}
+							else if(collidedTrain.getID() == ce.getDestroyedID())
+							{
+								collidedTrain.getActor().remove();
+								collidedTrain.getPlayer().removeResource(collidedTrain);
+							}
+						}
 					}
 					else
 					{
-						trongGame = GameScreen.makeTrongGame(collidedTrain, this.train);
+						//Make a new trong game and add it to the stack. Determine which player is player 1 and ensure that that train is passed as the first train
+						TrongScreen trongGame;
+						if(this.train.getPlayer().getPlayerNumber() < collidedTrain.getPlayer().getPlayerNumber())
+						{
+							trongGame = GameScreen.makeTrongGame(this.train, collidedTrain);
+						}
+						else
+						{
+							trongGame = GameScreen.makeTrongGame(collidedTrain, this.train);
+						}
+						if(GameScreen.instance.trongScreen != null)
+						{
+							GameScreen.instance.trongScreen.setNextScreen(trongGame);
+						}
+						else
+						{
+							GameScreen.instance.setScreen(trongGame);
+						}
+						trongGame.setNextScreen(GameScreen.instance);
 					}
-					if(GameScreen.instance.trongScreen != null)
-					{
-						GameScreen.instance.trongScreen.setNextScreen(trongGame);
-					}
-					else
-					{
-						GameScreen.instance.setScreen(trongGame);
-					}
-					trongGame.setNextScreen(GameScreen.instance);
 				}
 				else
 				{

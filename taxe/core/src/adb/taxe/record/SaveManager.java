@@ -320,6 +320,10 @@ public class SaveManager {
 					  {
 						  events.add(new ResourceEvent(eventData.getString("Name")));
 					  }
+					  else if (dataType.equals("Collision"))
+					  {
+						  events.add(new CollisionEvent(eventData.getInt("Train1ID"), eventData.getInt("Train2ID"), eventData.getInt("DestroyedID")));					  
+					  }
 				  }
 				  return new EventArrayContainer(events);
 				  

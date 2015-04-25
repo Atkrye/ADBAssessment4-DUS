@@ -1,9 +1,11 @@
 package adb.taxe.record;
 
+import gameLogic.resource.Train;
+
 import java.util.ArrayList;
 
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.InputProcessor;
 
 public class Playback {
 	  /**The array of Events that makes up the recording*/
@@ -148,6 +150,22 @@ public class Playback {
 			}
 		}
 		return ret;
+	}
+	
+	public CollisionEvent getCollisionEvent(Train train1, Train train2)
+	{
+		for(Event e : events)
+		{
+			if(e.getClass().equals(CollisionEvent.class))
+			{
+				CollisionEvent ce = (CollisionEvent)e;
+				if(ce.isCollision(train1, train2))
+				{
+					return ce;
+				}
+			}
+		}
+		return null;
 	}
 
 	public boolean isReverse() {

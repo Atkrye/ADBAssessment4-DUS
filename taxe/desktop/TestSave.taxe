@@ -3,8 +3,8 @@ DataType: GameData,
 Mode: POINTS,
 "Max Turns": -1,
 "Max Points": 3000,
-Nighttime: false,
-Turn: 0,
+Nighttime: true,
+Turn: 5,
 stations: [
 	{
 		name: Madrid,
@@ -394,12 +394,12 @@ obstacles: [
 	},
 	{
 		"Obstacle Type": FLOOD,
-		"Time left": 0,
+		"Time left": 1,
 		Probability: 0.7,
 		x: 590,
 		y: 373,
 		Station: London,
-		Active: false
+		Active: true
 	},
 	{
 		"Obstacle Type": FLOOD,
@@ -452,17 +452,18 @@ Player1: {
 	Name: "Enter Name",
 	Score: 0,
 	Skip: false,
-	Active: true,
+	Active: false,
 	Resources: [
 		{
 			DataType: Train,
-			Name: "Electric Train",
-			Speed: 60,
-			Image: ElectricTrain.png,
+			ID: 0,
+			Name: "Nuclear Train",
+			Speed: 70,
+			Image: NuclearTrain.png,
 			HasRoute: false,
 			Destination: Empty,
-			x: 835,
-			y: 385,
+			x: Empty,
+			y: Empty,
 			Route: [
 				{
 					DataType: Empty
@@ -470,58 +471,150 @@ Player1: {
 			],
 			History: [
 				{
-					DataType: Station,
-					Name: Berlin,
-					Turn: 0
+					DataType: Empty
 				}
 			]
 		},
 		{
 			DataType: Train,
-			Name: "MagLev Train",
-			Speed: 80,
-			Image: MagLevTrain.png,
-			HasRoute: true,
-			Destination: Amsterdam,
-			x: 580,
-			y: 452,
+			ID: 1,
+			Name: "Nuclear Train",
+			Speed: 70,
+			Image: NuclearTrain.png,
+			HasRoute: false,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
 			Route: [
 				{
-					DataType: Station,
-					Name: York
-				},
-				{
-					DataType: Station,
-					Name: London
-				},
-				{
-					DataType: Station,
-					Name: Lille
-				},
-				{
-					DataType: Station,
-					Name: Amsterdam
+					DataType: Empty
 				}
 			],
 			History: [
 				{
-					DataType: Station,
-					Name: York,
-					Turn: 0
+					DataType: Empty
+				}
+			]
+		},
+		{
+			DataType: Train,
+			ID: 4,
+			Name: Pioneer,
+			Speed: 50,
+			Image: PioneerTrain.png,
+			HasRoute: false,
+			Special: Pioneer,
+			Creating: false,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Empty
+				}
+			]
+		},
+		{
+			DataType: Train,
+			ID: 5,
+			Name: "Bullet Train",
+			Speed: 90,
+			Image: BulletTrain.png,
+			HasRoute: false,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Empty
+				}
+			]
+		},
+		{
+			DataType: Train,
+			ID: 9,
+			Name: "Diesel Train",
+			Speed: 40,
+			Image: DieselTrain.png,
+			HasRoute: false,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Empty
+				}
+			]
+		},
+		{
+			DataType: Train,
+			ID: 10,
+			Name: Pioneer,
+			Speed: 50,
+			Image: PioneerTrain.png,
+			HasRoute: false,
+			Special: Pioneer,
+			Creating: false,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Empty
 				}
 			]
 		}
 	],
 	Goals: [
 		{
-			Origin: Paris,
-			Destination: Thessaloniki,
-			Intermediate: Paris,
+			Origin: Milan,
+			Destination: Warsaw,
+			Intermediate: Minsk,
 			Train: None,
 			Turn: 0,
-			TurnCount: 8,
-			ScoreValue: 793,
-			BonusValue: 1288
+			TurnCount: 0,
+			ScoreValue: 425,
+			BonusValue: 972
+		},
+		{
+			Origin: Copenhagen,
+			Destination: Stockholm,
+			Intermediate: Copenhagen,
+			Train: "Diesel Train",
+			Turn: 2,
+			TurnCount: 0,
+			ScoreValue: 176,
+			BonusValue: 279
+		},
+		{
+			Origin: Warsaw,
+			Destination: York,
+			Intermediate: Warsaw,
+			Train: "Nuclear Train",
+			Turn: 4,
+			TurnCount: 0,
+			ScoreValue: 541,
+			BonusValue: 695
 		}
 	]
 },
@@ -530,8 +623,146 @@ Player2: {
 	Name: "Enter Name",
 	Score: 0,
 	Skip: false,
-	Active: false,
-	Resources: [],
-	Goals: []
+	Active: true,
+	Resources: [
+		{
+			DataType: Train,
+			ID: 2,
+			Name: Pioneer,
+			Speed: 50,
+			Image: PioneerTrain.png,
+			HasRoute: false,
+			Special: Pioneer,
+			Creating: false,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Empty
+				}
+			]
+		},
+		{
+			DataType: Skip
+		},
+		{
+			DataType: Train,
+			ID: 7,
+			Name: "Electric Train",
+			Speed: 60,
+			Image: ElectricTrain.png,
+			HasRoute: true,
+			Destination: Prague,
+			x: 992,
+			y: 323,
+			Route: [
+				{
+					DataType: Station,
+					Name: Krakow
+				},
+				{
+					DataType: Station,
+					Name: Warsaw
+				},
+				{
+					DataType: Station,
+					Name: Poznan
+				},
+				{
+					DataType: Station,
+					Name: Prague
+				}
+			],
+			History: [
+				{
+					DataType: Station,
+					Name: Krakow,
+					Turn: 5
+				}
+			]
+		},
+		{
+			DataType: Train,
+			ID: 12,
+			Name: Pioneer,
+			Speed: 50,
+			Image: PioneerTrain.png,
+			HasRoute: false,
+			Special: Pioneer,
+			Creating: false,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Empty
+				}
+			]
+		},
+		{
+			DataType: Train,
+			ID: 13,
+			Name: "Diesel Train",
+			Speed: 40,
+			Image: DieselTrain.png,
+			HasRoute: false,
+			Destination: Empty,
+			x: Empty,
+			y: Empty,
+			Route: [
+				{
+					DataType: Empty
+				}
+			],
+			History: [
+				{
+					DataType: Empty
+				}
+			]
+		}
+	],
+	Goals: [
+		{
+			Origin: Sofia,
+			Destination: Madrid,
+			Intermediate: Sofia,
+			Train: None,
+			Turn: 1,
+			TurnCount: 10,
+			ScoreValue: 1007,
+			BonusValue: 1762
+		},
+		{
+			Origin: Vienna,
+			Destination: Budapest,
+			Intermediate: Rome,
+			Train: None,
+			Turn: 3,
+			TurnCount: 0,
+			ScoreValue: 75,
+			BonusValue: 710
+		},
+		{
+			Origin: Krakow,
+			Destination: Prague,
+			Intermediate: Krakow,
+			Train: "Petrol Train",
+			Turn: 5,
+			TurnCount: 0,
+			ScoreValue: 232,
+			BonusValue: 345
+		}
+	]
 }
 }
