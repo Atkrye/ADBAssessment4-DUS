@@ -3,10 +3,13 @@ package gameLogic.trong;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import fvs.taxe.GameScreen;
 import fvs.taxe.TaxeGame;
 import gameLogic.resource.Train;
 
@@ -67,6 +70,23 @@ public class TrongScreen extends ScreenAdapter{
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.draw();
+        
+        //Draw our UI
+        game.batch.begin();
+        game.fontLight.setColor(Color.WHITE);
+        
+        //Draw the screen title
+        game.fontLight.setScale(0.8f);
+        TextBounds infoBounds = game.fontLight.getBounds("Play to survive the collision!");
+        game.fontLight.draw(game.batch, "Play to survive the collision!", TaxeGame.WIDTH / 2 - infoBounds.width/2, TaxeGame.HEIGHT - infoBounds.height / 2);
+        
+        //Draw the player instructions
+        game.fontLight.setScale(0.6f);
+        String info2Text = paddle1.getTrain().getPlayer().getName() + " use W and S. " + paddle2.getTrain().getPlayer().getName() + " use UP and DOWN.";
+        TextBounds info2Bounds = game.fontLight.getBounds(info2Text);
+        game.fontLight.draw(game.batch, info2Text, TaxeGame.WIDTH / 2 - info2Bounds.width/2, TaxeGame.HEIGHT * 9/10 - info2Bounds.height / 2);
+        game.fontLight.setScale(1.0f);
+        game.batch.end();
     }
     
     public void update()
@@ -90,6 +110,7 @@ public class TrongScreen extends ScreenAdapter{
      		paddle1.getTrain().getPlayer().removeResource(paddle1.getTrain());
      		paddle1.getTrain().getActor().remove();
      		finish();
+     		recordCollision(paddle1.getTrain());
      	}
 
      	if(ball.getX() > TaxeGame.WIDTH)
@@ -98,5 +119,13 @@ public class TrongScreen extends ScreenAdapter{
      		paddle2.getTrain().getActor().remove();
      		finish();
      	}
+    }
+    
+    public void recordCollision(Train loser)
+    {
+    	if(GameScreen.instance.isRecording())
+    	{
+    		GameScreen.instance.record.recordCollision(paddle1.getTrain().getID(), paddle2.getTrain().getID(), loser.getID());
+    	}
     }
 }

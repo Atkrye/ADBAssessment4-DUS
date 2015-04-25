@@ -88,4 +88,14 @@ public class Recorder {
 	  {
 		  events.add(new ResourceEvent(resource));
 	  }
+
+	 
+	  /**Tells the recorder to record a new collision that has occured between trains
+	   * @param train1ID The id of the first train involved in the collision
+	   * @param train2ID The id of the second train involved in the collision
+	   * @param destroyedID The id of the train that was destroyed in the collision
+	   */
+	  public void recordCollision(int train1ID, int train2ID, int destroyedID) {
+		  events.add(new CollisionEvent(train1ID, train2ID, destroyedID));
+	  }
 }
