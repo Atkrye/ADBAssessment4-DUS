@@ -137,17 +137,26 @@ public class TrainMoveController {
 		}
 		actions.addAction(beforeAction());
 
-		for (final Station station : train.getRoute()) {
+		// movement no longer relies on the trains position for setting the angles, this allows loading a train to be partly along a route to work 
+		for (int i = 0; i < train.getRoute().size(); i++){
+			Station station = train.getRoute().get(i);
 			IPositionable next = station.getPosition();
+	
+			IPositionable prev; // the previous station of the route
+			if (i > 0){
+				prev = train.getRoute().get(i-1).getPosition();
+			} else {
+				prev = train.getLastStation().getPosition();
+			}
+			
+			// rotate the train to face forwards
+			float angle = MathUtils.radiansToDegrees*Position.getAngle(prev, next);
+			actions.addAction(Actions.rotateTo(angle));
+
 			//This calculates how long it will take for the train to travel to the next station on the route
 			float duration = Position.getDistance(current, next) / train.getSpeed();
 
-			// rotate the train to face forwards
-			float angle = MathUtils.radiansToDegrees*Position.getAngle(current, next);
-			actions.addAction(Actions.rotateTo(angle));
-
 			//This adds the action to the actor which makes it move from point A to point B in a certain amount of time, calculated using duration and the two station positions.
-
 			actions.addAction(moveTo(next.getX() - TrainActor.width / 2, next.getY() - TrainActor.height / 2, duration));
 			actions.addAction(perStationAction(station));
 
