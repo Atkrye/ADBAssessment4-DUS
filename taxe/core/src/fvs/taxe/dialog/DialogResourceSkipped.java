@@ -12,10 +12,17 @@ import gameLogic.GameState;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Dialog to show when a skip resource has been selected */
 public class DialogResourceSkipped extends Dialog {
+	/**List of Click Listeners. When a button is clicked, each Click Listener is notified.*/
     private List<ResourceDialogClickListener> clickListeners = new ArrayList<ResourceDialogClickListener>();
-	private Context context;
+	
+    /**The Game context.*/
+    private Context context;
 
+    /** Instantiation
+     * @param context Context for the dialog to be in
+     */
     public DialogResourceSkipped(Context context) {
         super("Skip", context.getSkin());
         this.context = context;
@@ -66,5 +73,4 @@ public class DialogResourceSkipped extends Dialog {
             clicked(Button.SKIP_RESOURCE);
         }
     }
-
 }

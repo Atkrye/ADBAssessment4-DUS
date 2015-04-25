@@ -11,22 +11,29 @@ import gameLogic.GameState;
 import gameLogic.player.Player;
 import gameLogic.resource.Skip;
 
-//Responsible for checking whether the Skip is clicked.
+/** Special clickListener for the skip resource  */
 public class SkipClicked extends ClickListener {
-
+	/** The related context for the clickListener*/
     Context context;
+    
+    /** The related skip resource */
     Skip skip;
+    
+    /** Whether toolbar is currently displaying a message*/
     private boolean displayingMessage;
 
+    /** Instantation 
+     * @param context Context for the clickListener
+     * @param skip The skip resource for the clickListener
+     */
     public SkipClicked(Context context, Skip skip) {
         this.context = context;
         this.skip = skip;
         displayingMessage = false;
     }
 
-
+/** Called when skip is clicked it displays the skip dialog */     
     public void clicked(InputEvent event, float x, float y) {
-        //When skip is clicked it checks whether the game is in the normal state
         if (Game.getInstance().getState() == GameState.NORMAL) {
 
             // current player can't be passed in as it changes so find out current player at this instant
@@ -40,6 +47,7 @@ public class SkipClicked extends ClickListener {
         }
     }
 
+    /** Event used for entering mouseover events for skips */
     @Override
     public void enter(InputEvent event, float x, float y, int pointer, Actor trainActor) {
         //This is used for mouseover events for Skips
@@ -48,15 +56,13 @@ public class SkipClicked extends ClickListener {
             displayingMessage = true;
             if (Game.getInstance().getState() == GameState.NORMAL) {
                 context.getTopBarController().displayMessage("Force your opponent to skip a turn.", Color.BLACK);
-
-
             }
         }
     }
 
+    /** Event used for exiting mouseover events for skips */
     @Override
     public void exit(InputEvent event, float x, float y, int pointer, Actor trainActor) {
-        //This is used for mouseover events for Skips
         //This hides the message currently in the topBar if one is being displayed
         if (displayingMessage) {
             displayingMessage = false;

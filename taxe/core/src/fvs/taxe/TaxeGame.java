@@ -12,35 +12,54 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
-
+/**This is the main class of the game, created by the Desktop initiation class. It sets up the rest of the game.*/
 public class TaxeGame extends Game {
-	
-
-
 
     // Using native res of the map image we are using at the moment
     //Did not change this to allow resizing as this was deemed to be too much work
-    public static final int WIDTH = 1280, HEIGHT = 700;
+	/**These variables hold the width and height of the window we will be using in the game.*/
+	public static final int WIDTH = 1280, HEIGHT = 700;
 
-    public SpriteBatch batch;
+	/**The batch is used to draw the game. Each frame it is cleared and new items are drawn into it.*/
+	public SpriteBatch batch;
     
+	/** Normal sized regular font*/
     public BitmapFont fontRegular;
+    
+    /** Smaller sized regular font*/
 	public BitmapFont fontSmallRegular;
+	
+	/** Tiny sized regular font*/
 	public BitmapFont fontTinyRegular;
 	
+	/** Normal sized light font*/
 	public BitmapFont fontLight;
+	
+	/** Medium sized light font*/
 	public BitmapFont fontMediumLight;
+	
+	/** Small sized light font*/
 	public BitmapFont fontSmallLight;
+	
+	/** Tiny sized light font*/
 	public BitmapFont fontTinyLight;
 	
+	/** Normal sized bold font*/
 	public BitmapFont fontBold;
+	
+	/** Small sized bold font*/
 	public BitmapFont fontSmallBold;
+	
+	/** Tiny sized bold font*/
 	public BitmapFont fontTinyBold;
 	
+	/** COntext for the TaxeGame instance */
 	public static TaxeGame context;
 	
+	/**ShapeRenderer instance used to render shapes without immediately using textures.*/
     public ShapeRenderer shapeRenderer;
     
+    /** The file path for the recordings to be located */
     String recordingFilePath = "";
 
     public TaxeGame(String string) {
@@ -50,6 +69,7 @@ public class TaxeGame extends Game {
 	public TaxeGame() {
 	}
 
+	/**ShapeRenderer instance used to render shapes without immediately using textures.*/
 	@Override
     public void create() {
         batch = new SpriteBatch();
@@ -134,13 +154,17 @@ public class TaxeGame extends Game {
         context = this;
     }
 
+	/**This method renders the game, using super.render().*/
     public void render() {
         super.render(); //important!
     }
 
+    /**Drop our game resources.*/
     public void dispose() {
         batch.dispose();
         fontRegular.dispose();
+        fontBold.dispose();
+        fontLight.dispose();
         shapeRenderer.dispose();
     }
 

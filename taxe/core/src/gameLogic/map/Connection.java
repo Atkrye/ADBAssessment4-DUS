@@ -4,15 +4,24 @@ import com.badlogic.gdx.math.Vector2;
 
 import fvs.taxe.actor.ConnectionActor;
 
+/**A connection describes the link between 2 stations.*/
 public class Connection {
+	/**The first station of the connection.*/
 	private Station station1;
+	
+	/**The second station of the connection.*/
 	private Station station2;
-	//Added this variable to the Connection class which indicates how long the connection shall be blocked for
-	//We could have used a boolean to indicate whether it was blocked but this implementation makes it very easy to set the connections to be blocked for a certain number of turns
-	//private int blocked;
+	
+	/**The actor that represents this connection.*/
 	private ConnectionActor actor;
+	
+	/** The vector that corresponds to this connection*/
 	private Vector2 vector;
 
+	/**Instantiation method.
+	 * @param station1 The first station for the connection.
+	 * @param station2 The second station for the connection.
+	 */
 	public Connection(Station station1, Station station2) {
 		this.station1 = station1;
 		this.station2 = station2;
@@ -37,6 +46,7 @@ public class Connection {
 		return this.actor;
 	}
 
+	/** Returns the midpoint of the connection */
 	public IPositionable getMidpoint() {
 		//This returns the midPoint of the connection, which is useful for drawing the obstacle indicators on to the connection
 		return new IPositionable() {

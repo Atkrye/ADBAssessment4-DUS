@@ -22,13 +22,26 @@ import gameLogic.resource.PioneerTrain;
 import gameLogic.resource.Skip;
 import gameLogic.resource.Train;
 
+/**This class is a specific type of ResourceDialogueClickListener for handling all dialog button clicks.*/
 public class DialogButtonClicked implements ResourceDialogClickListener {
-	//This class is huge and seemingly complicated because it handles the events based off of any button being clicked
-	private Context context;
-	private Player currentPlayer;
-	private Train train;
+	
+	/**The context of the game.*/
+    private Context context;
+    
+    /**The current player in the game*/
+    private Player currentPlayer;
+    
+    /**The train the dialog represents.*/
+    private Train train;
+    
+    /** The skip resource the dialog represents */
 	private Skip skip;
 
+	 /**Instantiation
+     * @param context The game Context.
+     * @param player The current player for the dialogue.
+     * @param train The train for the dialogue.
+     */
 	public DialogButtonClicked(Context context, Player player, Train train) {
 		//This constructor is used when a train dialog button is clicked.
 		//Train is set to the train that the dialog was associated with and the other variables are set to null
@@ -38,6 +51,12 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 		this.skip = null;
 	}
 
+
+    /**Instantiation
+     * @param context The game Context.
+     * @param player The current player for the dialogue.
+     * @param skip The skip for the dialogue.
+     */
 	public DialogButtonClicked(Context context, Player player, Skip skip) {
 		//This constructor is used when an skip dialog button is clicked.
 		//skip is set to the skip that the dialog was associated with and the other variables are set to null
@@ -47,6 +66,7 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 		this.context = context;
 	}
 
+	 /**When a button is clicked, this method is called. It acts according to the case of the button.*/ 
 	@Override
 	public void clicked(Button button) {
 		switch (button) {

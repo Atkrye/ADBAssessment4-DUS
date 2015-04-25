@@ -21,18 +21,28 @@ import gameLogic.resource.Train;
 
 import java.util.ArrayList;
 
-//Responsible for checking whether the train is clicked.
+/**This is a special type of ClickListener for when a train is clicked.*/
 public class TrainClicked extends ClickListener {
+	/**The game context.*/
 	private Context context;
+
+	/**The train that the click listener corresponds to.*/
 	private Train train;
+
+	/** Whether toolbar message is being displayed */
 	private boolean displayingMessage;
 
+	/**Instantiation method.
+	 * @param context The context of the game.
+	 * @param train The train the TrainClicked corresponds to.
+	 */
 	public TrainClicked(Context context, Train train) {
 		this.train = train;
 		this.context = context;
 		displayingMessage = false;
 	}
 
+	/**This method is called when the TrainClicked is Clicked. The GUI is updated accordingly.*/
 	@Override
 	public void clicked(InputEvent event, float x, float y) {
 		if (Game.getInstance().getState() == GameState.NORMAL || Game.getInstance().getState() == GameState.WAITING) {
@@ -107,6 +117,7 @@ public class TrainClicked extends ClickListener {
 		}
 	}
 
+	/** Used for exiting the mouseover for trains*/
 	@Override
 	public void exit(InputEvent event, float x, float y, int pointer, Actor trainActor) {
 		//This is used for mouseover events for trains
@@ -123,6 +134,7 @@ public class TrainClicked extends ClickListener {
 		}
 	}
 
+	/** Used for entering the mouseover for trains*/
 	@Override
 	public void enter(InputEvent event, float x, float y, int pointer, Actor trainActor) {
 		//This is used for mouseover events for trains
@@ -154,5 +166,4 @@ public class TrainClicked extends ClickListener {
 			}
 		}
 	}
-
 }

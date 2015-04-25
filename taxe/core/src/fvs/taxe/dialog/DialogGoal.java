@@ -13,10 +13,20 @@ import gameLogic.goal.Goal;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Dialog to display when a goal has been selected */
 public class DialogGoal extends Dialog {
+	
+	/** List of resource dialog click listeners */
     private List<ResourceDialogClickListener> clickListeners = new ArrayList<ResourceDialogClickListener>();
-	private Context context;
+	
+    /** Context that the dialog is in */
+    private Context context;
 
+    /** Instantiation method
+     * @param context Context that the dialog in
+     * @param goal Goal that the dialog corresponds to
+     * @param skin Skin to display the dialog with
+     */
     public DialogGoal(Context context, Goal goal, Skin skin) {
         //Generates a dialog allowing the player to select what they want to do with the goal
         super(goal.toString(), skin);
@@ -27,9 +37,9 @@ public class DialogGoal extends Dialog {
         button("Cancel", "CLOSE");
     }
 
+    /** Show the dialog in the center of the stage */
     @Override
     public Dialog show(Stage stage) {
-        //Shows the dialog in the centre of the screen
     	context.getGameLogic().setState(GameState.WAITING);
         show(stage, null);
         setPosition(Math.round((stage.getWidth() - getWidth()) / 2), Math.round((stage.getHeight() - getHeight()) / 2));
@@ -37,9 +47,9 @@ public class DialogGoal extends Dialog {
     }
 
 
+    /** Hide the dialog */
     @Override
     public void hide() {
-        //Hides the dialog
     	context.getGameLogic().setState(GameState.NORMAL);
         hide(null);
     }
@@ -56,6 +66,7 @@ public class DialogGoal extends Dialog {
         clickListeners.add(listener);
     }
 
+    /** What to do as a result of the button being pressed */
     @Override
     protected void result(Object obj) {
         //Does things based on which button was pressed

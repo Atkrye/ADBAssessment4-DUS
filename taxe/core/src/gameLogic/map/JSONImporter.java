@@ -10,9 +10,10 @@ import gameLogic.resource.ResourceManager;
 
 import java.util.ArrayList;
 
-//This is a new class that handles all of the importing from the JSON file for the map.
+/** Class that handles all of the importing from the JSON file for the map. */
 //This was done to separate the logic as it did not feel appropriate that the map class also handled the JSON importing
 public class JSONImporter {
+	/** Parse a new JSONReader */
 	public JSONImporter(Map map) {
 		JsonReader jsonReader = new JsonReader();
 
@@ -26,16 +27,21 @@ public class JSONImporter {
 		parseConnections(jsonVal, map);
 	}
 	
-
-
+	/** Parses the stations, connections and adds them to the map
+	 * @param map Map to load the stations and connections into
+	 * @param jsonVal The jsonValue to load the stations and connections from
+	 */
+	 
 	public JSONImporter(Map map, JsonValue jsonVal) {
-		//Parses the stations and adds them to the map
+		
 		parseStations(jsonVal, map);
 
 		//Parses the connections and adds them to the map
 		parseConnections(jsonVal, map);
 	}
 
+	/** Parse all of the resources into a resource manager 
+	 * @param resourceManager the resourceManager to add resources into*/
 	public JSONImporter(ResourceManager resourceManager) {
 		JsonReader jsonReader = new JsonReader();
 
@@ -65,6 +71,10 @@ public class JSONImporter {
 		resourceManager.setTrains(trains);
 	}
 
+	/** Create the connections from the json file
+	 * @param jsonVal The JSon file to parse from
+	 * @param map The map to create the connections in
+	 */
 	public static void parseConnections(JsonValue jsonVal, Map map) {
 		//Iterates through all the connections stored in the JSON array associated with the connections attribute
 		for (JsonValue connection = jsonVal.getChild("connections"); connection != null; connection = connection.next) {
@@ -85,6 +95,10 @@ public class JSONImporter {
 		}
 	}
 
+	/** Create the stations in the map from the json file
+	 * @param jsonVal The JSON file to load values from
+	 * @param map The map to create the stations in
+	 */
 	public static void parseStations(JsonValue jsonVal, Map map) {
 		//Iterates through all the stations stored in the JSON array associated with the stations attribute
 		for (JsonValue station = jsonVal.getChild("stations"); station != null; station = station.next) {

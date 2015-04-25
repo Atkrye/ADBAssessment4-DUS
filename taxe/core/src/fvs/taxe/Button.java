@@ -1,6 +1,6 @@
 package fvs.taxe;
 
-//Enum used to indicate what kind of button has been pressed
+/**This class contains the Button enumerated Type, used for defining the states that a button can be in.*/
 public enum Button {
     TRAIN_DROP,
     TRAIN_PLACE,

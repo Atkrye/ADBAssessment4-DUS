@@ -13,23 +13,34 @@ import gameLogic.player.Player;
 import gameLogic.goal.Goal;
 import gameLogic.map.Station;
 
-//Responsible for checking whether the goal is clicked
+/** ClickListener for when a goal button has been clicked */
 public class GoalClickListener extends ClickListener {
-    private Context context;
+    /** Context for the click listener */
+	private Context context;
+	
+	/** Goal for the click listener */
     private Goal goal;
+    
+    /** Tooltips for the displaying of goal information */
     private Tooltip tooltip1;
     private Tooltip tooltip2;
     private Tooltip tooltip3;
 
-    //This boolean was necessary to check whether tooltips are currently being displayed or not. Otherwise tooltips got constantly re-rendered
+    /** Boolean used to check whether tooltips are currently being displayed or not. */
+    // Otherwise tooltips got constantly re-rendered
     private boolean showingTooltips;
 
+    /** Instantiation method 
+     * @param context Context the goal click listener is in
+     * @param goal Goal that the clicklistener corresponds to
+     */
     public GoalClickListener(Context context, Goal goal) {
         this.goal = goal;
         this.context = context;
         this.showingTooltips = false;
     }
 
+    /** Event called when goal has been clicked. DIsplays associated information */
     @Override
     public void clicked(InputEvent event, float x, float y) {
         //A check was necessary as to whether tooltips were currently being shown
@@ -64,6 +75,7 @@ public class GoalClickListener extends ClickListener {
         }
     }
 
+    /** EVent used for when a mouse enters over the goalClickListener */
     @Override
     public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
         if (!showingTooltips) {
@@ -100,6 +112,7 @@ public class GoalClickListener extends ClickListener {
         }
     }
 
+    /** Event used for when a mouse exits the goalClickListener */
     @Override
     public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
         //If tooltips are currently being displayed then it hides them all
@@ -117,5 +130,4 @@ public class GoalClickListener extends ClickListener {
             showingTooltips = false;
         }
     }
-
 }

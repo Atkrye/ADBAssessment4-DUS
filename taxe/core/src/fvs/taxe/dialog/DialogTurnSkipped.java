@@ -9,10 +9,15 @@ import fvs.taxe.controller.Context;
 import gameLogic.Game;
 import gameLogic.GameState;
 
+/** Dialog displayed when a skip has occurred */
 public class DialogTurnSkipped extends Dialog {
-
+	/** Context the dialog is in*/
     private Context context;
 
+    /** Instantation
+     * @param context The context the dialog is in
+     * @param skin The skin for the dialog to show
+     */
 	public DialogTurnSkipped(Context context, Skin skin) {
         super("Miss a turn", skin);
         this.context = context;

@@ -32,36 +32,83 @@ import gameLogic.obstacle.Rumble;
 import gameLogic.resource.Train;
 import gameLogic.trong.TrongScreen;
 
-
+/** This class displays the Game.java game state graphically to the player.*/
 public class GameScreen extends ScreenAdapter {
+	/**Stores the main instance of TaxeGame.java.*/
 	public static TaxeGame game;
+	
+	
 	public static GameScreen instance;
+	
+	/**Stores the instance of Stage.java that is used to hold the actors used in the Game, and is setup in the Class instantiation method.*/ 
 	protected Stage stage;
 	protected BlankMapActor blankMapActor;
+	
+	/**Stores the instance of Game.java used to hold the game variable's GameLogic. This variable exists as a reference point to the instance set in
+     * the Game.java class, which can be accessed statically.
+     */
 	protected Game gameLogic;
-	protected Skin skin;
-	protected Map map;
-	private float timeAnimated = 0;
-	public static final int ANIMATION_TIME = 2;
-	protected Tooltip tooltip;
-	protected Context context;
+    
+    /**Stores resources for the UI, such as font, color etc.*/
+    protected Skin skin;
+    
+    /**Holds an instance of the Game map. This exists as a reference to the gameLogic variable's map instance.*/
+    protected Map map;
+    
+    /**This float tracks how long the game has been in the Animating state for. If it's value passes the constant ANIMATION_TIME then the Game stops animating and returns to it's normal state.*/
+    private float timeAnimated = 0;
+    
+    /**This constant integer value holds how long the Game can stay in the animating state for before moving to it's next state.*/
+    public static final int ANIMATION_TIME = 2;
+    
+    /**The instance of Tooltip used to display notifications to the player.*/
+    protected Tooltip tooltip;
+    
+    /**The Context in which the game runs. This collects the Game and all of it's controllers.*/
+    protected Context context;
 
-	protected StationController stationController;
-	protected TopBarController topBarController;
-	protected ResourceController resourceController;
-	protected GoalController goalController;
-	protected RouteController routeController;
-	protected ObstacleController obstacleController;
-	protected Rumble rumble;
-	public TrongScreen trongScreen = null;
+    /**Controller for handling stations.*/
+    protected StationController stationController;
+    
+    /**Controller for handling the graphical bar at the top of the game.*/
+    protected TopBarController topBarController;
+    
+    /**Controller for handling resources.*/
+    protected ResourceController resourceController;
+    
+    /**Controller for handling each of the players' goals.*/
+    protected GoalController goalController;
+    
+    /**Controller for handling routing between stations.*/
+    protected RouteController routeController;
+    
+    /**Controller for handling and placing obstacles.*/
+    protected ObstacleController obstacleController;
+	
+	/** Controller for handling created and deleted connections */
 	protected ConnectionController connectionController;
-	protected Texture dayMapTexture;
-	protected Texture nightMapTexture;
-	private int i;
+	
+	/** Controller for handling the displaying of trains */
 	protected TrainController trainController;
+	
+	/**Variable that is used to visibly "rumble" the game when an obstacle is placed.*/
+	protected Rumble rumble;
+	
+	/**The trongscreen used for when a collision has occurred */
+	public TrongScreen trongScreen = null;
+	
+	/** Texture for the day time map*/
+	protected Texture dayMapTexture;
+	
+	/** Texture for the night time map*/
+	protected Texture nightMapTexture;
+	
+	/** Boolean to say whether the screen has been initially loaded - used for ensuring actors added to stage only once */
+	private boolean initiallyLoaded = false;
 	
 	/**The recorder that is attached to this game screen*/
 	public Recorder record;
+	
 	/**Whether the mouse was keyed down on the last tick. Use for detecting events in recording*/
 	private boolean isMouseDown = false;
 
@@ -76,6 +123,9 @@ public class GameScreen extends ScreenAdapter {
 		this(game, Game.getInstance(p1, p2, MODE, val));
 	}
 
+	/**Instantiation method. Sets up the game using the passed TaxeGame argument. 
+	 *@param game The instance of TaxeGame to be passed to the GameScreen to display.
+	*/
 	public GameScreen(TaxeGame game, Game loadedGame) {
 		instance = this;
 		GameScreen.game = game;
@@ -102,7 +152,6 @@ public class GameScreen extends ScreenAdapter {
 				return super.keyTyped(key);
 			}
 		};
-		
 
 		//Sets the skin
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -205,12 +254,13 @@ public class GameScreen extends ScreenAdapter {
 			//Notify the Game once all controllers are set up
 		}
 
+		// ensure the correct texture is currently being selected
 		Texture texture = dayMapTexture;
-		
 		if (context.getGameLogic().getPlayerManager().isNight()){
 			texture = nightMapTexture;
 		};
 
+		// if the rumble has been activated, displace the correct texture
 		if (rumble.time > 0){
 			Vector2 mapPosition = rumble.tick(delta);
 			game.batch.begin();
@@ -221,7 +271,7 @@ public class GameScreen extends ScreenAdapter {
 		}
 		game.batch.end();
 
-
+		// if you are placing trains dont show the obstacles and show the goal highlights
 		if (gameLogic.getState() == GameState.PLACING_TRAIN || gameLogic.getState() == GameState.ROUTING) {
 			obstacleController.setObstacleVisibility(false);
 			stationController.renderStationGoalHighlights();
@@ -238,6 +288,7 @@ public class GameScreen extends ScreenAdapter {
 			}
 		}
 
+		// draw the line from train -mouse position if creating connection
 		if (gameLogic.getState() == GameState.CREATING_CONNECTION){
 			connectionController.drawMouse();
 		}
@@ -248,8 +299,6 @@ public class GameScreen extends ScreenAdapter {
 
 
 		stationController.drawRoutingInfo(map.getConnections());
-		
-		
 
 		if (goalController.exitPressed == false) {
 			//Draw the number of trains at each station
@@ -318,7 +367,7 @@ public class GameScreen extends ScreenAdapter {
 	@Override
 	// Called when GameScreen becomes current screen of the game
 	public void show() {
-		if (i == 0) {
+		if (!initiallyLoaded) {
 			//We only render this once, this allows the buttons generated to be clickable.
 			//Initially some of this functionality was in the draw() routine, but it was found that when the player clicked on a button a new one was rendered before the input could be handled
 			//This is why the header texts and the buttons are rendered separately, to prevent these issues from occurring
@@ -326,25 +375,19 @@ public class GameScreen extends ScreenAdapter {
 			stationController.addConnections(map.getConnections(), Color.GRAY);
 			stationController.renderStations();
 			obstacleController.drawObstacleEffects();
+			// if game has been loaded, trainActors must be set up
 			if (gameLogic.getPlayerManager().getTrainsToAdd().isEmpty()) {
 				trainController.setupTrainActors();
 			}
 			trainController.drawTrains(this.stage);
-			//We have to add in any necessary trains loaded to the train controller now
-			/*for(Train t : gameLogic.getPlayerManager().getTrainsToAdd())
-			{
-				System.out.println("Train Add!");
-				trainController.addTrainToActors(t);
-			}*/
 			topBarController.drawBackground();
 			topBarController.drawLabels();
 			topBarController.addEndTurnButton();
-			//connectionController.drawStationNamingDialog();
 			drawSidebar();
 			resourceController.drawPlayerResources(gameLogic.getPlayerManager().getCurrentPlayer());
 			goalController.showCurrentPlayerGoals();
 			goalController.showControls();
-			i+=1;
+			initiallyLoaded = true;
 			gameLogic.getPlayerManager().finishLoad(context);
 		}
 	}
