@@ -78,7 +78,7 @@ public class PlayerManager {
     			{
     				position = train.setupStartPos;
     			}
-    			context.getConnectionController().getPioneerTrainController().startTrainCreating(train.setupLastStation, position);
+    			context.getConnectionController().getPioneerTrainController().startTrainCreating(train.setupLastStation);
     			train.getActor().setPosition(position);
     			train.getActor().getBounds().setPosition(position.getX(), position.getY());
     		}

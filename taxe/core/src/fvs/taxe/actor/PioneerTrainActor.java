@@ -73,14 +73,6 @@ public class PioneerTrainActor extends TrainActor {
 			shapeRenderer.rectLine(this.getX()+ width/2, this.getY()+ height/2, 
 					startPosition.getX() , startPosition.getY() , 5);
 			
-			int x3 = (int) (startPosition.getX() + 10*Math.cos(radAngle)); 
-			int y3 = (int) (startPosition.getY() + 10*Math.sin(radAngle));
-			int x4 = (int) (endPosition.getX() - 10*Math.cos(radAngle));
-			int y4 = (int) (endPosition.getY() - 10*Math.sin(radAngle));
-			
-			shapeRenderer.setColor(Color.RED);
-			shapeRenderer.rectLine(x3, y3, x4, y4, 5);
-			
 			shapeRenderer.end();
 		}
 	}

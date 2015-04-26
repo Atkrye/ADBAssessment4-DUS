@@ -103,7 +103,9 @@ public class ObstacleController {
 		// render the obstacle's actor with the visibility given
 		ObstacleActor obstacleActor = new ObstacleActor(obstacle);
 		obstacleActor.setVisible(visible);
+		// obstacle will display time left if clicked
 		obstacleActor.addListener(new ClickListener(){
+			
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				context.getTopBarController().displayFlashMessage(obstacle.getType() + " has " + obstacle.getTimeLeft() + " turns left", Color.NAVY);

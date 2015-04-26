@@ -6,7 +6,6 @@ import fvs.taxe.actor.TrainActor;
 import fvs.taxe.clickListener.StationClickListener;
 import gameLogic.GameState;
 import gameLogic.map.Connection;
-import gameLogic.map.IPositionable;
 import gameLogic.map.Map;
 import gameLogic.map.Position;
 import gameLogic.map.Station;
@@ -114,67 +113,24 @@ public class PioneerTrainController {
 		train.setCreating(connection);
 
 		train.getActor().setupConnectionPlanting(connection); 
-		addPioneerActions(station);
+		addPioneerCreateActions(station, false);
 		connectionController.endCreatingMode(connection);
 		
 		completed = true;
 	}
 	
-	/** Start the pioneer train creating- set the train on its course to plant the new connection. Give the train a specific start
-	 * position using the extra paramater
-	 * @param station Station at the other end of the connection 
-	 * @param Position the position to start the train at
-	 */
-	public void startTrainCreating(Station station, IPositionable position) {
-		Connection connection = new Connection(firstStation, station); 
-		train.setPosition(new Position(-1, -1));
-		train.setCreating(connection);
-		train.getActor().setupConnectionPlanting(connection); 
-		addPioneerCreateActions(station, position);
-		
-		connectionController.endCreatingMode(connection);
-		
-		completed = true; // pioneerTrainContoller has completed its creationCOmpleting mode, take no more user input
-	}
-
 	/** Give the pioneer train the actions needed to plant the connections
-	 * @param station Station at other end of connection 
-	 * @param position start position of the train (for loading)
+	 * @param station Station at other end of connection
+	 * @param fromLoad Whether the pioneer train is being loaded or not 
 	 */
-	private void addPioneerCreateActions(Station station, IPositionable position) {
+	public void addPioneerCreateActions(Station station, boolean fromLoad) {
 		train.getActor().clearActions();
 		SequenceAction actions = Actions.sequence();
-
-		//action to rotate the train so it is facing the direction it creates track in
-		// actions require an angle in degrees for rotation 
-		float radAngle = Position.getAngle(position,station.getPosition());
-		float degAngle = (float) (MathUtils.radiansToDegrees*radAngle);
-		train.getActor().setPosition(position.getX(), position.getY());
-		train.getActor().setRotation(degAngle);
-
-		// action to move train to city
-		float duration = Position.getDistance(position, station.getPosition()) / train.getSpeed();
-		actions.addAction(moveTo(station.getPosition().getX() - TrainActor.width / 2, station.getPosition().getY() - TrainActor.height / 2, duration));
-
-		// Action to say that train has finished moving and reached destination, call pioneerTrainComplete()
-		Action finishedCreating = new Action(){
-			@Override
-			public boolean act(float delta) {
-				pioneerTrainComplete();
-				return true;
-			}
-		};
-		actions.addAction(finishedCreating);
-
-		train.getActor().addAction(actions);
-	}
-
-	/** Give the pioneer train the actions needed to plant the connections
-	 * @param station Station at other end of connection 
-	 */
-	public void addPioneerActions(Station station) {
-		train.getActor().clearActions();
-		SequenceAction actions = Actions.sequence();
+		
+		// if the train is being loaded, the firstStation is the last station the train was at
+		if (fromLoad){
+			firstStation = train.getLastStation();
+		}
 
 		//action to rotate the train so it is facing the direction it creates track in
 		// actions require an angle in degrees for rotation 

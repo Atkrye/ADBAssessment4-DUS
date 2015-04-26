@@ -2,6 +2,7 @@ package gameLogic.dijkstra;
 
 import java.util.ArrayList;
 
+/** Class that represents a vertex in DIjkstra's algorithm*/
 public class Vertex implements Comparable<Vertex> {
     private final String name;
     //Stores the list of all vertices connected to it and their weights
@@ -18,6 +19,7 @@ public class Vertex implements Comparable<Vertex> {
         return name;
     }
 
+    /** Compare the vertex to another vertex to determine the smallest weight */
     public int compareTo(Vertex other) {
         //Used as a comparator to compare two vertices, necessary do determine the smallest weight
         return Double.compare(minDistance, other.minDistance);

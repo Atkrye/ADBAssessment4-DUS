@@ -15,17 +15,23 @@ import java.util.Random;
 import adb.taxe.record.GoalEvent;
 import adb.taxe.record.RecordingScreen;
 
+/**Class to handle all of the goals in the game*/
 public class GoalManager {
+	/** Constant to say the number of goals a player can have*/
     public final static int CONFIG_MAX_PLAYER_GOALS = 3;
+    
+    /** The resourceManager associated with the game*/
     private ResourceManager resourceManager;
 
     public GoalManager(ResourceManager resourceManager) {
         this.resourceManager = resourceManager;
     }
 
+    /** Generate a random goal and calculate the points that should be awarded for completion of the goal
+     * @param turn The turn number the game is currently on
+     * @return The goal that has been generated
+     */
     public Goal generateRandom(int turn) {
-        //This routine generates a random goal and calculates the points that should be awarded for completion of the goal
-
         Map map = Game.getInstance().getMap();
         Station origin;
         Station intermediary;
@@ -95,6 +101,7 @@ public class GoalManager {
         return goal;
     }
 
+    /** Add a random goal to a player, if they haven't been forced to skip a turn for that turn*/
     public void addRandomGoalToPlayer(Player player, boolean firstTurn) {
         //Firstly check if this is a game or a recording
     	//Needs to check whether the player is skipping their turn, if they are then they should not be given a goal
@@ -127,8 +134,12 @@ public class GoalManager {
     	}
     }
 
+    /** This updates the score when a train arrives at a station by checking if the goals are complete 
+     * @param train The train that has completed its route
+     * @param player The player who owns the train/ will get the points
+     * @return The string to display if a goal has been completed, otherwise null
+     */
     public ArrayList<String> trainArrived(Train train, Player player) {
-        //This updates the score when a train arrives at a station by checking if the goals are complete
         ArrayList<String> completedString = new ArrayList<String>();
         for (Goal goal : player.getGoals()) {
             if (goal.isComplete(train)) {
