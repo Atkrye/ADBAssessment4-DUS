@@ -10,12 +10,21 @@ import java.util.Random;
 
 import adb.taxe.record.RecordingScreen;
 
+/**This class creates and stores the Trains specified from trains.json*/
 public class ResourceManager {
+	/** The maximum number of resources a Player can own */
     public final int CONFIG_MAX_RESOURCES = 6;
+    
+    /** Random instance for generating random resources*/
     private Random random = new Random();
+    
+    /** List of pairs of train names and the trains associated speed*/
     private ArrayList<Tuple<String, Integer>> trains;
+    
+    /** Global, static instance of the resourceManager*/
     public static ResourceManager global = new ResourceManager();
 
+    /** Instantiation- Parse all of the resources from the appropritae json file*/
     public ResourceManager() {
         //This calls the JSON importer which sets the train
         @SuppressWarnings("unused")
@@ -31,6 +40,10 @@ public class ResourceManager {
 
     }
 
+    /** Return one random Resource from the created Trains
+	 * @return A randomly selected Train object from the list of created trains, with the speed and image set
+	 * according to the properties of the train defined in trains.json
+	 */
     private Resource getRandomResource() {
         //Returns a random resource
         int idx = random.nextInt(11);
@@ -50,6 +63,7 @@ public class ResourceManager {
         }
     }
 
+    /** Return a random instance of train (NOT PIONEER/KAMIKAZETRAIN) */
     public Train getRandomTrain() {
         //Uses a random number generator to pick a random train and return the complete train class for that train.
         int index = random.nextInt(trains.size());
@@ -57,6 +71,10 @@ public class ResourceManager {
         return new Train(train.getFirst(), train.getFirst().replaceAll(" ", "") + ".png", train.getSecond());
     }
     
+    /** Return an instance of hte train given by the name
+     * @param trainName The name of the required train
+     * @return The train with the name trainName
+     */
     public Train getTrainByName(String trainName)
     {
     	for(Tuple<String, Integer> train : trains)
@@ -69,6 +87,10 @@ public class ResourceManager {
     	return null;
     }
     
+    /** Return an instance of the resource given by the name
+     * @param resourceName Name of the required resource
+     * @return The resource with the name resourceName
+     */
     public Resource getResourceByName(String resourceName)
     {
     	if(resourceName.equals("Skip Turn"))
@@ -89,9 +111,12 @@ public class ResourceManager {
     	}
     }
 
-
+    /** Add one randomly generated Train to the given Player
+     * @param player The player that will have a randomly generated resource added to it
+     * @param firstTurn boolean to say whether it is the firstTurn of the player
+     * */
     public void addRandomResourceToPlayer(Player player, boolean firstTurn) {
-        //This adds a random resource to player
+        
 
         //Need to check whether the player is skipping their turn as they should not receive a resource if they are
         if (!player.getSkip()) {
@@ -132,6 +157,10 @@ public class ResourceManager {
         }
     }
 
+    /** Add the given Resource to the given Player if they havent exceeded limit of resources
+     * @param player The player with which to add the resource
+     * @param resource The resource that will be added to the player
+     */
     private void addResourceToPlayer(Player player, Resource resource) {
         if (player.getResources().size() < CONFIG_MAX_RESOURCES) {
             //If the player has less than the max number of resources then the resource is given to the player.

@@ -170,7 +170,7 @@ public class GoalController {
 
                 y -= 50;
                 ImageTextButton button = new ImageTextButton(
-                        goal.baseGoalString() + "\n" + goal.bonusString(), context.getSkin());
+                        goal.getBaseGoalString() + "\n" + goal.getBonusString(), context.getSkin());
                 button.getLabel().setAlignment(Align.left);
                 //The goal buttons are scaled so that they do not overlap nodes on the map, this was found to be necessary after changing the way goals were displayed
                 float scaleFactor = 0.8f;
