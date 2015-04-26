@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
 import fvs.taxe.Button;
+import fvs.taxe.SoundPlayer;
 import fvs.taxe.actor.TrainActor;
 import fvs.taxe.controller.Context;
 import fvs.taxe.controller.StationController;
@@ -49,8 +50,12 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 
 	@Override
 	public void clicked(Button button) {
+		//plays button sound
+				
 		switch (button) {
+		
 		case TRAIN_DROP:
+			SoundPlayer.playSound(5);
 			//If a TRAIN_DROP button is pressed then the train is removed from the player's resources
 			if (train.getActor() != null){
 				// if a train has been placed (therefore has an actor) remove the actor
@@ -63,6 +68,7 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 			//The reason that all the placement case statements are in their own scope ({}) is due to the fact that switch statements do not create their own scopes between cases.
 			//Instead these must be manually defined, which was done to allow for instantiation of new TrainControllers.
 		case TRAIN_PLACE: {
+			SoundPlayer.playSound(5);
 			//If the TRAIN_PLACE button is pressed then the game is set up so that the train can be placed
 
 			//This sets the cursor to be the one associated with the train loaded from the assets folder
@@ -81,11 +87,13 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 			final StationClickListener stationListener = new StationClickListener() {
 				@Override
 				public void clicked(Station station) {
+					
 					//Checks whether a node is a junction or not. If it is then the train cannot be placed there and the user is informed
 					if (station instanceof CollisionStation) {
 						context.getTopBarController().displayFlashMessage("Trains cannot be placed at junctions.", Color.RED);
 
 					} else {
+						SoundPlayer.playSound(5);
 						//This puts the train at the station that the user clicks and adds it to the trains visited history
 						train.setPosition(station.getPosition());
 						train.addHistory(station, Game.getInstance().getPlayerManager().getTurnNumber());
@@ -141,16 +149,19 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 		}
 
 		case TRAIN_ROUTE:
+			SoundPlayer.playSound(5);
 			//Begins routing a train if the TRAIN_ROUTE button is clicked
 			context.getRouteController().begin(train);
 			break;
 
 		case VIEW_ROUTE:
+			SoundPlayer.playSound(5);
 			//Shows the user the train's current route if they click on VIEW_ROUTE button
 			context.getRouteController().viewRoute(train);
 			break;
 
 		case SKIP_RESOURCE:
+			SoundPlayer.playSound(5);
 			//If SKIP_RESOURCE is pressed then this finds the other player's playerNumber and sets their skipped boolean to true
 			//If you wish to add more than 2 players then extra checking would have to be added here to ensure that the right player has their turn skipped
 			//For our implementation just checking the two binary values is enough
@@ -167,21 +178,25 @@ public class DialogButtonClicked implements ResourceDialogClickListener {
 			break;
 
 		case SKIP_DROP:
+			SoundPlayer.playSound(2);
 			//Removes the resource from the player if they press the SKIP_DROP button
 			currentPlayer.removeResource(skip);
 			break;
 
 		case TRAIN_CHANGE_ROUTE:
+			SoundPlayer.playSound(1);
 			//Begins the change route feature when TRAIN_CHANGE_ROUTE is pressed by the player
 			context.getRouteController().begin(train);
 			break;
 
 		case TRAIN_CREATE_CONNECTION:
+			SoundPlayer.playSound(3);
 			// Begin creating the connection between 2 points
 			context.getConnectionController().beginCreatingMode((PioneerTrain) train);
 			break;
 
 		case TRAIN_KAMIKAZE:
+			SoundPlayer.playSound(4);
 			// Kamikaze, destroy the connection
 			context.getConnectionController().destroyConnection((KamikazeTrain) train);
 			((KamikazeTrain) train).selfDestruct();

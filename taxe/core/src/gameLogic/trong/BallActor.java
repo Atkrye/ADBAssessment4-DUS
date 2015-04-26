@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
+import fvs.taxe.SoundPlayer;
 import fvs.taxe.TaxeGame;
 
 public class BallActor extends Image{
@@ -42,7 +43,7 @@ public class BallActor extends Image{
 		this.setY(this.getY() + velocityY);
 		float velocity = (float) Math.sqrt((velocityX * velocityX) + (velocityY * velocityY));
 		if(intersects(leftPaddle))
-		{
+		{   SoundPlayer.playSound(10);
 			float dy = dY(leftPaddle);
 			float dx = dX(leftPaddle);
 			//displacement;
@@ -51,7 +52,8 @@ public class BallActor extends Image{
 			this.velocityY = (dy / d) * velocity;
 		}
 		if(intersects(rightPaddle))
-		{
+		{	
+			SoundPlayer.playSound(10);
 			float dy = dY(rightPaddle);
 			float dx = dX(rightPaddle);
 			//displacement;
@@ -60,12 +62,14 @@ public class BallActor extends Image{
 			this.velocityY = (dy / d) * velocity;
 		}
 		if(velocityY > 0 && this.getY() + this.getHeight() > (TrongScreen.gameTop * TaxeGame.HEIGHT))
-		{
+		{	
+			SoundPlayer.playSound(10);
 			velocityY = velocityY * -1;
 		}
 
 		if(velocityY < 0 && this.getY() < (TrongScreen.gameBottom * TaxeGame.HEIGHT))
-		{
+		{	
+			SoundPlayer.playSound(10);
 			velocityY = velocityY * -1;
 		}
 	}

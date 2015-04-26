@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import fvs.taxe.SoundPlayer;
 import fvs.taxe.actor.ObstacleActor;
 import fvs.taxe.actor.ParticleEffectActor;
 import gameLogic.obstacle.Obstacle;
@@ -61,16 +62,20 @@ public class ObstacleController {
 				// shake the screen if the obstacle is an earthquake
 				if (obstacle.getType() == ObstacleType.EARTHQUAKE) {
 					rumble.rumble(1f, 2f);
+					SoundPlayer.playSound(9);
 				}
 				if (obstacle.getType() == ObstacleType.BLIZZARD) {
 					effects.get("Blizzard").setPosition(obstacle.getPosition().getX(), obstacle.getPosition().getY());
-					effects.get("Blizzard").start(); 
+					effects.get("Blizzard").start();
+					SoundPlayer.playSound(6);
 				} else if (obstacle.getType() == ObstacleType.FLOOD) {
 					effects.get("Flood").setPosition(obstacle.getPosition().getX()-10, obstacle.getPosition().getY() + 50);
 					effects.get("Flood").start(); 
+					SoundPlayer.playSound(7);
 				} else if (obstacle.getType() == ObstacleType.VOLCANO) {
 					effects.get("Volcano").setPosition(obstacle.getPosition().getX(), obstacle.getPosition().getY()-10);
-					effects.get("Volcano").start(); 
+					effects.get("Volcano").start();
+					SoundPlayer.playSound(8);
 				}
 			}
 			
