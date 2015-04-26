@@ -48,6 +48,7 @@ public class SaveManager {
 				   json.writeValue("Max Turns", game.TOTAL_TURNS);
 				   json.writeValue("Max Points", game.MAX_POINTS);
 				   json.writeValue("Nighttime", game.getPlayerManager().isNight());
+				   json.writeValue("CurrentTrainID", Train.idVal);
 				   json.writeValue("Turn", game.getPlayerManager().getTurnNumber());
 				   //Stations and connections formatted for Json importer as the code already exists
 				   json.writeArrayStart("stations");
@@ -100,6 +101,7 @@ public class SaveManager {
 				  int maxTurns = jsonData.getInt("Max Turns");
 				  int maxPoints = jsonData.getInt("Max Points");
 				  boolean isNight = jsonData.getBoolean("Nighttime");
+				  Train.idVal = jsonData.getInt("CurrentTrainID");
 				  int turn = jsonData.getInt("Turn");
 				  Map m = new Map(true, jsonData);
 				  ObstacleManager om = new ObstacleManager(m, jsonData);

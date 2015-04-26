@@ -2,7 +2,7 @@ package fvs.taxe;
 
 import gameLogic.Game;
 import adb.taxe.record.SaveManager;
-
+import fvs.taxe.SoundPlayer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,7 +20,7 @@ public class MainMenuScreen extends ScreenAdapter {
 
 	/**Stores an orthographic camera used in the menu to project clicks.*/
 	private OrthographicCamera camera;
-
+	
 	/**This rectangle stores the bounds of the play button, and is used to detect whether a click has clicked the play button.*/
 	private Rectangle playBounds;
 
@@ -75,6 +75,7 @@ public class MainMenuScreen extends ScreenAdapter {
 			//If rectangles are touch then relevant action is taken
 			camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 			if (playBounds.contains(touchPoint.x, touchPoint.y)) {
+            	SoundPlayer.playSound(1);
 
 				//If the touch is within the boundaries of the rectangle playBounds the GameSetupScreen is set
 
@@ -83,6 +84,7 @@ public class MainMenuScreen extends ScreenAdapter {
 			}
 			//Load a game
 			if (loadBounds.contains(touchPoint.x, touchPoint.y)) {
+            	SoundPlayer.playSound(1);
 				//Disabled all click ability
 				disabled = true;
 				//Load a game using the SaveManager
@@ -99,10 +101,12 @@ public class MainMenuScreen extends ScreenAdapter {
 				}
 			}
 			if (recordingBounds.contains(touchPoint.x, touchPoint.y)) {
+            	SoundPlayer.playSound(1);
 				//If the touch is within the boundaries of the rectangle recordingBounds, load recordings
 				SaveManager.loadRecordingFromChooser();
 			}
 			if (exitBounds.contains(touchPoint.x, touchPoint.y)) {
+            	SoundPlayer.playSound(2);
 				//If the touch is within the boundaries of the rectangle exitBounds the game exits
 				Gdx.app.exit();
 			}

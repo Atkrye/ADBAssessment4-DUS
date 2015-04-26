@@ -4,6 +4,8 @@ package fvs.taxe.controller;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.delay;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.fadeOut;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
+import fvs.taxe.MusicPlayer;
+import fvs.taxe.SoundPlayer;
 import fvs.taxe.TaxeGame;
 import gameLogic.GameState;
 import gameLogic.listeners.GameStateListener;
@@ -177,7 +179,10 @@ public class TopBarController {
         endTurnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+            	//plays button sound
+            	SoundPlayer.playSound(1);
                 //This sets the turn to be over in the backend
+            	
                 context.getGameLogic().getPlayerManager().turnOver(context);
             }
         });

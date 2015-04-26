@@ -1,9 +1,13 @@
 package fvs.taxe.controller;
 
+import adb.taxe.record.RecordingScreen;
+import adb.taxe.record.SaveManager;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -11,8 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 
 import fvs.taxe.GameScreen;
+import fvs.taxe.SoundPlayer;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.clickListener.GoalClickListener;
 import gameLogic.Game;
@@ -197,8 +203,9 @@ public class GoalController {
     public void showControls() {
     	// Draw record, save and exit controls
     	
-    	Texture recordButtonText = new Texture(Gdx.files.internal("btn_record.png"));
-        Image recordButtonImage = new Image(recordButtonText);
+    	final Texture recordButtonText = new Texture(Gdx.files.internal("btn_record.png"));
+    	final Texture recordButtonStopText = new Texture(Gdx.files.internal("btn_stop.png"));
+        final Image recordButtonImage = new Image(recordButtonText);
         recordButtonImage.setWidth(77);
         recordButtonImage.setHeight(31);
         recordButtonImage.setPosition(10, 10);
@@ -225,13 +232,19 @@ public class GoalController {
         recordButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
-        		if(!GameScreen.instance.isRecording())
+        		if(!Game.getInstance().getState().equals(GameState.ANIMATING))
         		{
-        			GameScreen.instance.startRecording();
-        		}
-        		else
-        		{
-                    GameScreen.instance.stopRecording();
+        			SoundPlayer.playSound(1);
+        			if(!GameScreen.instance.isRecording())
+        			{
+        				GameScreen.instance.startRecording();
+        				recordButtonImage.setDrawable(new SpriteDrawable(new Sprite(recordButtonStopText)));
+        			}
+        			else
+        			{
+        				GameScreen.instance.stopRecording();
+        				recordButtonImage.setDrawable(new SpriteDrawable(new Sprite(recordButtonText)));
+        			}
         		}
             };
         } );
@@ -244,7 +257,13 @@ public class GoalController {
         saveButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("save");
+        		if(!Game.getInstance().getState().equals(GameState.ANIMATING) && !(GameScreen.instance.getClass().equals(RecordingScreen.class)))
+        		{
+        			SoundPlayer.playSound(1);
+        			GameScreen.instance.pause();
+                	SaveManager.save();
+                	GameScreen.instance.resume();
+        		}
             };
         } );
         context.getStage().addActor(saveButton);
@@ -256,7 +275,11 @@ public class GoalController {
         exitButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
-                exitPressed();
+        		if(!Game.getInstance().getState().equals(GameState.ANIMATING) && !(GameScreen.instance.getClass().equals(RecordingScreen.class)))
+        		{
+        			SoundPlayer.playSound(1);
+        			exitPressed();
+        		}
             };
         } );
         context.getStage().addActor(exitButton);
@@ -265,6 +288,7 @@ public class GoalController {
     
     /** What occurs when the exit button has pressed, setup the exit menu and register clicks */
     private void exitPressed() {
+    	
     	System.out.println("exit");
     	prevState = context.getGameLogic().getState();
     	context.getGameLogic().setState(GameState.WAITING);
@@ -285,6 +309,7 @@ public class GoalController {
     	resumeButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
+        		SoundPlayer.playSound(1);
         		resumePressed();
             };
         } );
@@ -297,6 +322,7 @@ public class GoalController {
         saveButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
+        		SoundPlayer.playSound(1);
         		Game.getInstance().save();
             };
         } );
@@ -309,6 +335,7 @@ public class GoalController {
         exitButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
+        		SoundPlayer.playSound(1);
         		System.out.println("exit");
         		exitPressed = false;
         		Gdx.app.exit();

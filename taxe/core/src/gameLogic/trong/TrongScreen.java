@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.TextBounds;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+import fvs.taxe.MusicPlayer;
 import fvs.taxe.GameScreen;
 import fvs.taxe.TaxeGame;
 import gameLogic.resource.Train;
@@ -49,10 +50,15 @@ public class TrongScreen extends ScreenAdapter{
         stage.addActor(botBar);
         ball = new BallActor(paddle1, paddle2);
         stage.addActor(ball);
+        System.out.println("play");
+        MusicPlayer.stopTrack1();
+        MusicPlayer.playTrack2();
 	}
 	
 	public void finish()
-	{
+	{	
+		MusicPlayer.stopTrack2();
+		MusicPlayer.resumeTrack1();
 		game.setScreen(nextScreen);
 		nextScreen.resume();
 	}
@@ -106,7 +112,9 @@ public class TrongScreen extends ScreenAdapter{
      	ball.update();
      	//Check win conditions
      	if(ball.getX() < 0)
-     	{
+     		
+     		
+     	{	
      		paddle1.getTrain().getPlayer().removeResource(paddle1.getTrain());
      		paddle1.getTrain().getActor().remove();
      		finish();
@@ -114,10 +122,15 @@ public class TrongScreen extends ScreenAdapter{
      	}
 
      	if(ball.getX() > TaxeGame.WIDTH)
-     	{
+     	{   
+     		
      		paddle2.getTrain().getPlayer().removeResource(paddle2.getTrain());
      		paddle2.getTrain().getActor().remove();
      		finish();
+     		
+            
+     		
+     		
      	}
     }
     

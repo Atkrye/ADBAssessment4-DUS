@@ -5,6 +5,7 @@ import gameLogic.resource.Train;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 
 public class Playback {
@@ -16,6 +17,8 @@ public class Playback {
 	  private InputProcessor playbackProcessor;
 	  /**Whether the playback direction has reversed (so going backwards through the recording, if true)*/
 	  private boolean reverse = false;
+	  /**Used to store a set input processor to load back from when a temporary processor is dropped*/
+	  private InputProcessor storedProcessor;
 	  
 	  /**Loads a set of events into the Recorder to play back
 	 	*@param events The events to be played back, in order
@@ -34,6 +37,7 @@ public class Playback {
 	  {
 		  if(ev.getClass().equals(ClickEvent.class))
 		  {
+			  System.out.println("Click");
 			  injectClick(((ClickEvent)ev).getX(), ((ClickEvent)ev).getY());
 			  return true;
 		  }
@@ -87,6 +91,7 @@ public class Playback {
 	   */
 	  public void setPlaybackProcessor(InputProcessor playbackProcessor) {
 		  this.playbackProcessor = playbackProcessor;
+		  this.storedProcessor = playbackProcessor;
 	  }
 
 	  /**Injects the next event and returns it, moving eventIndex along
@@ -175,4 +180,18 @@ public class Playback {
 	public void setReverse(boolean reverse) {
 		this.reverse = reverse;
 	}
+
+	/**Sets a temporary input processor
+	 * @param tempProcessor The processor to be used temporarily
+	 */
+	public void setTempProcessor(InputAdapter tempProcessor) {
+		this.playbackProcessor = tempProcessor;	
+	}
+
+	/**Drops a temporary input processor in favour of the original*/
+	public void dropTempProcessor() {
+		this.playbackProcessor = this.storedProcessor;
+	}
+	
+	
 }

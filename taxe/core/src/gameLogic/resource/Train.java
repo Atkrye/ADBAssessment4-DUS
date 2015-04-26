@@ -12,7 +12,7 @@ import Util.Tuple;
 /** The class that represents a train- defined by its name and speed */
 public class Train extends Resource {
 	/**Id field used to ensure every train has a unique id, for tracking in collisions in the replay system*/
-	private static int idVal;
+	public static int idVal = 0;
 	
 	/**The id of the train*/
 	private int id;

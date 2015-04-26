@@ -3,6 +3,8 @@ package fvs.taxe.clickListener;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
+import fvs.taxe.SoundPlayer;
 import fvs.taxe.Tooltip;
 import fvs.taxe.actor.StationActor;
 import fvs.taxe.controller.Context;
@@ -43,6 +45,7 @@ public class GoalClickListener extends ClickListener {
     /** Event called when goal has been clicked. DIsplays associated information */
     @Override
     public void clicked(InputEvent event, float x, float y) {
+    	SoundPlayer.playSound(1);
         //A check was necessary as to whether tooltips were currently being shown
         //This is due to the odd way that the events work
         //When clicking on a goal, it simultaneously performs the enter and exit methods

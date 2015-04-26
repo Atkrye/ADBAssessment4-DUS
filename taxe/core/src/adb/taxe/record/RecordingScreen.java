@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import fvs.taxe.GameScreen;
 import fvs.taxe.GameSetupScreen;
+import fvs.taxe.MusicPlayer;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.Tooltip;
 import fvs.taxe.clickListener.StationClickListener;
@@ -128,6 +129,8 @@ public class RecordingScreen extends GameScreen{
 		
 		record = new Recorder();
 
+	    MusicPlayer.playTrack();
+		
 		show();
 		
 		Game.getInstance().getObstacleManager().activateIdleObstacles();

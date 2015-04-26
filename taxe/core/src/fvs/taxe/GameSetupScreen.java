@@ -2,6 +2,7 @@ package fvs.taxe;
 
 import Util.TextEntryBar;
 import Util.IntegerEntryBar;
+import fvs.taxe.SoundPlayer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ScreenAdapter;
@@ -118,10 +119,12 @@ public class GameSetupScreen extends ScreenAdapter {
 			p2NameEntry.update(touchPoint);
 			pointsTurnsBar.update(touchPoint);
 			if (playBounds.contains(touchPoint.x, touchPoint.y)) {
+            	SoundPlayer.playSound(1);
 				game.setScreen(new GameScreen(game, p1NameEntry.getLabelValue(), p2NameEntry.getLabelValue(), MODE, Integer.valueOf(pointsTurnsBar.getLabelValue())));
 				return;
 			}
 			if(pointsTabBounds.contains(touchPoint.x, touchPoint.y) && !MODE.equals(MODEPOINTS)){ 
+	               SoundPlayer.playSound(2);	
 				MODE = MODEPOINTS;
 				pointsTurnsBar.setLabel("3000");
 				setupScreenTexture = new Texture(Gdx.files.internal("setup_max_points1.png"));
@@ -130,6 +133,7 @@ public class GameSetupScreen extends ScreenAdapter {
 			}
 			if(turnsTabBounds.contains(touchPoint.x, touchPoint.y) && !MODE.equals(MODETURNS))
 			{
+	            SoundPlayer.playSound(2);	
 				MODE = MODETURNS;
 				setupScreenTexture = new Texture(Gdx.files.internal("setup_max_turns2.png"));
 				pointsTurnsBar.setLastClicked();

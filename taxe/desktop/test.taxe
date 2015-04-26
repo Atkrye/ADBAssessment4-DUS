@@ -4,7 +4,8 @@ Mode: POINTS,
 "Max Turns": -1,
 "Max Points": 3000,
 Nighttime: false,
-Turn: 2,
+CurrentTrainID: 3,
+Turn: 0,
 stations: [
 	{
 		name: Madrid,
@@ -455,32 +456,12 @@ Player1: {
 	Active: true,
 	Resources: [
 		{
-			DataType: Skip
-		},
-		{
 			DataType: Train,
-			Name: "Bullet Train",
-			Speed: 90,
-			Image: BulletTrain.png,
-			Destination: Empty,
-			x: 580,
-			y: 452,
-			Route: [
-				{
-					DataType: Empty
-				}
-			],
-			History: [
-				{
-					DataType: Empty
-				}
-			]
-		},
-		{
-			DataType: Train,
-			Name: "Petrol Train",
-			Speed: 50,
-			Image: PetrolTrain.png,
+			ID: 1,
+			Name: "MagLev Train",
+			Speed: 80,
+			Image: MagLevTrain.png,
+			HasRoute: false,
 			Destination: Empty,
 			x: Empty,
 			y: Empty,
@@ -497,10 +478,11 @@ Player1: {
 		},
 		{
 			DataType: Train,
-			Name: Kamikaze,
-			Speed: 10,
-			Image: KamikazeTrain.png,
-			Special: Kamikaze,
+			ID: 2,
+			Name: "Bullet Train",
+			Speed: 90,
+			Image: BulletTrain.png,
+			HasRoute: false,
 			Destination: Empty,
 			x: Empty,
 			y: Empty,
@@ -518,24 +500,14 @@ Player1: {
 	],
 	Goals: [
 		{
-			Origin: Prague,
-			Destination: Sofia,
-			Intermediate: Prague,
-			Train: None,
-			Turn: 0,
-			TurnCount: 5,
-			ScoreValue: 426,
-			BonusValue: 745
-		},
-		{
-			Origin: Kiev,
-			Destination: London,
-			Intermediate: Kiev,
+			Origin: Paris,
+			Destination: Minsk,
+			Intermediate: Paris,
 			Train: "Petrol Train",
-			Turn: 2,
+			Turn: 0,
 			TurnCount: 0,
-			ScoreValue: 782,
-			BonusValue: 1145
+			ScoreValue: 762,
+			BonusValue: 1116
 		}
 	]
 },
@@ -545,72 +517,7 @@ Player2: {
 	Score: 0,
 	Skip: false,
 	Active: false,
-	Resources: [
-		{
-			DataType: Train,
-			Name: Kamikaze,
-			Speed: 10,
-			Image: KamikazeTrain.png,
-			Destination: Madrid,
-			x: -1,
-			y: -1,
-			actorX: 589.67865,
-			actorY: 254.24634,
-			actorRot: -123.16635,
-			Route: [
-				{
-					DataType: Station,
-					Name: Paris
-				},
-				{
-					DataType: Station,
-					Name: Madrid
-				}
-			],
-			History: [
-				{
-					DataType: Station,
-					Name: Paris,
-					Turn: 1
-				},
-				{
-					DataType: Station,
-					Name: Paris,
-					Turn: 2
-				}
-			]
-		},
-		{
-			DataType: Train,
-			Name: "Bullet Train",
-			Speed: 90,
-			Image: BulletTrain.png,
-			Destination: Empty,
-			x: 590,
-			y: 373,
-			Route: [
-				{
-					DataType: Empty
-				}
-			],
-			History: [
-				{
-					DataType: Empty
-				}
-			]
-		}
-	],
-	Goals: [
-		{
-			Origin: Stockholm,
-			Destination: Milan,
-			Intermediate: Stockholm,
-			Train: None,
-			Turn: 1,
-			TurnCount: 0,
-			ScoreValue: 681,
-			BonusValue: 1192
-		}
-	]
+	Resources: [],
+	Goals: []
 }
 }

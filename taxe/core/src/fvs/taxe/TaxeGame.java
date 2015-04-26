@@ -142,6 +142,9 @@ public class TaxeGame extends Game {
         // don't forget to dispose to avoid memory leaks!
 		//--------------------
 
+		//Load our soundPlayer
+		new SoundPlayer();
+		
         //Sets the main screen to be the menu
 		if(recordingFilePath.equals(""))
 		{
@@ -166,6 +169,8 @@ public class TaxeGame extends Game {
         fontBold.dispose();
         fontLight.dispose();
         shapeRenderer.dispose();
+        SoundPlayer.dispose();
+        MusicPlayer.dispose();
     }
 
 

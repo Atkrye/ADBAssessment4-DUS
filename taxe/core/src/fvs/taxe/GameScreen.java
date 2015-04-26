@@ -106,6 +106,8 @@ public class GameScreen extends ScreenAdapter {
 	/** Boolean to say whether the screen has been initially loaded - used for ensuring actors added to stage only once */
 	private boolean initiallyLoaded = false;
 	
+	
+	
 	/**The recorder that is attached to this game screen*/
 	public Recorder record;
 	
@@ -185,7 +187,11 @@ public class GameScreen extends ScreenAdapter {
 		context.setRouteController(routeController);
 		context.setTopBarController(topBarController);
 		context.setConnectionController(connectionController);
-
+		
+		
+	     MusicPlayer.playTrack();
+	     
+		
 		rumble = obstacleController.getRumble();
 		
 		record = new Recorder();

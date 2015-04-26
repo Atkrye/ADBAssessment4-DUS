@@ -255,10 +255,12 @@ public class ConnectionController {
 						// change the input processor back to the old one
 						if(GameScreen.instance.getClass().equals(RecordingScreen.class))
 						{
-							((RecordingScreen)GameScreen.instance).eventPlayer.setPlaybackProcessor(ip);;
+							System.out.println("Recording: Input Processor reset");
+							((RecordingScreen)GameScreen.instance).eventPlayer.dropTempProcessor();;
 						}
 						else
 						{
+							System.out.println("Input Processor reset");
 							Gdx.input.setInputProcessor(ip);
 						}
 
@@ -273,7 +275,7 @@ public class ConnectionController {
 
 					if(GameScreen.instance.getClass().equals(RecordingScreen.class))
 					{
-						((RecordingScreen)GameScreen.instance).eventPlayer.setPlaybackProcessor(ip);;
+						((RecordingScreen)GameScreen.instance).eventPlayer.dropTempProcessor();
 					}
 					else
 					{
@@ -295,7 +297,7 @@ public class ConnectionController {
 		};
 		if(GameScreen.instance.getClass().equals(RecordingScreen.class))
 		{
-			((RecordingScreen)GameScreen.instance).eventPlayer.setPlaybackProcessor(nameip);
+			((RecordingScreen)GameScreen.instance).eventPlayer.setTempProcessor(nameip);
 		}
 		else
 		{
