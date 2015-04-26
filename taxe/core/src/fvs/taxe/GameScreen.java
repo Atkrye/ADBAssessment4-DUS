@@ -392,6 +392,7 @@ public class GameScreen extends ScreenAdapter {
 		}
 	}
 
+	/** Add the sidebarActor to the stage*/
 	private void drawSidebar() {
 		SideBarActor sb = new SideBarActor();
 		context.getStage().addActor(sb);

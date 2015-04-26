@@ -3,9 +3,12 @@ package gameLogic.map;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+/**This class describes a more specific version of IPositionable used for Positions in the Game world.*/
 public class Position extends IPositionable {
-	//This is the class that implements IPositionable and allows you to create new Positions that can be compared to existing ones
+	/** x coordinate of Position*/
 	private int x;
+	
+	/** y coordinate of Position*/
 	private int y;
 
 	public Position(int x, int y) {
@@ -47,11 +50,16 @@ public class Position extends IPositionable {
 		return "( " + x + " , " + y + " )";
 	}
 
+	/** Gets the absolute distance from point A to point B in pixels
+	 * @param a First iPositionable 
+	 * @param b Second iPositionable
+	 * @return The absolute distance from a to b
+	 */
 	public static float getDistance(IPositionable a, IPositionable b) {
-		//This method returns the absolute distance from point A to point B in pixels
 		return Vector2.dst(a.getX(), a.getY(), b.getX(), b.getY());
 	}
 	
+	/** Get the angle between 2 positions*/
 	public static float getAngle(IPositionable position1, IPositionable position2) {
 		float dx = position2.getX() - position1.getX();
 		float dy = position2.getY() - position1.getY();
@@ -59,8 +67,8 @@ public class Position extends IPositionable {
 		return angle;
 	}
 
-	// Returns 1 if the lines intersect, otherwise 0. In addition, if the lines 
-	// intersect the intersection point may be stored in the floats i_x and i_y.
+	/** Returns position where the lines intersect wit , otherwise return null. */
+	// line 1 is (p0_x, p0_y) to (p1_x,p1_y), line 2 is (p2_x,p2_y) to (p3_x,p3_y)
 	public static Position getLineIntersect(float p0_x, float p0_y, float p1_x, float p1_y, 
 			float p2_x, float p2_y, float p3_x, float p3_y) {
 		float s1_x, s1_y, s2_x, s2_y;
@@ -74,12 +82,12 @@ public class Position extends IPositionable {
 		t = ( s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
 
 		if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
-			// Collision detected
+			// Overlap detected
 			float i_x = p0_x + (t * s1_x);
 			float i_y = p0_y + (t * s1_y);
 			return new Position((int) i_x, (int) i_y);
 		}
-		return null; // No collision
+		return null; // No overlap
 	}
 }
 

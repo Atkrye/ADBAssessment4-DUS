@@ -3,13 +3,27 @@ package gameLogic.map;
 import fvs.taxe.actor.StationActor;
 import gameLogic.obstacle.Obstacle;
 
-public class Station {
-    private String name;
-    private IPositionable position;
-    private StationActor actor;
+/**This class is used to store information about a station.*/
+public class Station{
+	/**The name of the station.*/
+	private String name;
+	
+	/**The in game position of the station.*/
+	private IPositionable position;
+	
+	/**The actor that represents the station graphically.*/
+	private StationActor actor;
+	
+	/**The obstacle occupying the station, if any.*/
 	private Obstacle obstacle;
+	
+	/** Boolean to say whether the station is a collisionStation or not */
 	public boolean isJunction = false;
 
+	/**Instantiation method.
+	 * @param name The name of the station.
+	 * @param location The location of the station.
+	 */
     public Station(String name, IPositionable location) {
         this.name = name;
         this.position = location;
@@ -27,7 +41,7 @@ public class Station {
         return position;
     }
 
-    public void setLocation(IPositionable position) {
+    public void setPosition(IPositionable position) {
         this.position = position;
     }
 
@@ -55,6 +69,7 @@ public class Station {
 		this.obstacle = obstacle;
 	}
 
+    /**@return True if the Station has an obstacle on it, false otherwise.*/
 	public boolean hasObstacle(){
 		if (this.obstacle == null){
 			return false;
@@ -66,9 +81,8 @@ public class Station {
 	public Obstacle getObstacle(){
 		return this.obstacle;
 	}
-	
+
 	public void clearObstacle() {
 		this.obstacle = null;
 	}
-
 }
