@@ -1,5 +1,6 @@
 package fvs.taxe.controller;
 
+import fvs.taxe.SoundPlayer;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.actor.TrainActor;
 import fvs.taxe.clickListener.StationClickListener;
@@ -232,6 +233,7 @@ public class RouteController {
 			doneRouting.addListener(new ClickListener() {
 				@Override
 				public void clicked(InputEvent event, float x, float y) {
+					SoundPlayer.playSound(1);
 					//Checks whether or not the route is legal and can end
 					if (!canEndRouting) {
 						//If not, informs the user of what they must do to make the route legal

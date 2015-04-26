@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import fvs.taxe.GameScreen;
+import fvs.taxe.SoundPlayer;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.clickListener.GoalClickListener;
 import gameLogic.Game;
@@ -225,6 +226,7 @@ public class GoalController {
         recordButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
+        		SoundPlayer.playSound(1);
         		if(!GameScreen.instance.isRecording())
         		{
         			GameScreen.instance.startRecording();
@@ -244,6 +246,7 @@ public class GoalController {
         saveButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
+        		SoundPlayer.playSound(1);
                 System.out.println("save");
             };
         } );
@@ -256,6 +259,7 @@ public class GoalController {
         exitButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
+        		SoundPlayer.playSound(1);
                 exitPressed();
             };
         } );
@@ -265,6 +269,7 @@ public class GoalController {
     
     /** What occurs when the exit button has pressed, setup the exit menu and register clicks */
     private void exitPressed() {
+    	
     	System.out.println("exit");
     	prevState = context.getGameLogic().getState();
     	context.getGameLogic().setState(GameState.WAITING);
@@ -285,6 +290,7 @@ public class GoalController {
     	resumeButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
+        		SoundPlayer.playSound(1);
         		resumePressed();
             };
         } );
@@ -297,6 +303,7 @@ public class GoalController {
         saveButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
+        		SoundPlayer.playSound(1);
         		Game.getInstance().save();
             };
         } );
@@ -309,6 +316,7 @@ public class GoalController {
         exitButton.addListener(new ClickListener() {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
+        		SoundPlayer.playSound(1);
         		System.out.println("exit");
         		exitPressed = false;
         		Gdx.app.exit();

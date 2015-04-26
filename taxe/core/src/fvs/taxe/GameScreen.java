@@ -60,6 +60,8 @@ public class GameScreen extends ScreenAdapter {
 	private int i;
 	protected TrainController trainController;
 	
+	
+	
 	/**The recorder that is attached to this game screen*/
 	public Recorder record;
 	/**Whether the mouse was keyed down on the last tick. Use for detecting events in recording*/
@@ -136,7 +138,11 @@ public class GameScreen extends ScreenAdapter {
 		context.setRouteController(routeController);
 		context.setTopBarController(topBarController);
 		context.setConnectionController(connectionController);
-
+		
+		
+	     MusicPlayer.playTrack();
+	     
+		
 		rumble = obstacleController.getRumble();
 		
 		record = new Recorder();

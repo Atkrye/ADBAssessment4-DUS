@@ -6,7 +6,7 @@ package fvs.taxe;
 
 import gameLogic.Game;
 import adb.taxe.record.SaveManager;
-
+import fvs.taxe.SoundPlayer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
@@ -31,7 +31,7 @@ public class MainMenuScreen extends ScreenAdapter {
     private Image mapImage;
     private Texture mainScreenTexture;
     private boolean disabled = false;
-
+    public SoundPlayer soundPlayer;
     
     public MainMenuScreen(TaxeGame game) {
         //This sets all the relevant variables for the menu screen
@@ -58,6 +58,9 @@ public class MainMenuScreen extends ScreenAdapter {
         
         //loads in the background image for the screen
         mainScreenTexture = new Texture(Gdx.files.internal("launch_screen.png"));
+        
+        soundPlayer = new SoundPlayer();
+        
     }
 
     
@@ -69,7 +72,7 @@ public class MainMenuScreen extends ScreenAdapter {
         	//If rectangles are touch then relevant action is taken
             camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
             if (playBounds.contains(touchPoint.x, touchPoint.y)) {
-            	
+            	SoundPlayer.playSound(1);
             	//If the touch is within the boundaries of the rectangle playBounds the GameSetupScreen is set
             	
             	game.setScreen(new GameSetupScreen(game));
@@ -77,6 +80,7 @@ public class MainMenuScreen extends ScreenAdapter {
             }
             //Load a game
             if (loadBounds.contains(touchPoint.x, touchPoint.y)) {
+            	SoundPlayer.playSound(1);
             	//Disabled all click ability
             	disabled = true;
             	//Load a game using the SaveManager
@@ -97,6 +101,7 @@ public class MainMenuScreen extends ScreenAdapter {
             	SaveManager.loadRecordingFromChooser();
             }
             if (exitBounds.contains(touchPoint.x, touchPoint.y)) {
+            	SoundPlayer.playSound(2);
             	//If the touch is within the boundaries of the rectangle exitBounds the game exits
                 Gdx.app.exit();
             }

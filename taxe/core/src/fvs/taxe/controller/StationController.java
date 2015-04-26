@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SnapshotArray;
 
+import fvs.taxe.SoundPlayer;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.Tooltip;
 import fvs.taxe.actor.CollisionStationActor;
@@ -164,6 +165,7 @@ public class StationController {
 		stationActor.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SoundPlayer.playSound(5);
 				//This routine finds all trains located at this station by iterating through every one and checking if the location equals the station location
 				if (Game.getInstance().getState() == GameState.NORMAL) {
 					ArrayList<Train> trains = new ArrayList<Train>();

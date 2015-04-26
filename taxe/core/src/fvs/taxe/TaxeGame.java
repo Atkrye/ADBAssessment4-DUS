@@ -142,6 +142,8 @@ public class TaxeGame extends Game {
         batch.dispose();
         fontRegular.dispose();
         shapeRenderer.dispose();
+        SoundPlayer.dispose();
+        MusicPlayer.dispose();
     }
 
 

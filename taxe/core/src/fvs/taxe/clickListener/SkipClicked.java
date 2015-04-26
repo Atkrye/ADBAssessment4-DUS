@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
+import fvs.taxe.SoundPlayer;
 import fvs.taxe.controller.Context;
 import fvs.taxe.dialog.DialogResourceSkipped;
 import gameLogic.Game;
@@ -31,7 +33,9 @@ public class SkipClicked extends ClickListener {
 
             // current player can't be passed in as it changes so find out current player at this instant
             Player currentPlayer = Game.getInstance().getPlayerManager().getCurrentPlayer();
-
+            
+            //plays skip button sound
+            SoundPlayer.playSound(5);
             //Creates a dialog when skip is clicked allowing the user to select what they want to do with the resource
             DialogButtonClicked listener = new DialogButtonClicked(context, currentPlayer, skip);
             DialogResourceSkipped dia = new DialogResourceSkipped(context);

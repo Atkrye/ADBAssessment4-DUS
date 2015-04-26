@@ -2,6 +2,7 @@ package fvs.taxe;
 
 import Util.TextEntryBar;
 import Util.IntegerEntryBar;
+import fvs.taxe.SoundPlayer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ScreenAdapter;
@@ -27,7 +28,8 @@ public class GameSetupScreen extends ScreenAdapter {
     private TextEntryBar p2NameEntry;
     private IntegerEntryBar pointsTurnsBar;
     private String MODE = MODEPOINTS;
-
+    //public SoundPlayer soundPlayer;
+    
     public GameSetupScreen(TaxeGame game) {
         //This sets all the relevant variables for the menu screen
         this.game = game;
@@ -44,7 +46,8 @@ public class GameSetupScreen extends ScreenAdapter {
         pointsTurnsBar = new IntegerEntryBar(702, 175, 2, game);
         //Loads the gameMap in
         setupScreenTexture = new Texture(Gdx.files.internal("setup_max_points1.png"));
-        
+       
+        //soundPlayer = new SoundPlayer();
         
         Gdx.input.setInputProcessor(new InputAdapter () {
         	//The input processor which acts upon a user pressing keys
@@ -89,10 +92,12 @@ public class GameSetupScreen extends ScreenAdapter {
             p2NameEntry.update(touchPoint);
             pointsTurnsBar.update(touchPoint);
             if (playBounds.contains(touchPoint.x, touchPoint.y)) {
+            	SoundPlayer.playSound(1);
             	game.setScreen(new GameScreen(game, p1NameEntry.getLabelValue(), p2NameEntry.getLabelValue(), MODE, Integer.valueOf(pointsTurnsBar.getLabelValue())));
                 return;
             }
-            if(pointsTabBounds.contains(touchPoint.x, touchPoint.y) && !MODE.equals(MODEPOINTS)){ 
+            if(pointsTabBounds.contains(touchPoint.x, touchPoint.y) && !MODE.equals(MODEPOINTS)){
+               SoundPlayer.playSound(2);	
                MODE = MODEPOINTS;
                pointsTurnsBar.setLabel("3000");
                setupScreenTexture = new Texture(Gdx.files.internal("setup_max_points1.png"));
@@ -100,7 +105,8 @@ public class GameSetupScreen extends ScreenAdapter {
                pointsTurnsBar.setLastClicked();
                }
             if(turnsTabBounds.contains(touchPoint.x, touchPoint.y) && !MODE.equals(MODETURNS))
-            {
+            {	
+            	SoundPlayer.playSound(2);
                 MODE = MODETURNS;
             	setupScreenTexture = new Texture(Gdx.files.internal("setup_max_turns2.png"));
              pointsTurnsBar.setLastClicked();
