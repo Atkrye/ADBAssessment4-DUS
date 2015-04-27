@@ -233,6 +233,12 @@ public class GoalController {
         	@Override
             public void clicked(InputEvent event, float x, float y) {
         		if(!Game.getInstance().getState().equals(GameState.ANIMATING))
+        		SoundPlayer.playSound(1);
+        		if(!GameScreen.instance.isRecording())
+        		{
+        			GameScreen.instance.startRecording();
+        		}
+        		else
         		{
         			SoundPlayer.playSound(1);
         			if(!GameScreen.instance.isRecording())

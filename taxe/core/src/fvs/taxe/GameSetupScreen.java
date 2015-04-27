@@ -153,10 +153,4 @@ public class GameSetupScreen extends ScreenAdapter {
 		p1NameEntry.draw();
 		pointsTurnsBar.draw();
 	}
-
-	@Override
-	public void render(float delta) {
-		update();
-		draw();
-	}
 }

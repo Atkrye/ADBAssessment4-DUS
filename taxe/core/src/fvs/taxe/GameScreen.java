@@ -108,6 +108,8 @@ public class GameScreen extends ScreenAdapter {
 	
 	
 	
+	
+	
 	/**The recorder that is attached to this game screen*/
 	public Recorder record;
 	
