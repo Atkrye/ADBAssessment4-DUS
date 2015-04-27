@@ -5,12 +5,10 @@ import adb.taxe.record.SaveManager;
 import fvs.taxe.SoundPlayer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 /**This class is used to set up the graphical interface of the main menu for the player. It is first used when the TaxeGame.java is instantiated.*/
 public class MainMenuScreen extends ScreenAdapter {
@@ -76,10 +74,10 @@ public class MainMenuScreen extends ScreenAdapter {
 			camera.unproject(touchPoint.set(Gdx.input.getX(), Gdx.input.getY(), 0));
 			if (playBounds.contains(touchPoint.x, touchPoint.y)) {
             	SoundPlayer.playSound(1);
-
 				//If the touch is within the boundaries of the rectangle playBounds the GameSetupScreen is set
 
 				game.setScreen(new GameSetupScreen(game));
+            	System.out.println("Set up screen");
 				return;
 			}
 			//Load a game
