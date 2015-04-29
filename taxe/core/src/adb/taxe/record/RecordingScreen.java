@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 import fvs.taxe.GameScreen;
-import fvs.taxe.GameSetupScreen;
 import fvs.taxe.MusicPlayer;
 import fvs.taxe.TaxeGame;
 import fvs.taxe.Tooltip;
@@ -38,14 +37,18 @@ import gameLogic.map.Station;
 
 public class RecordingScreen extends GameScreen{
 	
-	// Texture for playback controls
+	/**The texture used to visually show the playback controls*/
 	Texture playbackTexture;
 	
-	// Rectangles from play, pause and forward buttons on playback control
+	/**The bounds of the play button within the playback controls*/
 	private Rectangle playBounds;
+	/**The bounds of the pause button within the playback controls*/
     private Rectangle pauseBounds;
+    /**The bounds of the fast forward button within the playback controls*/
     private Rectangle forwardBounds;
+    /**This object is used to read in touch events*/
     private Vector3 touchPoint;
+    /**The camera used to translate a touchPoint in to the bounds of buttons to detect button clicks*/
     private OrthographicCamera camera;
 
 	/**The rate at which ticks build up. Ticks increases by the value of replaySpeed every frame*/
@@ -181,7 +184,9 @@ public class RecordingScreen extends GameScreen{
 		});
 	}
 	
-	/**This method contains all of the base logic that must be called every frame*/
+	/**This method contains all of the base logic that must be called every frame. If the game isnt animating,
+	 * it reads through the recording injecting events in to the game. We also handle our touch detection here,
+	 * finding any touch events and trying to detect if they lie within any of the bounds set out in the recording UI.*/
 	private void update() {
 		if(!this.gameLogic.getState().equals(GameState.ANIMATING))
 		{
@@ -212,7 +217,9 @@ public class RecordingScreen extends GameScreen{
        }
 	}
 	
-	/**Sets the speed of replay and updates the UI (where 1.0f is 1 event per second*/
+	/**Sets the speed of replay (where 1.0f is 1 event per second)
+	 * @param newSpeed The speed at which to play back events
+	 */
 	private void setReplaySpeed(float newSpeed) {
 		if(newSpeed > replaySpeedCap)
 		{
@@ -224,7 +231,8 @@ public class RecordingScreen extends GameScreen{
 		}
 	}
 
-	/**Draws any graphs exclusive to the replayScreen, e.g. the replay buttons*/
+	/**This method is called every frame by render.
+	 * It draws any graphics exclusive to the replayScreen, e.g. the replay buttons*/
 	private void draw() {
     	//This method draws the mainScreen Texture 
     	camera.update();

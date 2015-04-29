@@ -9,19 +9,34 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import fvs.taxe.SoundPlayer;
 import fvs.taxe.TaxeGame;
 
+/**This class is a type of image describes object specific information for creating and controlling the Pong ball*/
 public class BallActor extends Image{
+	/**The in game pixel width of a ball*/
 	private final static float width = 30;
+	/**The in game pixel height of a ball*/
 	private final static float height = 30;
-	//Acceleration constant
+
+	/**The in game multiplying rate at which the ball accelerates*/
 	private final static float A = 1.001f;
+	
+	/**The left paddle in this Trong instance*/
 	private PaddleActor leftPaddle;
+	/**The right paddle in this Trong instance*/
 	private PaddleActor rightPaddle;
+	
+	/**The x velocity of the ball in pixels per frame*/
 	private float velocityX = 0;
+	
+	/**The y velocity of the ball in pixels per frame*/
 	private float velocityY = 0;
 	
-	//Start velocity in pixels
+	/**The start velocity of the ball, in pixels per frame*/
 	private final static float startV = 4;
 	
+	/**This instantiation method sets up the ball actor and assigns the game paddles to it
+	 * @param leftPaddle The left paddle in the point of pong
+	 * @param rightPaddle The right paddle in the point of pong
+	 */
     public BallActor(PaddleActor leftPaddle, PaddleActor rightPaddle) {
         //The constructor initialises all the variables and gathers the relevant image for the actor
         super(new Texture(Gdx.files.internal("trong/ball.png")));
@@ -36,6 +51,8 @@ public class BallActor extends Image{
         	velocityX = velocityX * -1;
         }
     }
+    
+    /**This method is called every frame. It updates the ball, bouncing it off the Pong paddles and the wall*/
 	public void update() {
 		velocityX = velocityX * A;
 		velocityY = velocityY * A;
@@ -74,18 +91,28 @@ public class BallActor extends Image{
 		}
 	}
 	
+	/**This method checks whether the ball intersects the bounds another image
+	 * @param im The image to check for intersections
+	 * @return Whether an intersection exists
+	 */
 	private boolean intersects(Image im)
 	{
 		return !((this.getX() > im.getX() + im.getWidth()) || (im.getX() > this.getX() + this.getWidth()) || (this.getY() > im.getY() + im.getHeight()) || (im.getY() > this.getY() + this.getHeight()));
 	}
 	
-	//Calculates the x displacement between the centres
+	/**This method finds the difference in x coordinates of the ball with another image
+	 * @param im The image to find the x displacement to
+	 * @return The float value of the difference between the ball and im's x coordinates
+	 */
 	private float dX(Image im)
 	{
 		return (this.getX() + (this.getWidth() / 2)) - (im.getX() + (im.getWidth() / 2));
 	}
 	
-	//Calculates the y displacement between the centres
+	/**This method finds the difference in y coordinates of the ball with another image
+	 * @param im The image to find the y displacement to
+	 * @return The float value of the difference between the ball and im's y coordinates
+	 */
 	private float dY(Image im)
 	{
 		return (this.getY() + (this.getHeight() / 2)) - (im.getY() + (im.getHeight() / 2));

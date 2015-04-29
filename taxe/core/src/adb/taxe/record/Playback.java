@@ -8,6 +8,11 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 
+/**This method does the heavyweight work for reading events back in and injecting them in to the game. Every turn,
+ * the RecordingScreen gets the next event from the PlayBack device and injects it back in to the Game's input
+ * processor. When the turn is over and thing must be calculated (Obstacles, new Resources and Goals, collisions), a set of
+ * methods allow the Recording to find the events that were calculated in the original game.
+ */
 public class Playback {
 	  /**The array of Events that makes up the recording*/
 	  private ArrayList<Event> events;
@@ -115,6 +120,11 @@ public class Playback {
 		return null;
 	}
 	
+	/**This method iterates through the events array to find the next ObstacleEvent stored within it. It removes
+	 * this event from the array and returns it - Meaning that each ObstacleEvent is read in sequentially corresponding
+	 * to the order that they occurred in in the game.
+	 * @return The next ObstacleEvent that occurs within the recording
+	 */
 	public ObstacleEvent getNextObstacleEvent()
 	{
 		ObstacleEvent ret = null;
@@ -129,6 +139,11 @@ public class Playback {
 		return ret;
 	}
 	
+	/**This method iterates through the events array to find the next GoalEvent stored within it. It removes
+	 * this event from the array and returns it - Meaning that each GoalEvent is read in sequentially corresponding
+	 * to the order that they occurred in in the game.
+	 * @return The next GoalEvent that occurs within the recording
+	 */
 	public GoalEvent getNextGoalEvent()
 	{
 		GoalEvent ret = null;
@@ -143,6 +158,11 @@ public class Playback {
 		return ret;
 	}
 	
+	/**This method iterates through the events array to find the nextResourceEvent stored within it. It removes
+	 * this event from the array and returns it - Meaning that each ResourceEvent is read in sequentially corresponding
+	 * to the order that they occurred in in the game.
+	 * @return The next ResourceEvent that occurs within the recording
+	 */
 	public ResourceEvent getNextResourceEvent()
 	{
 		ResourceEvent ret = null;
@@ -157,6 +177,11 @@ public class Playback {
 		return ret;
 	}
 	
+	/**This method iterates through the events array to find the next CollisionEvent stored within it. It removes
+	 * this event from the array and returns it - Meaning that each CollisionEvent is read in sequentially corresponding
+	 * to the order that they occurred in in the game.
+	 * @return The next CollisionEvent that occurs within the recording
+	 */
 	public CollisionEvent getCollisionEvent(Train train1, Train train2)
 	{
 		for(Event e : events)
@@ -173,10 +198,18 @@ public class Playback {
 		return null;
 	}
 
+	/**This method checks whether the recording is set to play back in reverse. 
+	 * @return True if the playback is in reverse, false otherwise
+	 */
 	public boolean isReverse() {
 		return reverse;
 	}
 
+	/**This method sets whether the recorder should play back in reverse. There is however, no compatibility for
+	 * this in terms of undoing events within the recording yet, so this currently has no use. This could
+	 * be a potential extension in further work.
+	 * @param reverse Whether the recording should be in reverse or not
+	 */
 	public void setReverse(boolean reverse) {
 		this.reverse = reverse;
 	}

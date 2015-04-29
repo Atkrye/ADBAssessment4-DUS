@@ -8,6 +8,12 @@ import gameLogic.resource.Train;
 
 import com.badlogic.gdx.utils.Json;
 
+/**This class is a type of event that describes when a new goal has been given to a player. It describes all of the
+ * features necessary to reconstruct this goal in the game. The player does not have to be recorded as the recording
+ * is playing through the Game, so whenever the Playback attempts to give a player a goal it will simply
+ * find the next Goal event and construct a goal from that, as the goals will be stored in the correct order
+ * corresponding to the players' turns.
+ */
 public class GoalEvent extends Event{
 	/**The name of the origin station of the goal*/
 	private String origin;
@@ -76,6 +82,7 @@ public class GoalEvent extends Event{
 		this.train = train;
 	}
 	
+	@Override
 	public void toJson(Json json)
 	{
 		json.writeObjectStart();
@@ -91,6 +98,11 @@ public class GoalEvent extends Event{
 		json.writeObjectEnd();
 	}
 
+	/**This method reconstructs a goal from the Goal Event so that it can be given to a player in a recording
+	 * @param map The map used within the recording's game instance
+	 * @param resourceManager The resource Manager used within the recording's game instance
+	 * @return The goal that this Goal Event describes.
+	 */
 	public Goal asGoal(Map map, ResourceManager resourceManager) {
 		Station origin = map.getStationByName(this.origin);
 		Station destination = map.getStationByName(this.destination);

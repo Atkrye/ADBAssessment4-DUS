@@ -7,6 +7,10 @@ import gameLogic.resource.Resource;
 
 import java.util.ArrayList;
 
+/**This Class does the heavyweight work for recording. It sets up an array of Events and then adds subsequent events
+ * that occur within the Game to this Array. Once the stop button is pressed to end the recording, this array of events
+ * is embedded within an EventArrayContainer and stored in a json format within a .taxeR recording file type.
+ */
 public class Recorder {
 
 	  /**Indicates whether the recorder is currently recording events*/

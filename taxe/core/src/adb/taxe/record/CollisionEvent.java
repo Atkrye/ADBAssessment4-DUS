@@ -4,6 +4,11 @@ import gameLogic.resource.Train;
 
 import com.badlogic.gdx.utils.Json;
 
+/**This class is a subclass of event. It is used to represent 2 trains colliding in a game with 1 being destroyed
+ * as the result of a point of Trong (the pong implementation that occurs when 2 trains collide). When the same
+ * 2 trains collide in a recording, they search for the Collision Event that describes their collision to find 
+ * the train to destroy.
+ */
 public class CollisionEvent extends Event{
 	/**The id of the first train involved in the collision*/
 	private int train1ID;

@@ -84,12 +84,13 @@ public class TrainActor extends Image {
 					//Firstly determine whether we're in a recording or an actual game
 					if(GameScreen.instance.getClass().equals(RecordingScreen.class))
 					{
-						System.out.println("Recording collision!");
+						System.out.println("Recording collision!" + this.train.getID());
 						//It is a recording so we load the collision and destroy the losing train.
 						CollisionEvent ce = ((RecordingScreen)GameScreen.instance).eventPlayer.getCollisionEvent(this.train, collidedTrain);
 						//If ce is null no collision event was found so the game continues ignoring the collision
 						if(ce != null)
 						{
+							System.out.println("Event found");
 							if(this.train.getID() == ce.getDestroyedID())
 							{
 								train.getPlayer().removeResource(train);

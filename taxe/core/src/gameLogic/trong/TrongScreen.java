@@ -14,23 +14,44 @@ import fvs.taxe.GameScreen;
 import fvs.taxe.TaxeGame;
 import gameLogic.resource.Train;
 
+/**This class is a type of GameScreen specifically for the Trong (Train Pong) implementation. It pauses the 
+ * original Game while the point plays out. Once the game is done, it moves the Screen along to the next
+ * Screen that was assigned to it*/
 public class TrongScreen extends ScreenAdapter{
+	/**The instance of TaxeGame that controls the screens*/
     final private TaxeGame game;
+    /**The next screen that should be loaded once the point of pong has completed*/
     private ScreenAdapter nextScreen;
+    /**The stage used to visually display the actors*/
     private Stage stage;
-    private Skin skin;
+    /**The skin to be used in the Trong game. Currently this is unused, but future UI changes may use it*/
+    @SuppressWarnings("unused")
+	private Skin skin;
+    /**The left hand paddle in the pong point*/
     private PaddleActor paddle1;
+    /**The right hand paddle in the pong point*/
     private PaddleActor paddle2;
+    /**The wall along the top of the game*/
     private BarActor topBar;
+    /**The wall along the bottom of the game*/
     private BarActor botBar;
+    /**The ball moving around the game*/
     private BallActor ball;
     
-    //These 4 variables describe the proportion of the screen dedicated to the game
+    /**The bottom-most dimension of the game - 0.1 of the screen is the lowest the ball can go*/
     public static final float gameBottom = 0.1f;
+    /**The top-most dimension of the game - 0.7 of the screen is the highest the ball can go*/
     public static final float gameTop = 0.7f;
+    /**The left-most dimension of the game - 0.1 of the screen is the furthest left the ball can go*/
     public static final float gameLeft = 0.1f;
+    /**The right-most dimension of the game - 0.9 of the screen is the furthest right the ball can go*/
     public static final float gameRight = 0.9f;
     
+    /**The instantiation method sets up the game
+     * @param game The TaxeGame instance used to set screens
+     * @param t1 The first train involved in the collision
+     * @param t2 The second train involved in the collision
+     */
 	public TrongScreen(TaxeGame game, Train t1, Train t2)
 	{
 		this.game = game;
@@ -55,6 +76,7 @@ public class TrongScreen extends ScreenAdapter{
         MusicPlayer.playTrack2();
 	}
 	
+	/**This method is called once the winner has been decided and finalised*/
 	public void finish()
 	{	
 		MusicPlayer.stopTrack2();
@@ -63,6 +85,7 @@ public class TrongScreen extends ScreenAdapter{
 		nextScreen.resume();
 	}
 	
+	/**This method sets up the screen to be shown once this point of pong has completed*/
 	public void setNextScreen(ScreenAdapter nextScreen)
 	{
 		this.nextScreen = nextScreen;
@@ -95,6 +118,7 @@ public class TrongScreen extends ScreenAdapter{
         game.batch.end();
     }
     
+    /**This method is called every frame. It updates the controls of the paddles*/
     public void update()
     {
     	if(Gdx.input.isKeyPressed(Keys.W)) 
@@ -113,7 +137,6 @@ public class TrongScreen extends ScreenAdapter{
      	//Check win conditions
      	if(ball.getX() < 0)
      		
-     		
      	{	
      		paddle1.getTrain().getPlayer().removeResource(paddle1.getTrain());
      		paddle1.getTrain().getActor().remove();
@@ -123,17 +146,16 @@ public class TrongScreen extends ScreenAdapter{
 
      	if(ball.getX() > TaxeGame.WIDTH)
      	{   
-     		
      		paddle2.getTrain().getPlayer().removeResource(paddle2.getTrain());
      		paddle2.getTrain().getActor().remove();
      		finish();
-     		
-            
-     		
-     		
+     		recordCollision(paddle2.getTrain());
      	}
     }
     
+    /**This method is called once the point has finished. It attempts to record the collision if the game is recording
+     * @param loser The losing train of the collision
+     */
     public void recordCollision(Train loser)
     {
     	if(GameScreen.instance.isRecording())
